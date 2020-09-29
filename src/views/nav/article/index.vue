@@ -22,7 +22,7 @@
     <el-table-column prop="id" header-align="center" align="center" sortable="custom" label="ID"></el-table-column>
     <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
     <el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
-        <el-table-column prop="author" header-align="center" align="center" label="作者"></el-table-column>
+    <el-table-column prop="author" header-align="center" align="center" label="作者"></el-table-column>
     <el-table-column prop="title" header-align="center" align="center" label="标题"></el-table-column>
     <el-table-column prop="keywords" header-align="center" align="center" label="关键字"></el-table-column>
     <el-table-column prop="type" header-align="center" align="center" label="文章类型(码类200)"></el-table-column>

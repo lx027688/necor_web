@@ -29,3 +29,16 @@ export function isBank (value) {
 export function isNotBank (value) {
   return !this.isBank(value)
 }
+
+export function abbr (str,length,ellipsis) {
+
+  if(this.isNotBank(str) && !isNaN(length) && str.length > length){
+    if(this.isBank(ellipsis)){
+      ellipsis = '...'
+    }
+    return str.substring(0,length) + ellipsis;
+  }else{
+    return str
+  }
+
+}
