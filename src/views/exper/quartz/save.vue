@@ -66,6 +66,7 @@ export default {
   methods: {
     init (name,group,ps) {
       this.visible = true
+      this.isEdit = false
 
       this.$nextTick(() => {
         this.$refs['saveForm'].resetFields()
