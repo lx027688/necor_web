@@ -1,22 +1,34 @@
 <template>
-  <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
-    <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="120px">
-      <el-form-item label="任务名称" prop="jobClassName">
-        <el-input v-model="form.jobClassName" disabled></el-input>
-      </el-form-item>
-      <el-form-item label="任务组名称" prop="jobGroupName">
-        <el-input v-model="form.jobGroupName" :disabled="isEdit"></el-input>
-      </el-form-item>
-      <el-form-item label="cron表达式" prop="cronExpression">
-        <el-input v-model="form.cronExpression"></el-input>
-      </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input v-model="form.description"></el-input>
-      </el-form-item>
-      <el-form-item v-for="(p,i) in params" :label="p.key" :prop="p.key">
-        <el-input v-model="params[i].val"></el-input>
-      </el-form-item>
-    </el-form>
+  <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible" top="5vh">
+
+    <el-tabs v-model="activeName">
+
+      <el-tab-pane label="定时任务" name="first">
+        <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="120px">
+          <el-form-item label="任务名称" prop="jobClassName">
+            <el-input v-model="form.jobClassName" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="任务组名称" prop="jobGroupName">
+            <el-input v-model="form.jobGroupName" :disabled="isEdit"></el-input>
+          </el-form-item>
+          <el-form-item label="cron表达式" prop="cronExpression">
+            <el-input v-model="form.cronExpression"></el-input>
+          </el-form-item>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="form.description"></el-input>
+          </el-form-item>
+          <el-form-item v-for="(p,i) in params" :label="p.key" :prop="p.key">
+            <el-input v-model="params[i].val"></el-input>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+
+      <el-tab-pane label="cron生成器" name="second">
+        <iframe src="https://www.pppet.net/" width="100%" scrolling="yes" height="600px"></iframe>
+      </el-tab-pane>
+
+    </el-tabs>
+
     <div slot="footer" class="dialog-footer">
       <!--点击取消清空面板内容-->
       <el-button @click="visible = false">取 消</el-button>
@@ -36,6 +48,7 @@ export default {
     return {
       isEdit: false,
       visible: false,
+      activeName: 'first',
       params: [],
       form: {
         jobClassName: '',
@@ -79,6 +92,7 @@ export default {
           getGroup(params).then(r => {
             let res = r.data
             this.form.cronExpression = res.cron
+            this.form.description = res.description
             this.isEdit = true
 
             let ds = eval(res.jobData)
@@ -107,13 +121,14 @@ export default {
 
           // 添加
           if(!this.isEdit){
+            let jobClassName = this.form.jobClassName
             addJob(this.form).then(r => {
               this.$message({
                 message: '保存成功',
                 type: 'success'
               })
               this.$refs['saveForm'].resetFields()
-              this.$emit('refreshList',this.form.jobClassName)
+              this.$emit('refreshList',jobClassName)
               this.visible = false
             }).catch(err => {
               console.log('err', err)
@@ -121,13 +136,14 @@ export default {
           }
           // 修改
           if(this.isEdit){
+            let jobClassName = this.form.jobClassName
             reschedulejob(this.form).then(r => {
               this.$message({
                 message: '修改成功',
                 type: 'success'
               })
               this.$refs['saveForm'].resetFields()
-              this.$emit('refreshList',this.form.jobClassName)
+              this.$emit('refreshList',jobClassName)
               this.isEdit = false
               this.visible = false
             }).catch(err => {

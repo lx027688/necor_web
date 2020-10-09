@@ -1,8 +1,5 @@
 <template>
   <d2-container>
-    <el-row>
-      <el-button type="primary" size="small" @click="cronDialog()">cron生成器</el-button>
-    </el-row>
     <el-row :gutter="20">
       <el-col :span="9">
         <!-- 列表 -->
@@ -54,9 +51,6 @@
     <!-- 弹窗, 新增 / 修改 -->
     <save v-if="saveVisible" ref="save" @refreshList="groupsList"></save>
 
-    <!-- cron 生成器 -->
-    <cron v-if="cronVisible" ref="cron"></cron>
-
   </d2-container>
 </template>
 
@@ -64,19 +58,17 @@
 
 import { getJobs, getGroups, remove, pause, resume } from '@api/exper/quartz'
 import save from './save'
-import cron from './cron'
 
 export default {
   name: 'exper-quartz',
-  components: { save, cron },
+  components: { save },
   data () {
     return {
       jobsLoading: false,
       jobs: [],
       groupsLoading: false,
       groups: [],
-      saveVisible: false,
-      cronVisible: false
+      saveVisible: false
     }
   },
   mounted () {
@@ -173,12 +165,6 @@ export default {
         })
       }).catch(err => {
         console.log('err', err)
-      })
-    },
-    cronDialog () {
-      this.cronVisible = true
-      this.$nextTick(() => {
-        this.$refs.cron.init()
       })
     }
   }
