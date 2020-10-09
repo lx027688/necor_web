@@ -68,6 +68,7 @@ export default {
               params.append('mobile', value)
               params.append('id', this.form.id)
               validateRepeatPhone(params).then(res => {
+                console.log(res)
                 if (!res) {
                   return callback(new Error('手机号已存在'))
                 }
@@ -87,7 +88,8 @@ export default {
       this.$nextTick(() => {
         this.$refs['saveForm'].resetFields()
         if (this.form.id) {
-          detail(id).then(r => {
+          detail(id).then(res => {
+            let r = res.data
             this.form = r
           })
         }

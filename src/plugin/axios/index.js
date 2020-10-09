@@ -71,7 +71,7 @@ service.interceptors.response.use(
       switch (code) {
         case 0:
           // [ 示例 ] code === 0 代表没有错误
-          return dataAxios.data
+          return dataAxios
         case 3:
           // 没有权限
           errorCreate(`${dataAxios.msg}`)

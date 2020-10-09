@@ -140,7 +140,8 @@ export default {
   methods: {
     baseSettingInfo () {
       let that = this
-      baseSettingDetail().then(r => {
+      baseSettingDetail().then(res => {
+        let r = res.data
         that.logoFileListLength = 0
         that.LogoFileList = []
         this.$refs['baseSettingForm'].resetFields()
@@ -204,7 +205,7 @@ export default {
     storageSettingInfo () {
       storageSettingDetail().then(r => {
         this.$refs['storageSettingForm'].resetFields()
-        this.storageSettingForm = r
+        this.storageSettingForm = r.data
       }).catch(err => {
         console.log('err', err)
       })

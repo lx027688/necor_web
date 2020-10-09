@@ -56,8 +56,8 @@ export default {
         this.$refs['saveForm'].resetFields()
         if (this.form.id) {
           detail(id).then(r => {
-            this.form = r
-            this.form.parentId = r.parent.id
+            this.form = r.data
+            this.form.parentId = r.data.parent.id
           })
         }
       })

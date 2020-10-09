@@ -77,7 +77,8 @@ export default {
       this.$nextTick(() => {
         this.$refs['saveForm'].resetFields()
         if (this.form.id) {
-          detail(id).then(r => {
+          detail(id).then(res => {
+            let r = res.data
             this.form = r
             this.form.parentId = r.parent.id
             this.form.parentName = r.parent.name
@@ -105,16 +106,16 @@ export default {
     loadArea (node, resolve) {
       if (node.level === 0) {
         getArea().then(r => {
-          return resolve(r)
+          return resolve(r.data)
         }).catch(err => {
           console.log('err', err)
         })
       }
       if (node.level >= 1) {
         let params = new FormData()
-        params.append('search', node.data.id)
+        params.append('parentId', node.data.id)
         getArea(params).then(r => {
-          return resolve(r)
+          return resolve(r.data)
         }).catch(err => {
           console.log('err', err)
         })

@@ -86,7 +86,7 @@ export default {
     jobsList () {
       this.jobsLoading = true
       getJobs().then(res => {
-        this.jobs = res
+        this.jobs = res.data
         this.jobsLoading = false
       }).catch(err => {
         console.log('err', err)
@@ -103,7 +103,7 @@ export default {
       params.append('jobClassName', name)
 
       getGroups(params).then(res => {
-        this.groups = res
+        this.groups = res.data
         this.groupsLoading = false
       }).catch(err => {
         console.log('err', err)
@@ -151,10 +151,10 @@ export default {
       let params = new FormData()
       params.append('jobClassName', name)
       params.append('jobGroupName', group)
-      pause(params).then(r => {
+      pause(params).then(res => {
         this.groupsList(name)
         this.$message({
-          message: '暂停成功',
+          message: res.msg,
           type: 'success'
         })
       }).catch(err => {
@@ -165,10 +165,10 @@ export default {
       let params = new FormData()
       params.append('jobClassName', name)
       params.append('jobGroupName', group)
-      resume(params).then(r => {
+      resume(params).then(res => {
         this.groupsList(name)
         this.$message({
-          message: '暂停成功',
+          message: res.msg,
           type: 'success'
         })
       }).catch(err => {

@@ -146,7 +146,8 @@ export default {
         this.$refs['saveForm'].resetFields()
         this.fileList = []
         if (this.form.id) {
-          detail(id).then(r => {
+          detail(id).then(res => {
+            let r = res.data
             this.form = r
             if (r.headPortrait !== null && r.headPortrait !== '') {
               let file = {

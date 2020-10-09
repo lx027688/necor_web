@@ -93,7 +93,8 @@ export default {
     },
     getList () {
       this.loading = true
-      list({ ...this.query }).then(res => {
+      list({ ...this.query }).then(r => {
+        let res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
@@ -158,7 +159,8 @@ export default {
       if (this.isNotBank(id)) {
         params.append('roleId', id)
       }
-      getMenusByRole(params).then(res => {
+      getMenusByRole(params).then(r => {
+        let res = r.data
         this.menuList = res.menus
         if (this.isNotBank(res.roleMenus)) {
           res.roleMenus.map(function (v) {

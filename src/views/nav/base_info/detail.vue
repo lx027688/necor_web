@@ -68,7 +68,8 @@ export default {
       this.$nextTick(() => {
         this.$refs['detailForm'].resetFields()
         if (this.form.id) {
-          detail(id).then(r => {
+          detail(id).then(res => {
+            let r = res.data
             this.form.title = r.title
             this.form.country = r.country
             this.form.url = r.url

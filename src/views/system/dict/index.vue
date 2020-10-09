@@ -88,7 +88,8 @@ export default {
     },
     getList () {
       this.loading = true
-      list({ ...this.query }).then(res => {
+      list({ ...this.query }).then(r => {
+        let res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false

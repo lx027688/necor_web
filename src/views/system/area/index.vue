@@ -83,7 +83,8 @@ export default {
     getList () {
       this.loading = true
       // 开始请求登录接口
-      list({ ...this.query }).then(res => {
+      list({ ...this.query }).then(r => {
+        let res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
@@ -98,7 +99,7 @@ export default {
         var params = new URLSearchParams()
         params.append('parentId', tree.id)
         getArea(params).then(res => {
-          resolve(res)
+          resolve(res.data)
         }).catch(err => {
           console.log('err', err)
         })

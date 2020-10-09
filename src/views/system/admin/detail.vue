@@ -77,9 +77,9 @@ export default {
         this.$refs['detailForm'].resetFields()
         if (this.form.id) {
           detail(id).then(r => {
-            this.form = r
-            if (r.headPortrait !== null && r.headPortrait !== '') {
-              this.srcList.push(r.headPortrait)
+            this.form = r.data
+            if (r.data.headPortrait !== null && r.data.headPortrait !== '') {
+              this.srcList.push(r.data.headPortrait)
             }
           })
         }

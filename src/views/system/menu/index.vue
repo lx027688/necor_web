@@ -107,7 +107,8 @@ export default {
         this.parentName = this.menuName
         this.form.parentId = this.menuId
       } else if (this.model === 'edit') {
-        menuDetail(this.menuId).then(r => {
+        menuDetail(this.menuId).then(res => {
+          let r = res.data
           this.form = r
           this.form.parentId = r.parent.id
           this.parentName = r.parent.name

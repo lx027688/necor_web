@@ -49,7 +49,7 @@ export default {
         this.$refs['saveForm'].resetFields()
         if (this.form.id) {
           detail(id).then(r => {
-            this.form = r
+            this.form = r.data
           })
         }
       })

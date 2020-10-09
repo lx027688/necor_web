@@ -76,7 +76,8 @@ export default {
           params.append('jobClassName', this.form.jobClassName)
           params.append('jobGroupName', this.form.jobGroupName)
 
-          getGroup(params).then(res => {
+          getGroup(params).then(r => {
+            let res = r.data
             this.form.cronExpression = res.cron
             this.isEdit = true
 

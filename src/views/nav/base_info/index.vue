@@ -105,7 +105,8 @@ export default {
     getList () {
       this.loading = true
       var params = new URLSearchParams(this.query)
-      list(params).then(res => {
+      list(params).then(r => {
+        let res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
@@ -175,7 +176,7 @@ export default {
     },
     getPosition () {
       all().then(res => {
-        this.positions = res
+        this.positions = res.data
       }).catch(err => {
         console.log('err', err)
       })

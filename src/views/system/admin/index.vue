@@ -109,7 +109,8 @@ export default {
     },
     getList () {
       this.loading = true
-      list({ ...this.query }).then(res => {
+      list({ ...this.query }).then(r => {
+        let res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
@@ -193,7 +194,8 @@ export default {
       this.currentAdmin = id
       let that = this
       this.configRoleVisible = true
-      all().then(res => {
+      all().then(r => {
+        let res = r.data
         res.map(function (v) {
           that.roles.push({
             key: v.id,
