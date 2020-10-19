@@ -44,6 +44,7 @@
           <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateNavEnable(scope.row.id,scope.row.isEnable)" style="cursor:pointer;">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column prop="id" header-align="center" align="center" label="ID" width="300"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="detailHandle(scope.row.id)">查看</el-button>
