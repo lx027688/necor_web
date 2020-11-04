@@ -16,7 +16,7 @@ import { convertDict, isBank, isNotBank, abbr } from '@/utils/common.js'
 // 引入封装好的js文件的路径
 import localStore from '@/utils/localStore.js'
 
-import { systemInfo } from '@api/cache'
+import { getBaseSetting } from '@api/system/cache'
 
 // 导入数据字典
 import NecorDictSelect from './components/necor-dict-select'
@@ -74,9 +74,9 @@ new Vue({
   },
   methods: {
     getSystemBasicInfo () {
-      systemInfo().then(r => {
-        console.log(r)
-        this.$localStore.set('basic', r)
+      getBaseSetting().then(r => {
+        // console.log(r)
+        this.$localStore.set('basic', r.data)
       })
     }
   }

@@ -93,6 +93,7 @@ export default {
         this.form.navPositionIds = []
         this.tags = []
         this.fileList = []
+        let baseUrl = this.$localStore.get('basic').baseUrl
         if (this.form.id) {
           detail(id).then(res => {
             let r = res.data
@@ -112,7 +113,7 @@ export default {
             if (r.ico !== null && r.ico !== '') {
               let file = {
                 name: 'ico',
-                url: this.$localStore.get('basic').baseUrl + '/' + r.ico
+                url: baseUrl + '/' + r.ico
               }
               this.fileListLength = 1
               this.fileList.push(file)
