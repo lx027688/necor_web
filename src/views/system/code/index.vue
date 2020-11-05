@@ -134,7 +134,7 @@ export default {
         this.form.fields = [{ fieldType: '', fieldName: '', fieldDesc: '' }]
         console.log(r)
         console.log(process.env.BASE_URL)
-        location.href = 'http://127.0.0.1:9999/' + r.data
+        location.href = 'http://127.0.0.1:9999/' + r
       }).catch(err => {
         console.log('err', err)
       })
