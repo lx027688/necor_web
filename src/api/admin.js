@@ -92,3 +92,12 @@ export function validateRepeatMobile (data) {
     data
   })
 }
+
+export function exportAdmin () {
+  return request({
+    url: '/admin/export',
+    method: 'post',
+    responseType: 'blob'
+  })
+}
+

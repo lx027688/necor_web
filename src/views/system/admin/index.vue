@@ -17,6 +17,9 @@
       <el-form-item>
         <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/> 新增</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/> 导出</el-button>
+      </el-form-item>
     </el-form>
 
     <!-- 列表 -->
@@ -68,12 +71,12 @@
 </template>
 
 <script>
-import { list, remove, updateEnable, resetPassword, saveRoles } from '@api/admin'
+import { list, remove, updateEnable, resetPassword, saveRoles, exportAdmin } from '@api/admin'
 import { all } from '@api/role'
 import pagination from '@/components/pagination'
 import save from './save'
 import detail from './detail'
-
+import axios from 'axios'
 export default {
   name: 'system-admin',
   components: { pagination, save, detail },
@@ -211,6 +214,20 @@ export default {
       params.append('adminId', this.currentAdmin)
       params.append('roleIds', this.selectRoles)
       saveRoles(params).then(res => {
+      })
+    },
+    exportExcl () {
+      exportAdmin().then(res => {
+        if (!res) {
+          return
+        }
+        let url = window.URL.createObjectURL(new Blob([res]))
+        let link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', '管理员.xls')
+        document.body.appendChild(link)
+        link.click()
       })
     }
   }
