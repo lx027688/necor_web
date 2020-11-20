@@ -5,10 +5,23 @@
 		<el-form-item label="" prop="search">
 			<el-input v-model="query.search" placeholder="搜索项" style="width: 180px;"/>
 		</el-form-item>
+    <el-form-item label="" prop="search">
+      <necor-dict-select v-model="query.isLog" code="100" placeholder="是否开启接口日志"></necor-dict-select>
+    </el-form-item>
 		<el-form-item>
-		<el-button type="primary" @click="search">
-			<d2-icon name="search"/>查询
-		</el-button>
+      <el-button type="primary" @click="search">
+        <d2-icon name="search"/> 查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="batchUpdateInfIsLog('100000')">
+        <d2-icon name="check"/> 批量开启接口日志
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="batchUpdateInfIsLog('100001')">
+        <d2-icon name="close"/> 批量关闭接口日志
+      </el-button>
 		</el-form-item>
 	</el-form>
 
@@ -24,7 +37,7 @@
 		<el-table-column prop="auth" header-align="center" align="center" label="接口权限" width="200"></el-table-column>
 		<el-table-column prop="isLog" header-align="center" align="center" label="是否需要记录日志" width="200">
       <template slot-scope="scope">
-        <el-tag :type="scope.row.isLog==='100000' ? 'success' : 'danger'" @click="updateInterIsLog(scope.row.id,scope.row.isLog)" disable-transitions>{{scope.row.isLog==='100000'?'需要记录日志':'无需记录日志'}}</el-tag>
+        <el-tag :type="scope.row.isLog==='100000' ? 'success' : 'danger'" @click="updateInfIsLog(scope.row.id,scope.row.isLog)" disable-transitions>{{scope.row.isLog==='100000'?'需要记录日志':'无需记录日志'}}</el-tag>
       </template>
     </el-table-column>
 	<!--	<el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
@@ -41,7 +54,7 @@
 </template>
 
 <script>
-import { list, updateIsLog } from '@api/system/interfaceInfo'
+import { list, updateIsLog, batchUpdateIsLog } from '@api/system/interfaceInfo'
 import pagination from '@/components/pagination'
 
 export default {
@@ -55,10 +68,12 @@ export default {
 				pageSize: 10,
 				total: 0,
 				search: '',
+				isLog: '',
 				orderKey: '',
 				orderVal: ''
 			},
-			data: []
+			data: [],
+      ids: []
 		}
 	},
 	mounted() {
@@ -88,15 +103,32 @@ export default {
 				this.getList()
 			}
 		},
-		selectionChangeHandle(val) {
-			console.log(val)
-		},
-    updateInterIsLog (id, isLog) {
+    selectionChangeHandle: function (val) {
+      this.ids = val.map(o => {return o.id})
+    },
+    updateInfIsLog (id, isLog) {
       let params = new FormData()
       params.append('id', id)
       isLog = isLog === '100000' ? '100001' : '100000'
       params.append('isLog', isLog)
       updateIsLog(params).then(res => {
+        this.getList()
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      })
+    },
+    batchUpdateInfIsLog (isLog) {
+      console.log(this.ids)
+      let params = new FormData()
+      params.append('ids[]', this.ids)
+      params.append('isLog', isLog)
+      // var params = new URLSearchParams();
+      // params.append('ids[]',this.ids);
+      // params.append('isLog',isLog);
+
+      batchUpdateIsLog(params).then(res => {
         this.getList()
         this.$message({
           message: '操作成功',

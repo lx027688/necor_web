@@ -38,3 +38,12 @@ export function updateIsLog (data) {
     data
   })
 }
+
+export function batchUpdateIsLog (data) {
+  return request({
+    url: '/interface_info/batch_update_islog',
+    method: 'post',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    data
+  })
+}

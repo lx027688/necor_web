@@ -12,7 +12,6 @@ export default {
   componentName: 'NecorDictSelect',
   data () {
     return {
-      placeholder: '请选择',
       options: [],
       selectValue: ''
     }
@@ -28,6 +27,10 @@ export default {
     },
     // 接受外部v-model传入的值，必须使用value
     value: {
+      type: String
+    },
+    placeholder: {
+      default: '请选择',
       type: String
     }
   },
@@ -51,7 +54,10 @@ export default {
     if (dicts.length > 0) {
       for (let i = 0; i < dicts.length; i++) {
         if (dicts[i]['code'] === this.code) {
-          this.placeholder = dicts[i]['name']
+          if(this.isBank(this.placeholder) || '请选择' === this.isBank(this.placeholder)){
+            this.placeholder = '请选择'+dicts[i]['name']
+          }
+
           let childrens = dicts[i].childrens
           for (let j = 0; j < childrens.length; j++) {
             this.options[j] = {}
