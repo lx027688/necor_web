@@ -5,6 +5,7 @@ export function generateCode (data) {
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     url: '/develop/generate_code',
     method: 'post',
+    responseType: 'blob',
     data
   })
 }

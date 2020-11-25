@@ -125,16 +125,19 @@ export default {
       }
     },
     generate () {
-      generateCode(this.form).then(r => {
-        this.$message({
-          message: '生成成功',
-          type: 'success'
-        })
-        this.$refs['form'].resetFields()
-        this.form.fields = [{ fieldType: '', fieldName: '', fieldDesc: '' }]
-        console.log(r)
-        console.log(process.env.BASE_URL)
-        location.href = 'http://127.0.0.1:9999/' + r
+
+      generateCode(this.form).then(res => {
+        if (!res) {
+          return
+        }
+        let url = window.URL.createObjectURL(new Blob([res]))
+        let link = document.createElement('a')
+        let fileName = this.form.entityName+'.zip'
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
       }).catch(err => {
         console.log('err', err)
       })
