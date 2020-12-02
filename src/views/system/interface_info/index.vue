@@ -25,16 +25,16 @@
 	<!-- 列表-->
 	<el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)" @selection-change="selectionChangeHandle" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
 		<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-    <!--<el-table-column prop="id" header-align="center" align="center" sortable="custom" label="ID"></el-table-column>-->
-    <el-table-column prop="className" header-align="center" align="center" label="接口类名" width="550"></el-table-column>
-		<el-table-column prop="methodName" header-align="center" align="center" label="接口方法名" width="360"></el-table-column>
-		<el-table-column prop="interfaceUrl" header-align="center" align="center" label="接口地址" width="350"></el-table-column>
-		<el-table-column prop="auth" header-align="center" align="center" label="接口权限" width="200"></el-table-column>
-		<el-table-column prop="isLog" header-align="center" align="center" label="是否需要记录日志" width="200">
+    <el-table-column prop="isLog" header-align="center" align="center" label="是否需要记录日志" width="200">
       <template slot-scope="scope">
         <el-tag :type="scope.row.isLog==='100000' ? 'success' : 'danger'" @click="updateInfIsLog(scope.row.id,scope.row.isLog)" disable-transitions>{{scope.row.isLog==='100000'?'需要记录日志':'无需记录日志'}}</el-tag>
       </template>
     </el-table-column>
+    <!--<el-table-column prop="id" header-align="center" align="center" sortable="custom" label="ID"></el-table-column>-->
+    <el-table-column prop="className" header-align="center" align="center" label="接口类名" width="550"></el-table-column>
+    <el-table-column prop="interfaceUrl" header-align="center" align="center" label="接口地址" width="350"></el-table-column>
+    <el-table-column prop="methodName" header-align="center" align="center" label="接口方法名" width="360"></el-table-column>
+		<el-table-column prop="auth" header-align="center" align="center" label="接口权限" width="200"></el-table-column>
 	</el-table>
 
 	<!-- 列表尾部-->
