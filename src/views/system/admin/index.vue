@@ -212,7 +212,7 @@ export default {
     updateRole () {
       let params = new FormData()
       params.append('adminId', this.currentAdmin)
-      params.append('roleIds', this.selectRoles)
+      params.append('roleIds[]', this.selectRoles)
       saveRoles(params).then(res => {
       })
     },
