@@ -23,6 +23,7 @@ import NecorDictSelect from './components/necor-dict-select'
 import NecorDictRadio from './components/necor-dict-radio'
 import NecorSelectTree from './components/necor-select-tree'
 import NecorSelectTreeLazy from './components/necor-select-tree-lazy'
+import util from "@/libs/util";
 
 // 把全局js挂接到vue原型上
 Vue.prototype.$localStore = localStore
@@ -57,7 +58,10 @@ new Vue({
     // 初始化全屏监听
     this.$store.dispatch('d2admin/fullscreen/listen')
 
-    this.getSystemBasicInfo()
+    const token = util.cookies.get('token')
+    if (token && token !== 'undefined') {// token值存在
+      this.getSystemBasicInfo()
+    }
   },
   watch: {
     // 检测路由变化切换侧边栏内容

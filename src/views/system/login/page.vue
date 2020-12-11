@@ -36,7 +36,7 @@
                 <el-form-item prop="code">
                   <el-input type="text" v-model="formLogin.code" placeholder="验证码">
                     <template slot="append">
-                      <img class="login-code" src="./image/login-code.png">
+                      <img class="login-code" :src="loginCaptcha" @click="captcha">
                     </template>
                   </el-input>
                 </el-form-item>
@@ -99,6 +99,8 @@
 import dayjs from 'dayjs'
 import { mapActions } from 'vuex'
 import localeMixin from '@/locales/mixin.js'
+import { getCaptcha } from '@api/system/captcha'
+
 export default {
   mixins: [
     localeMixin
@@ -130,7 +132,7 @@ export default {
       formLogin: {
         username: 'lx027688',
         password: '111111',
-        code: 'v9am'
+        code: ''
       },
       // 表单校验
       rules: {
@@ -155,10 +157,12 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      loginCaptcha: ''
     }
   },
   mounted () {
+    this.captcha()
     this.timeInterval = setInterval(() => {
       this.refreshTime()
     }, 1000)
@@ -194,15 +198,18 @@ export default {
           // 登录
           // 注意 这里的演示没有传验证码
           // 具体需要传递的数据请自行修改代码
-          this.login({ username: this.formLogin.username, password: Base64.encode(this.formLogin.password) })
-            .then(() => {
-              // 重定向对象不存在则返回顶层路径
-              this.$router.replace(this.$route.query.redirect || '/')
-            })
-        } else {
-          // 登录表单校验失败
-          this.$message.error('表单校验失败，请检查')
+          this.login({ username: this.formLogin.username, password: Base64.encode(this.formLogin.password), captcha: this.formLogin.code}).then(() => {
+            // 重定向对象不存在则返回顶层路径
+            this.$router.replace(this.$route.query.redirect || '/')
+          }).catch(err => {
+            this.captcha()
+          })
         }
+      })
+    },
+    captcha () {
+      getCaptcha().then(res => {
+        this.loginCaptcha = window.URL.createObjectURL(res)
       })
     }
   }

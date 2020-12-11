@@ -111,7 +111,6 @@ export default {
       })
     },
     batchUpdateInfIsLog (isLog) {
-      console.log(this.ids)
       let params = new FormData()
       params.append('ids[]', this.ids)
       params.append('isLog', isLog)
