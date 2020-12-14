@@ -29,6 +29,7 @@ module.exports = {
   publicPath,
   lintOnSave: true,
   devServer: {
+    // host: '127.0.0.1',
     port: 9527,
     publicPath // 和 publicPath 保持一致
   },

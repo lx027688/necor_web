@@ -41,6 +41,9 @@
             <el-form-item label="路径" prop="path" v-if="form.menuType==='103000'">
               <el-input v-model="form.path" placeholder="请输入路径"></el-input>
             </el-form-item>
+            <el-form-item label="接口地址" prop="url">
+              <el-input v-model="form.url" placeholder="请输入接口地址"></el-input>
+            </el-form-item>
             <el-form-item label="权限标识" prop="auth">
               <el-input v-model="form.auth" placeholder="请输入权限标识"></el-input>
             </el-form-item>
@@ -79,6 +82,7 @@ export default {
         parentId: '',
         name: '',
         path: '',
+        url: '',
         icon: '',
         auth: '',
         sort: 0,
