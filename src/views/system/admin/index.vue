@@ -217,7 +217,7 @@ export default {
       })
     },
     exportExcl () {
-      exportAdmin().then(res => {
+      exportAdmin({ ...this.query }).then(res => {
         if (!res) {
           return
         }

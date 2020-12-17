@@ -2,7 +2,7 @@ import request from '@/plugin/axios'
 
 export function getLoginData () {
   return request({
-    url: '/index/get_login_data',
+    url: '/login/get_login_data',
     method: 'post'
   })
 }

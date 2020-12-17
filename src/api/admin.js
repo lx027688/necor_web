@@ -93,11 +93,12 @@ export function validateRepeatMobile (data) {
   })
 }
 
-export function exportAdmin () {
+export function exportAdmin (data) {
   return request({
     url: '/admin/export',
     method: 'post',
-    responseType: 'blob'
+    responseType: 'blob',
+    data
   })
 }
 
