@@ -225,7 +225,7 @@ export default {
         let link = document.createElement('a')
         link.style.display = 'none'
         link.href = url
-        link.setAttribute('download', '管理员.xls')
+        link.setAttribute('download', '管理员.xlsx')
         document.body.appendChild(link)
         link.click()
       })
