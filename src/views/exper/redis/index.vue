@@ -49,10 +49,33 @@
         </el-form>
       </el-col>
     </el-row>
-
     <el-row>
       <el-col :span="24">
         <div style="text-align: center"><h2>redis返回值：{{redisValue}}</h2></div>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="24">
+        <el-form>
+          <el-row :gutter="20">
+            <el-col :span="2">
+              <el-form-item>
+                <B>发送消息：</B>
+              </el-form-item>
+            </el-col>
+            <el-col :span="4">
+              <el-form-item prop="msg">
+                <el-input v-model="msg" placeholder="消息内容"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5">
+              <el-form-item>
+                <el-button @click="sendRedis">发送</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-col>
     </el-row>
   </d2-container>
@@ -60,7 +83,7 @@
 
 <script>
 
-import { add, remove, get } from '@api/exper/redis'
+import { add, remove, get, sendMsg } from '@api/exper/redis'
 
 export default {
   name: 'redis-quartz',
@@ -76,7 +99,8 @@ export default {
       saveRule: {
         types: [ { required: true, message: '请选择redis操作类型', trigger: 'blur' } ],
         key: [ { required: true, message: '请输入redis key', trigger: 'blur' } ]
-      }
+      },
+      msg: ''
     }
   },
   mounted () {
@@ -134,6 +158,19 @@ export default {
             console.log('err', err)
           })
         }
+      })
+    },
+    sendRedis () {
+      console.log(this.msg)
+      var params = new URLSearchParams()
+      params.append('msg', this.msg)
+      sendMsg(params).then(r => {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      }).catch(err => {
+        console.log('err', err)
       })
     }
   }

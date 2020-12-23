@@ -38,3 +38,15 @@ export function get (data) {
     data
   })
 }
+
+/**
+ * redis 消息队列
+ * @returns {*}
+ */
+export function sendMsg (data) {
+  return request({
+    url: '/exper/redis/send_msg',
+    method: 'post',
+    data
+  })
+}
