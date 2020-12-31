@@ -7,3 +7,11 @@ export function getCaptcha () {
     method: 'post'
   })
 }
+
+export function agreement () {
+  return request({
+    url: '/login/agreement',
+    responseType: 'blob',
+    method: 'post'
+  })
+}

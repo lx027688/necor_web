@@ -142,7 +142,7 @@ module.exports = {
       .set('@api', resolve('src/api'))
     // 判断环境加入模拟数据
     const entry = config.entry('app')
-    if (process.env.VUE_APP_BUILD_MODE !== 'NOMOCK') {
+    if (process.env.VUE_APP_BUILD_MODE !== 'NOMOCK' && process.env.VUE_APP_BUILD_MODE !== 'PROD') {
       entry
         .add('@/mock')
         .end()

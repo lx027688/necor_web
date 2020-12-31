@@ -46,10 +46,10 @@
               </el-form>
             </el-card>
             <p class="page-login--options" flex="main:justify cross:center">
-          <span>
-            <d2-icon name="question-circle" /> 忘记密码
-          </span>
-              <span>注册用户</span>
+              <span>
+                <d2-icon name="question-circle" /> 忘记密码
+              </span>
+              <span @click="downloadAgreement">下载协议</span>
             </p>
             <!-- quick login -->
             <el-button class="page-login--quick" size="default" type="info" @click="dialogVisible = true">
@@ -99,7 +99,8 @@
 import dayjs from 'dayjs'
 import { mapActions } from 'vuex'
 import localeMixin from '@/locales/mixin.js'
-import { getCaptcha } from '@api/system/captcha'
+import { getCaptcha,agreement } from '@api/system/login'
+import {exportAdmin} from "@api/admin";
 
 export default {
   mixins: [
@@ -210,6 +211,21 @@ export default {
     captcha () {
       getCaptcha().then(res => {
         this.loginCaptcha = window.URL.createObjectURL(res)
+      })
+    },
+    downloadAgreement () {
+      agreement().then(res => {
+        if (!res) {
+          return
+        }
+        console.log(res)
+        let url = window.URL.createObjectURL(new Blob([res]))
+        let link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', '注册协议.pdf')
+        document.body.appendChild(link)
+        link.click()
       })
     }
   }
