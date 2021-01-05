@@ -20,6 +20,10 @@
       <el-form-item>
         <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/> 导出</el-button>
       </el-form-item>
+      <el-form-item style="float: right">
+        <span style="color:#303133;font-size: 20px;margin-right: 20px;">共有用户:<span style="color: #67C23A;">{{ userStatistics.total }}</span></span>
+        <span style="color:#303133;font-size: 20px;">在线用户:<span style="color: #d43333;">{{ userStatistics.online }}</span></span>
+      </el-form-item>
     </el-form>
 
     <!-- 列表 -->
@@ -76,7 +80,6 @@ import { all } from '@api/role'
 import pagination from '@/components/pagination'
 import save from './save'
 import detail from './detail'
-import axios from 'axios'
 export default {
   name: 'system-admin',
   components: { pagination, save, detail },
@@ -94,6 +97,10 @@ export default {
         orderVal: ''
       },
       data: [],
+      userStatistics:{
+        total: 0,
+        online: 0,
+      },
       saveVisible: false,
       detailVisible: false,
       currentAdmin: '',
@@ -116,6 +123,8 @@ export default {
         let res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
+        this.userStatistics.total = res.recordsTotal
+        this.userStatistics.online = res.params.onlineUser
         this.loading = false
       }).catch(err => {
         console.log('err', err)

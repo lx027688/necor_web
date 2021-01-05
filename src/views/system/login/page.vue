@@ -218,7 +218,6 @@ export default {
         if (!res) {
           return
         }
-        console.log(res)
         let url = window.URL.createObjectURL(new Blob([res]))
         let link = document.createElement('a')
         link.style.display = 'none'
