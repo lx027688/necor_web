@@ -52,6 +52,7 @@ export default {
   mounted () {
     let dicts = this.$localStore.get('dicts')
     if (dicts.length > 0) {
+      this.options = []
       for (let i = 0; i < dicts.length; i++) {
         if (dicts[i]['code'] === this.code) {
           if(this.isBank(this.placeholder) || '请选择' === this.isBank(this.placeholder)){

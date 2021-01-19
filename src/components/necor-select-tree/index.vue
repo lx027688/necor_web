@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'el-tree-select',
+  name: 'necor-select-tree',
   props: {
     /* 配置项 */
     props: {

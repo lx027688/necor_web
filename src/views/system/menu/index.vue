@@ -20,7 +20,6 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="父级节点" prop="parentId">
-                  <!--<el-input :disabled="true" v-model="parentName" placeholder="父级节点"></el-input>-->
                   <necor-select-tree v-model="form.parentId" :options="menuList" style="width: 100%" accordion></necor-select-tree>
                 </el-form-item>
               </el-col>

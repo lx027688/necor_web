@@ -30,3 +30,10 @@ export function remove (id) {
     method: 'post'
   })
 }
+
+export function dictTree (code) {
+  return request({
+    url: '/dict/dict_tree/' + code,
+    method: 'get'
+  })
+}
