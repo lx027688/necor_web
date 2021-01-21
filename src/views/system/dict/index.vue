@@ -32,7 +32,7 @@
     </el-form>
 
     <!-- 列表-->
-    <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="id" :tree-props="{children: 'childrens', hasChildren: 'hasChildren'}">
+    <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column prop="code" header-align="left" align="left" label="值"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
       <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>

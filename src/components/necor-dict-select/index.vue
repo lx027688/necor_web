@@ -59,11 +59,11 @@ export default {
             this.placeholder = '请选择'+dicts[i]['name']
           }
 
-          let childrens = dicts[i].childrens
-          for (let j = 0; j < childrens.length; j++) {
+          let children = dicts[i].children
+          for (let j = 0; j < children.length; j++) {
             this.options[j] = {}
-            this.options[j].label = childrens[j]['name']
-            this.options[j].value = childrens[j]['code']
+            this.options[j].label = children[j]['name']
+            this.options[j].value = children[j]['code']
             this.options[j].key = j
           }
           break

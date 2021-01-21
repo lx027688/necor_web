@@ -8,7 +8,7 @@
 			<el-input v-model="form.name"></el-input>
 		</el-form-item>
 		<el-form-item label="类目" prop="category">
-      <necor-select-tree v-model="form.category" :options="categorys" style="width: 100%" accordion></necor-select-tree>
+      <necor-select-tree v-model="form.category" :options="categorys" style="width: 100%" accordion :props="props"></necor-select-tree>
 		</el-form-item>
 		<el-form-item label="品牌" prop="brand">
       <el-input v-model="form.brandName" @focus="openBrand" readonly></el-input>
@@ -62,8 +62,13 @@ export default {
 				descr: [ { required: true, message: '请输入描述', trigger: 'blur' } ]
 			},
       categorys: [],
+      props: {
+        value: 'code', // code字段名
+        label: 'name', // 显示名称
+        children: 'children' // 子级字段名
+      },
       brandVisible: false,
-      supplierVisible: false,
+      supplierVisible: false
 		}
 	},
 	methods: {
@@ -102,12 +107,7 @@ export default {
 		},
     getCategorys () {
       dictTree('300').then(res => {
-        let data = JSON.parse(res.data)
-        let self = this
-        data.dicts.children.forEach((v,index)=>{
-          v.id = v.code
-          self.categorys.push(v)
-        })
+        this.categorys = res.data.children
       }).catch(err => {
         console.log('err', err)
       })

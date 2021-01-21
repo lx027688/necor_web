@@ -6,10 +6,10 @@ export function convertDict (code, value) {
   if (dicts.length > 0) {
     for (let i = 0; i < dicts.length; i++) {
       if (dicts[i].code === code) {
-        let childrens = dicts[i].childrens
-        for (let j = 0; j < childrens.length; j++) {
-          if (value === childrens[j].code) {
-            return childrens[j].name
+        let children = dicts[i].children
+        for (let j = 0; j < children.length; j++) {
+          if (value === children[j].code) {
+            return children[j].name
           }
         }
         if (code === value) {

@@ -98,7 +98,7 @@ export default {
   methods: {
     getMenuList () {
       findMenuTreeList().then(res => {
-        this.menuList = res.menus
+        this.menuList = res.data
       }).catch(err => {
         console.log('err', err)
       })

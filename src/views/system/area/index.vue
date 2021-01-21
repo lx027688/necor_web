@@ -18,7 +18,7 @@
 
   <!-- 列表-->
   <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
-            row-key="id" :tree-props="{children: 'childrens', hasChildren: 'hasChildren'}" lazy :load="load">
+            row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" lazy :load="load">
     <el-table-column prop="name" header-align="left" align="left" label="区域名称"></el-table-column>
     <el-table-column prop="simpleName" header-align="center" align="center" label="区域简称"></el-table-column>
     <el-table-column prop="parentName" header-align="center" align="center" label="所属区域">
