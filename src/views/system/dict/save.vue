@@ -22,7 +22,7 @@
 
 <script>
 
-import { save, detail } from '@api/dict'
+import { save, detail } from '@api/system/dict'
 
 export default {
   data () {

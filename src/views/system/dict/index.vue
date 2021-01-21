@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { list, remove } from '@api/dict'
+import { list, remove } from '@api/system/dict'
 import pagination from '@/components/pagination'
 import save from './save'
 

@@ -37,3 +37,11 @@ export function dictTree (code) {
     method: 'get'
   })
 }
+
+export function dictChilds (code) {
+  return request({
+    url: '/dict/childs/' + code,
+    method: 'get'
+  })
+}
+
