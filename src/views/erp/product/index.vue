@@ -18,17 +18,21 @@
 
 	<!-- 列表-->
 	<el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
-		<el-table-column prop="id" header-align="center" align="center" sortable="custom" label="ID"></el-table-column>
-		<el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
-		<el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
     <el-table-column prop="spu" header-align="center" align="center" label="SPU码"></el-table-column>
 		<el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
 		<el-table-column prop="mnCode" header-align="center" align="center" label="助记码"></el-table-column>
-		<el-table-column prop="category" header-align="center" align="center" label="类目"></el-table-column>
-		<el-table-column prop="brand" header-align="center" align="center" label="品牌"></el-table-column>
-		<el-table-column prop="suppliers" header-align="center" align="center" label="供应商"></el-table-column>
-		<el-table-column prop="descr" header-align="center" align="center" label="描述"></el-table-column>
-		<el-table-column prop="isEnable" header-align="center" align="center" label="起禁用"></el-table-column>
+		<el-table-column prop="category" header-align="center" align="center" label="类目">
+      <template slot-scope="scope">{{convertDict('300',scope.row.category)}}</template>
+    </el-table-column>
+		<el-table-column prop="brand" header-align="center" align="center" label="品牌">
+      <template slot-scope="scope">{{convertDict('301',scope.row.brand)}}</template>
+    </el-table-column>
+		<el-table-column prop="suppliers" header-align="center" align="center" label="供应商">
+      <template slot-scope="scope">{{ scope.row.suppliers.map(e=>{return e.name}).join(",") }}</template>
+    </el-table-column>
+		<el-table-column prop="isEnable" header-align="center" align="center" label="起禁用">
+      <template slot-scope="scope">{{convertDict('100',scope.row.isEnable)}}</template>
+    </el-table-column>
 		<el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
 			<template slot-scope="scope">
 				<el-button type="text" size="small">查看</el-button>

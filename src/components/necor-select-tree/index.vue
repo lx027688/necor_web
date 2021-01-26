@@ -60,6 +60,10 @@ export default {
         this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label] // 初始化显示
         this.$refs.selectTree.setCurrentKey(this.valueId) // 设置默认选中
         this.defaultExpandedKey = [this.valueId] // 设置默认展开
+      }else {
+        this.valueTitle = ''
+        this.$refs.selectTree.setCurrentKey('') // 设置默认选中
+        this.defaultExpandedKey = []
       }
       this.$nextTick(() => {
         let scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0]

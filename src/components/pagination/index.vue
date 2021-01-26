@@ -1,5 +1,5 @@
 <template>
-  <el-pagination :current-page="currentPage" :page-size="pageSize" :total="total" :page-sizes="pageSizes" layout="total, sizes, prev, pager, next, jumper"
+  <el-pagination :current-page="currentPage" :page-size="pageSize" :total="total" :page-sizes="pageSizes" layout="total, sizes, prev, pager, next, jumper" background
                  style="margin: -10px;" @size-change="handleSizeChange" @current-change="handleCurrentChange"></el-pagination>
 </template>
 

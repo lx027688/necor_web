@@ -29,3 +29,12 @@ export function remove (id) {
 		method: 'post'
 	})
 }
+
+export function validateRepeatSpu (data) {
+  return request({
+    url: '/erp/product/validate_repeat_spu',
+    method: 'post',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    data
+  })
+}

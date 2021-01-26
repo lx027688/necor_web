@@ -18,7 +18,7 @@
     </el-form>
 
     <!-- 列表-->
-    <el-table :data="data" @sort-change="sortChange" v-loading="loading" @selection-change="handleSelect" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
+    <el-table :data="data" @sort-change="sortChange" v-loading="loading" @selection-change="handleSelect" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" ref="multipleTable">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
       <el-table-column prop="mnCode" header-align="center" align="center" label="助记码"></el-table-column>
@@ -56,14 +56,18 @@ export default {
         orderVal: ''
       },
       data: [],
-      objs: []
+      objs: [],
+      supplierIds: []
     }
   },
   methods: {
-    init() {
+    init(ids) {
       this.visible = true
       this.$nextTick(() => {
         this.$refs['form'].resetFields()
+        if(this.isNotBank(ids)){
+          this.supplierIds = ids
+        }
         this.getList()
       })
     },
@@ -78,6 +82,12 @@ export default {
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
+
+        let self = this
+        window.setTimeout(function (){
+          let d = self.data.filter(e => self.supplierIds.indexOf(e.id) !== -1)
+          self.selected(d)
+        },500);
       }).catch(err => {
         console.log('err', err)
         this.loading = false
@@ -89,6 +99,11 @@ export default {
       if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
         this.getList()
       }
+    },
+    selected (rows) {
+      rows.forEach(row => {
+        this.$refs.multipleTable.toggleRowSelection(row);
+      });
     },
     handleSelect(data) {
       let ops = []
