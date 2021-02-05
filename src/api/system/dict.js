@@ -45,3 +45,10 @@ export function dictChilds (code) {
   })
 }
 
+export function dictChildsPage (data) {
+  return request({
+    url: '/dict/childs_page',
+    method: 'post',
+    params: data
+  })
+}
