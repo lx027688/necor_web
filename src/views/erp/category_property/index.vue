@@ -77,11 +77,11 @@
 
 <script>
 import { dictChildsPage } from '@api/system/dict'
-import { save, detail } from "@api/erp/categorySkuRel"
+import { save, detail } from "@api/erp/categoryProperty"
 import pagination from '@/components/pagination'
 
 export default {
-  name: 'system-erp-categorySkuRel',
+  name: 'erp-category-property',
   components: { pagination },
   data () {
     return {
@@ -112,7 +112,7 @@ export default {
         data: []
       },
       showTitles: [],
-      categorySkuRel: {
+      categoryProperty: {
         category: '',
         rels: []
       },
@@ -171,7 +171,7 @@ export default {
       }
     },
     configAttr (data) {
-      this.categorySkuRel = {
+      this.categoryProperty = {
         category: '',
         rels: []
       }
@@ -181,23 +181,23 @@ export default {
       this.getShowTitles(data.parent);
       this.showTitles.reverse()
 
-      this.categorySkuRel.category = data.code
-      this.categorySkuRel.rels = []
+      this.categoryProperty.category = data.code
+      this.categoryProperty.rels = []
       this.selectRels = []
 
-      if (this.categorySkuRel.category) {
-        detail(this.categorySkuRel.category).then(r => {
+      if (this.categoryProperty.category) {
+        detail(this.categoryProperty.category).then(r => {
           let d = r.data
           for(let i=0;i<d.length;i++){
             let r = {
-              sku: d[i].sku,
-              skuVals: d[i].skuVals
+              property: d[i].property,
+              propertyVals: d[i].propertyVals
             }
             let r1 = {
-              sku: d[i].sku,
-              skuVals: d[i].skuVals.split(',')
+              property: d[i].property,
+              propertyVals: d[i].propertyVals.split(',')
             }
-            this.categorySkuRel.rels.push(r)
+            this.categoryProperty.rels.push(r)
             this.selectRels.push(r1)
           }
         })
@@ -210,32 +210,32 @@ export default {
       }
     },
     selectionHandle (parentCode,code) {
-      if (this.isBank(this.categorySkuRel.category)) {
+      if (this.isBank(this.categoryProperty.category)) {
         this.$message({
           message: '产品分类不能为空',
           type: 'warning'
         })
         return
       }
-      // 定义sku关系对象
+      // 定义property关系对象
       let rel = {
-        sku: '',
-        skuVals: []
+        property: '',
+        propertyVals: []
       }
       // 如果选中的关系集合为空 （第一次选择）
       if(this.isBank(this.selectRels)){
         if(parentCode === '302'){ // 选择得为属性
-          rel.sku = code
+          rel.property = code
           // 获取属性下的所有的所有值，并选中
           for (let j=0;j<this.dict2.data.length;j++) {
             let d = this.dict2.data[j]
             if(d.code ===code && this.isNotBank(d.children)){
-              rel.skuVals = d.children.map(e=>{return e.code})
+              rel.propertyVals = d.children.map(e=>{return e.code})
             }
           }
         }else { // 选择的为值
-          rel.sku = parentCode
-          rel.skuVals.push(code)
+          rel.property = parentCode
+          rel.propertyVals.push(code)
         }
         // 添加关系对象值关系集合
         this.selectRels.push(rel)
@@ -243,7 +243,7 @@ export default {
         if(parentCode === '302'){ // 选择得为属性
           let flag = false
           for(let j=0;j<this.selectRels.length;j++){
-            if(this.selectRels[j].sku === code){
+            if(this.selectRels[j].property === code){
               // 存在就先删除掉
               this.selectRels.splice(j,1)
               flag = true
@@ -251,12 +251,12 @@ export default {
             }
           }
           if(!flag){
-            rel.sku = code
+            rel.property = code
             // 获取属性下的所有的所有值，并选中
             for (let j=0;j<this.dict2.data.length;j++) {
               let d = this.dict2.data[j]
               if(d.code ===code && this.isNotBank(d.children)){
-                rel.skuVals = d.children.map(e=>{return e.code})
+                rel.propertyVals = d.children.map(e=>{return e.code})
               }
             }
 
@@ -266,25 +266,25 @@ export default {
         }else { // 选择的为值
           let r = null
           for(let j=0;j<this.selectRels.length;j++){
-            if(this.selectRels[j].sku === parentCode){
+            if(this.selectRels[j].property === parentCode){
               r = this.selectRels[j]
               break
             }
           }
           if(this.isNotBank(r)){
             let flag = false
-            for (let j=0;j<r.skuVals.length;j++) {
-              if(r.skuVals[j] === code){
+            for (let j=0;j<r.propertyVals.length;j++) {
+              if(r.propertyVals[j] === code){
                 // 存在就先删除掉
-                r.skuVals.splice(j,1)
+                r.propertyVals.splice(j,1)
                 flag = true
                 break
               }
             }
             if(flag){
-             if(r.skuVals.length===0){
+             if(r.propertyVals.length===0){
                for(let j=0;j<this.selectRels.length;j++){
-                 if(this.selectRels[j].sku ===  r.sku){
+                 if(this.selectRels[j].property ===  r.property){
                    // 存在就先删除掉
                    this.selectRels.splice(j,1)
                    break
@@ -292,11 +292,11 @@ export default {
                }
              }
             }else{
-              r.skuVals.push(code)
+              r.propertyVals.push(code)
             }
           }else{
-            rel.sku = parentCode
-            rel.skuVals.push(code)
+            rel.property = parentCode
+            rel.propertyVals.push(code)
             // 添加关系对象值关系集合
             this.selectRels.push(rel)
           }
@@ -306,17 +306,17 @@ export default {
       let rs = []
       for(let i=0;i<this.selectRels.length;i++){
         let r = {
-          sku: '',
-          skuVals: ''
+          property: '',
+          propertyVals: ''
         }
         let rl = this.selectRels[i]
-        r.sku = rl.sku
-        r.skuVals = rl.skuVals.join(',')
+        r.property = rl.property
+        r.propertyVals = rl.propertyVals.join(',')
         rs.push(r)
       }
-      this.categorySkuRel.rels = rs
+      this.categoryProperty.rels = rs
 
-      save(this.categorySkuRel).then(r => {
+      save(this.categoryProperty).then(r => {
         this.$message({
           message: '保存成功',
           type: 'success'
@@ -328,11 +328,11 @@ export default {
     isChecked (code) {
       for (let i=0;i<this.selectRels.length;i++) {
         let rel = this.selectRels[i]
-        if(rel.sku === code){
+        if(rel.property === code){
           return true
         }
-        for (let j=0;j<rel.skuVals.length;j++) {
-          let val = rel.skuVals[j]
+        for (let j=0;j<rel.propertyVals.length;j++) {
+          let val = rel.propertyVals[j]
           if(val === code){
             return true
           }

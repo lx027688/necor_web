@@ -2,7 +2,7 @@ import request from '@/plugin/axios'
 
 export function list (data) {
 	return request({
-		url: '/erp/category_sku_rel/list',
+		url: '/erp/category_property/list',
 		method: 'post',
 		data
 	})
@@ -10,7 +10,7 @@ export function list (data) {
 
 export function save (data) {
 	return request({
-		url: '/erp/category_sku_rel/save',
+		url: '/erp/category_property/save',
 		method: 'post',
 		data
 	})
@@ -18,14 +18,14 @@ export function save (data) {
 
 export function detail (category) {
 	return request({
-		url: '/erp/category_sku_rel/detail/' + category,
+		url: '/erp/category_property/detail/' + category,
 		method: 'get'
 	})
 }
 
 export function remove (id) {
 	return request({
-		url: '/erp/category_sku_rel/remove/' + id,
+		url: '/erp/category_property/remove/' + id,
 		method: 'post'
 	})
 }
