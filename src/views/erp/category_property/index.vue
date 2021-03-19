@@ -49,8 +49,9 @@
               </el-table-column>
               <el-table-column prop="fieldType" label="属性值">
                 <template slot-scope="scope">
-                  <el-tag v-for="tag in categoryProperty.propertys[scope.$index].propertyVals.split(',')"
-                          :key="tag" closable :disable-transitions="false" @close="delTag(scope.$index,tag)">{{tag}}</el-tag>
+                  <el-tag v-show="categoryProperty.propertys[scope.$index].propertyVals!=null && categoryProperty.propertys[scope.$index].propertyVals!=''"
+                          v-for="tag in categoryProperty.propertys[scope.$index].propertyVals.split(',')" :key="tag" closable :disable-transitions="false"
+                          @close="delTag(scope.$index,tag)">{{tag}}</el-tag>
                   <el-input class="input-new-tag" v-if="categoryProperty.propertys[scope.$index].tagVisible" v-model="categoryProperty.propertys[scope.$index].inputValue"
                             ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm(scope.$index)" @blur="handleInputConfirm(scope.$index)">
                   </el-input>
