@@ -79,6 +79,7 @@ export default {
       this.valueTitle = node[this.props.label]
       this.valueId = node[this.props.value]
       this.$emit('input', this.valueId)
+      this.$emit('changeHandle')
       this.defaultExpandedKey = []
     },
     // 清除选中

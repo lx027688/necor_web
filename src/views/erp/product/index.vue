@@ -6,12 +6,12 @@
 			<el-input v-model="query.search" placeholder="搜索项" style="width: 180px;"/>
 		</el-form-item>
 		<el-form-item>
-		<el-button type="primary" @click="search">
+		<el-button type="primary" @click="search" :disabled="loading">
 			<d2-icon name="search"/>查询
 		</el-button>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" @click="saveHandle()">
+			<el-button type="primary" @click="saveHandle()" :disabled="loading">
 			<d2-icon name="plus"/>新增</el-button>
 		</el-form-item>
 	</el-form>

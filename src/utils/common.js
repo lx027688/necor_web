@@ -53,3 +53,7 @@ export function abbr (str,length,ellipsis) {
     return str
   }
 }
+
+export function contains (arr= [],item) {
+  return arr.indexOf(item) !== -1
+}

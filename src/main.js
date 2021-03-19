@@ -11,7 +11,7 @@ import store from '@/store/index'
 import router from './router'
 
 // 引入公共的js文件
-import { convertDict, isBank, isNotBank, abbr } from '@/utils/common.js'
+import { convertDict, isBank, isNotBank, abbr, contains } from '@/utils/common.js'
 
 // 引入封装好的js文件的路径
 import localStore from '@/utils/localStore.js'
@@ -32,6 +32,7 @@ Vue.prototype.convertDict = convertDict
 Vue.prototype.isBank = isBank
 Vue.prototype.isNotBank = isNotBank
 Vue.prototype.abbr = abbr
+Vue.prototype.contains = contains
 
 Vue.component('necor-dict-select', NecorDictSelect)
 Vue.component('necor-dict-radio', NecorDictRadio)

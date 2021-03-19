@@ -8,6 +8,14 @@ export function list (data) {
 	})
 }
 
+export function all (data) {
+  return request({
+    url: '/erp/category_property/all',
+    method: 'post',
+    params: data
+  })
+}
+
 export function save (data) {
 	return request({
 		url: '/erp/category_property/save',

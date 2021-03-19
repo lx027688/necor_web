@@ -3,9 +3,9 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <!-- 查询 -->
-        <el-form :inline="true" :model="dict1.query" ref="form" style="margin-bottom: -18px;">
+        <el-form :inline="true" :model="dict.query" ref="form" style="margin-bottom: -18px;">
           <el-form-item label="" prop="search">
-            <el-input v-model="dict1.query.search" placeholder="搜索项" style="width: 180px;"/>
+            <el-input v-model="dict.query.search" placeholder="搜索项" style="width: 180px;"/>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="search1()">
@@ -19,8 +19,8 @@
         </el-form>
 
         <!-- 列表-->
-        <el-table :data="dict1.data" @sort-change="sortChange1" v-loading="dict1.loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="code" key="1"
-                  ref="dict1" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table :data="dict.data" @sort-change="sortChange1" v-loading="dict.loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="code" key="1"
+                  ref="dict" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" :default-sort = "{prop: dict.query.orderKey, order: dict.query.orderVal}">
           <el-table-column prop="code" header-align="left" align="left" label="值" width="200" sortable="custom"></el-table-column>
           <el-table-column prop="name" header-align="center" align="center" label="名称"  width="150"></el-table-column>
           <el-table-column prop="remark" header-align="center" align="center" label="描述"></el-table-column>
@@ -31,45 +31,54 @@
           </el-table-column>
         </el-table>
         <!-- 列表尾部-->
-        <pagination :cp.sync="dict1.query.currentPage" :ps.sync="dict1.query.pageSize" :total.sync="dict1.query.total" @pagination="getDictList1"></pagination>
+        <pagination :cp.sync="dict.query.currentPage" :ps.sync="dict.query.pageSize" :total.sync="dict.query.total" @pagination="getDictList1"></pagination>
       </el-col>
 
       <el-col :span="12">
-        <!-- 查询 -->
-        <el-form :inline="true" :model="dict2.query" ref="form" style="margin-bottom: -18px;">
-          <el-form-item label="" prop="search">
-            <el-input v-model="dict2.query.search" placeholder="搜索项" style="width: 180px;"/>
+        <el-breadcrumb separator=">" style="margin-top: 10px;margin-bottom: 25px;">
+          <el-breadcrumb-item style="font-size: 20px;" v-for="showTitle in showTitles" v-bind:key="showTitle">{{showTitle}}</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <el-form ref="form" >
+          <el-form-item prop="fields">
+            <el-table :data="categoryProperty.propertys" border style="width: 100%">
+              <el-table-column prop="fieldName" label="属性名称" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model="categoryProperty.propertys[scope.$index].property" placeholder="属性名称"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="fieldType" label="属性值">
+                <template slot-scope="scope">
+                  <el-tag v-for="tag in categoryProperty.propertys[scope.$index].propertyVals.split(',')"
+                          :key="tag" closable :disable-transitions="false" @close="delTag(scope.$index,tag)">{{tag}}</el-tag>
+                  <el-input class="input-new-tag" v-if="categoryProperty.propertys[scope.$index].tagVisible" v-model="categoryProperty.propertys[scope.$index].inputValue"
+                            ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm(scope.$index)" @blur="handleInputConfirm(scope.$index)">
+                  </el-input>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.$index)">+ 属性</el-button>
+                </template>
+              </el-table-column>
+              <el-table-column prop="fieldType" label="查询属性" width="80" align="center">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="categoryProperty.propertys[scope.$index].isQuery" :checked="categoryProperty.propertys[scope.$index].isQuery=='100000'" true-label="100000" false-label="100001"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column prop="fieldType" label="销售属性" width="80" align="center">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="categoryProperty.propertys[scope.$index].isSale" :checked="categoryProperty.propertys[scope.$index].isSale=='100000'" true-label="100000" false-label="100001"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column fixed="right" header-align="center" align="center" label="操作" width="80">
+                <template slot-scope="scope">
+                  <el-button type="text" size="small" @click="deleteNode(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="search2()">
-              <d2-icon name="search"/>查询
-            </el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="saveHandle()">
-            <d2-icon name="plus"/>新增</el-button>
-          </el-form-item>
-          <el-form-item style="float: right">
-            <el-breadcrumb separator=">" style="margin-top: 10px;">
-              <el-breadcrumb-item style="font-size: 20px;" v-for="showTitle in showTitles" v-bind:key="showTitle">{{showTitle}}</el-breadcrumb-item>
-            </el-breadcrumb>
+            <el-button type="primary" @click="addNode()">添加属性规格</el-button>
+            <el-button type="primary" @click="saveProperty()">保存属性</el-button>
           </el-form-item>
         </el-form>
-
-        <!-- 列表-->
-        <el-table :data="dict2.data" @sort-change="sortChange2" v-loading="dict2.loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
-                  row-key="code" key="2" ref="dict2" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-          <el-table-column label="选择" header-align="center" align="center" width="80">
-            <template slot-scope="scope">
-              <el-checkbox @change="selectionHandle(scope.row.parent.code,scope.row.code)" :value="isChecked(scope.row.code)"></el-checkbox>
-            </template>
-          </el-table-column>
-          <el-table-column prop="code" header-align="left" align="left" label="值" width="200" sortable="custom"></el-table-column>
-          <el-table-column prop="name" header-align="center" align="center" label="名称"  width="150"></el-table-column>
-          <el-table-column prop="remark" header-align="center" align="center" label="描述"></el-table-column>
-        </el-table>
-        <!-- 列表尾部-->
-        <pagination :cp.sync="dict2.query.currentPage" :ps.sync="dict2.query.pageSize" :total.sync="dict2.query.total" @pagination="getDictList2"></pagination>
       </el-col>
     </el-row>
   </d2-container>
@@ -77,7 +86,7 @@
 
 <script>
 import { dictChildsPage } from '@api/system/dict'
-import { save, detail } from "@api/erp/categoryProperty"
+import { save,detail } from '@api/erp/categoryProperty'
 import pagination from '@/components/pagination'
 
 export default {
@@ -85,7 +94,7 @@ export default {
   components: { pagination },
   data () {
     return {
-      dict1: {
+      dict: {
         loading: false,
         query: {
           currentPage: 1,
@@ -93,88 +102,46 @@ export default {
           total: 0,
           search: '',
           code: '300',
-          orderKey: '',
-          orderVal: ''
-        },
-        data: []
-      },
-      dict2: {
-        loading: false,
-        query: {
-          currentPage: 1,
-          pageSize: 10,
-          total: 0,
-          search: '',
-          code: '302',
-          orderKey: '',
-          orderVal: ''
+          orderKey: 'code',
+          orderVal: 'ascending'
         },
         data: []
       },
       showTitles: [],
       categoryProperty: {
         category: '',
-        rels: []
-      },
-      selectRels: []
+        propertys: [ { property: '', propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' } ]
+      }
     }
   },
   mounted () {
     this.getDictList1()
-    this.getDictList2()
   },
   methods: {
     search1 () {
-      this.dict1.query.currentPage = 1
+      this.dict.query.currentPage = 1
       this.getDictList1()
     },
     getDictList1 () {
-      this.dict1.loading = true
-      dictChildsPage({ ...this.dict1.query }).then(r => {
+      this.dict.loading = true
+      dictChildsPage({ ...this.dict.query }).then(r => {
         let res = r.data
-        this.dict1.data = res.data
-        this.dict1.query.total = res.recordsFiltered
-        this.dict1.loading = false
+        this.dict.data = res.data
+        this.dict.query.total = res.recordsFiltered
+        this.dict.loading = false
       }).catch(err => {
         console.log('err', err)
-        this.dict1.loading = false
+        this.dict.loading = false
       })
     },
     sortChange1 (column, prop, order) {
-      this.dict1.query.orderKey = column.prop
-      this.dict1.query.orderVal = column.order
-      if (this.dict1.query.orderKey !== undefined && this.dict1.query.orderVal !== undefined) {
+      this.dict.query.orderKey = column.prop
+      this.dict.query.orderVal = column.order
+      if (this.dict.query.orderKey !== undefined && this.dict.query.orderVal !== undefined) {
         this.getDictList1()
       }
     },
-    search2 () {
-      this.dict2.query.currentPage = 1
-      this.getDictList2()
-    },
-    getDictList2 () {
-      this.dict2.loading = true
-      dictChildsPage({ ...this.dict2.query }).then(r => {
-        let res = r.data
-        this.dict2.data = res.data
-        this.dict2.query.total = res.recordsFiltered
-        this.dict2.loading = false
-      }).catch(err => {
-        console.log('err', err)
-        this.dict2.loading = false
-      })
-    },
-    sortChange2 (column, prop, order) {
-      this.dict2.query.orderKey = column.prop
-      this.dict2.query.orderVal = column.order
-      if (this.dict2.query.orderKey !== undefined && this.dict2.query.orderVal !== undefined) {
-        this.getDictList2()
-      }
-    },
     configAttr (data) {
-      this.categoryProperty = {
-        category: '',
-        rels: []
-      }
       this.showTitles = []
 
       this.showTitles.push(data.name)
@@ -182,23 +149,29 @@ export default {
       this.showTitles.reverse()
 
       this.categoryProperty.category = data.code
-      this.categoryProperty.rels = []
-      this.selectRels = []
 
       if (this.categoryProperty.category) {
         detail(this.categoryProperty.category).then(r => {
-          let d = r.data
-          for(let i=0;i<d.length;i++){
-            let r = {
-              property: d[i].property,
-              propertyVals: d[i].propertyVals
+          this.categoryProperty.propertys = []
+          if(r.data.length==0){
+            this.categoryProperty.propertys.push({ property: '', propertyVals: '',isSale: '100001', isQuery: '100001',tagVisible: false, inputValue: '' })
+          }else{
+            let data = r.data
+            for (let i=0;i<data.length;i++) {
+              let pro = {
+                property: '',
+                propertyVals: '',
+                isSale: '100001',
+                isQuery: '100001',
+                tagVisible: false,
+                inputValue: ''
+              }
+              pro.property = data[i].property
+              pro.propertyVals = data[i].propertyVals
+              pro.isSale = data[i].isSale
+              pro.isQuery = data[i].isQuery
+              this.categoryProperty.propertys.push(pro)
             }
-            let r1 = {
-              property: d[i].property,
-              propertyVals: d[i].propertyVals.split(',')
-            }
-            this.categoryProperty.rels.push(r)
-            this.selectRels.push(r1)
           }
         })
       }
@@ -209,113 +182,44 @@ export default {
         this.getShowTitles(data.parent);
       }
     },
-    selectionHandle (parentCode,code) {
-      if (this.isBank(this.categoryProperty.category)) {
-        this.$message({
-          message: '产品分类不能为空',
-          type: 'warning'
-        })
-        return
-      }
-      // 定义property关系对象
-      let rel = {
-        property: '',
-        propertyVals: []
-      }
-      // 如果选中的关系集合为空 （第一次选择）
-      if(this.isBank(this.selectRels)){
-        if(parentCode === '302'){ // 选择得为属性
-          rel.property = code
-          // 获取属性下的所有的所有值，并选中
-          for (let j=0;j<this.dict2.data.length;j++) {
-            let d = this.dict2.data[j]
-            if(d.code ===code && this.isNotBank(d.children)){
-              rel.propertyVals = d.children.map(e=>{return e.code})
-            }
-          }
-        }else { // 选择的为值
-          rel.property = parentCode
-          rel.propertyVals.push(code)
-        }
-        // 添加关系对象值关系集合
-        this.selectRels.push(rel)
-      }else { // 如果选中的关系集合不为空 （第N次选择）
-        if(parentCode === '302'){ // 选择得为属性
-          let flag = false
-          for(let j=0;j<this.selectRels.length;j++){
-            if(this.selectRels[j].property === code){
-              // 存在就先删除掉
-              this.selectRels.splice(j,1)
-              flag = true
-              break
-            }
-          }
-          if(!flag){
-            rel.property = code
-            // 获取属性下的所有的所有值，并选中
-            for (let j=0;j<this.dict2.data.length;j++) {
-              let d = this.dict2.data[j]
-              if(d.code ===code && this.isNotBank(d.children)){
-                rel.propertyVals = d.children.map(e=>{return e.code})
-              }
-            }
-
-            // 添加关系对象值关系集合
-            this.selectRels.push(rel)
-          }
-        }else { // 选择的为值
-          let r = null
-          for(let j=0;j<this.selectRels.length;j++){
-            if(this.selectRels[j].property === parentCode){
-              r = this.selectRels[j]
-              break
-            }
-          }
-          if(this.isNotBank(r)){
-            let flag = false
-            for (let j=0;j<r.propertyVals.length;j++) {
-              if(r.propertyVals[j] === code){
-                // 存在就先删除掉
-                r.propertyVals.splice(j,1)
-                flag = true
-                break
-              }
-            }
-            if(flag){
-             if(r.propertyVals.length===0){
-               for(let j=0;j<this.selectRels.length;j++){
-                 if(this.selectRels[j].property ===  r.property){
-                   // 存在就先删除掉
-                   this.selectRels.splice(j,1)
-                   break
-                 }
-               }
-             }
-            }else{
-              r.propertyVals.push(code)
-            }
-          }else{
-            rel.property = parentCode
-            rel.propertyVals.push(code)
-            // 添加关系对象值关系集合
-            this.selectRels.push(rel)
-          }
+    // 添加标本div
+    addNode () {
+      this.categoryProperty.propertys.push({ property: '', propertyVals: '',isSale: '100001', isQuery: '100001',tagVisible: false, inputValue: '' })
+    },
+    // 删除样本div
+    deleteNode (i) {
+      this.categoryProperty.propertys.splice(i, 1)
+    },
+    showInput(index) {
+      this.categoryProperty.propertys[index].tagVisible = true;
+      // this.$nextTick(_ => {
+      //   this.$refs.saveTagInput.$refs.input.focus();
+      // });
+    },
+    handleInputConfirm(index) {
+      let inputValue = this.categoryProperty.propertys[index].inputValue
+      if (inputValue) {
+        if(this.isBank(this.categoryProperty.propertys[index].propertyVals)){
+          this.categoryProperty.propertys[index].propertyVals = inputValue
+        }else {
+          this.categoryProperty.propertys[index].propertyVals += ','+inputValue
         }
       }
-
-      let rs = []
-      for(let i=0;i<this.selectRels.length;i++){
-        let r = {
-          property: '',
-          propertyVals: ''
+      this.categoryProperty.propertys[index].tagVisible = false;
+      this.categoryProperty.propertys[index].inputValue = '';
+    },
+    delTag (index,tag) {
+      let tags = this.categoryProperty.propertys[index].propertyVals
+      let ts = tags.split(',')
+      for(let i=0;i<ts.length;i++){
+        let t = ts[i]
+        if(t===tag){
+          ts.splice(i,1);
         }
-        let rl = this.selectRels[i]
-        r.property = rl.property
-        r.propertyVals = rl.propertyVals.join(',')
-        rs.push(r)
       }
-      this.categoryProperty.rels = rs
-
+      this.categoryProperty.propertys[index].propertyVals = ts.join(',')
+    },
+    saveProperty(){
       save(this.categoryProperty).then(r => {
         this.$message({
           message: '保存成功',
@@ -324,21 +228,6 @@ export default {
       }).catch(err => {
         console.log('err', err)
       })
-    },
-    isChecked (code) {
-      for (let i=0;i<this.selectRels.length;i++) {
-        let rel = this.selectRels[i]
-        if(rel.property === code){
-          return true
-        }
-        for (let j=0;j<rel.propertyVals.length;j++) {
-          let val = rel.propertyVals[j]
-          if(val === code){
-            return true
-          }
-        }
-      }
-      return false
     }
   }
 }
