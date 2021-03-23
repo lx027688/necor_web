@@ -42,12 +42,12 @@
         <el-form ref="form" >
           <el-form-item prop="fields">
             <el-table :data="categoryProperty.propertys" border style="width: 100%">
-              <el-table-column prop="fieldName" label="属性名称" width="120">
+              <el-table-column prop="property" label="属性名称" width="120">
                 <template slot-scope="scope">
                   <el-input v-model="categoryProperty.propertys[scope.$index].property" placeholder="属性名称"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="fieldType" label="属性值">
+              <el-table-column prop="inputValue" label="属性值">
                 <template slot-scope="scope">
                   <el-tag v-show="categoryProperty.propertys[scope.$index].propertyVals!=null && categoryProperty.propertys[scope.$index].propertyVals!=''"
                           v-for="tag in categoryProperty.propertys[scope.$index].propertyVals.split(',')" :key="tag" closable :disable-transitions="false"
@@ -58,12 +58,12 @@
                   <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.$index)">+ 属性</el-button>
                 </template>
               </el-table-column>
-              <el-table-column prop="fieldType" label="查询属性" width="80" align="center">
+              <el-table-column prop="isQuery" label="查询属性" width="80" align="center">
                 <template slot-scope="scope">
                   <el-checkbox v-model="categoryProperty.propertys[scope.$index].isQuery" :checked="categoryProperty.propertys[scope.$index].isQuery=='100000'" true-label="100000" false-label="100001"></el-checkbox>
                 </template>
               </el-table-column>
-              <el-table-column prop="fieldType" label="销售属性" width="80" align="center">
+              <el-table-column prop="isSale" label="销售属性" width="80" align="center">
                 <template slot-scope="scope">
                   <el-checkbox v-model="categoryProperty.propertys[scope.$index].isSale" :checked="categoryProperty.propertys[scope.$index].isSale=='100000'" true-label="100000" false-label="100001"></el-checkbox>
                 </template>
