@@ -1,6 +1,6 @@
 import store from '@/store'
 import axios from 'axios'
-import { Message } from 'element-ui'
+import {Message, MessageBox} from 'element-ui'
 import util from '@/libs/util'
 
 // 创建一个错误
@@ -81,8 +81,10 @@ service.interceptors.response.use(
           errorCreate(`${dataAxios.msg}`)
           break
         case 4:
-          // 未登录
-          errorCreate(`${dataAxios.msg}`)
+          // 显示提示
+          MessageBox('登录已失效, 是否确认退出?',function (){
+            store.dispatch('d2admin/account/logout')
+          })
           break
         case 'xxx':
           // [ 示例 ] 其它和后台约定的 code
@@ -99,7 +101,7 @@ service.interceptors.response.use(
     if (error && error.response) {
       switch (error.response.status) {
         case 400: error.message = '请求错误'; break
-        case 401: error.message = '未授权，请登录'; break
+        case 401: error.message = '未授权，请重新访问'; break
         case 403: error.message = '拒绝访问'; break
         case 404: error.message = `请求地址出错: ${error.response.config.url}`; break
         case 408: error.message = '请求超时'; break
