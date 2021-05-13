@@ -1,7 +1,7 @@
 import { Message, MessageBox } from 'element-ui'
 import util from '@/libs/util.js'
 import router from '@/router'
-import { AccountLogin } from '@api/sys.login'
+import { AccountLogin } from '@api/system/login'
 import localStore from '@/utils/localStore.js'
 
 export default {
@@ -20,11 +20,13 @@ export default {
       captcha = ''
     } = {}) {
       return new Promise((resolve, reject) => {
+        let acctoken = localStore.get('accToken')
         // 开始请求登录接口
         var params = new URLSearchParams()
         params.append('username', username)
         params.append('password', password)
         params.append('captcha', captcha)
+        params.append('accToken', acctoken)
         AccountLogin(params).then(async res => {
             // 设置 cookie 一定要存 uuid 和 token 两个 cookie
             // 整个系统依赖这两个数据进行校验和存储
@@ -33,6 +35,7 @@ export default {
             // 如有必要 token 需要定时更新，默认保存一天
             util.cookies.set('uuid', res.data.uuid)
             util.cookies.set('token', res.data.token)
+            localStore.remove("accToken")
             // 设置 vuex 用户信息
             await dispatch('d2admin/user/set', {
               name: res.data.name

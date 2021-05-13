@@ -95,7 +95,6 @@ export default {
     },
     load (tree, treeNode, resolve) {
       if (this.isNotBank(tree) && this.isNotBank(tree.id)) {
-        // 开始请求登录接口
         var params = new URLSearchParams()
         params.append('parentId', tree.id)
         getArea(params).then(res => {

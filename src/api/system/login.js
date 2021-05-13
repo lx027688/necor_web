@@ -1,10 +1,19 @@
 import request from '@/plugin/axios'
 
-export function getCaptcha () {
+export function AccountLogin (data) {
+  return request({
+    url: '/login/login',
+    method: 'post',
+    data
+  })
+}
+
+export function getCaptcha (data) {
   return request({
     url: '/captcha',
     responseType: 'blob',
-    method: 'post'
+    method: 'post',
+    data
   })
 }
 

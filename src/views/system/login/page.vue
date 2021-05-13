@@ -100,7 +100,6 @@ import dayjs from 'dayjs'
 import { mapActions } from 'vuex'
 import localeMixin from '@/locales/mixin.js'
 import { getCaptcha,agreement } from '@api/system/login'
-import {exportAdmin} from "@api/admin";
 
 export default {
   mixins: [
@@ -209,7 +208,10 @@ export default {
       })
     },
     captcha () {
-      getCaptcha().then(res => {
+
+      var params = new URLSearchParams()
+      params.append('accToken', this.getAccToken())
+      getCaptcha(params).then(res => {
         this.loginCaptcha = window.URL.createObjectURL(res)
       })
     },
@@ -226,6 +228,16 @@ export default {
         document.body.appendChild(link)
         link.click()
       })
+    },
+    getAccToken(){
+      let acctoken = this.$localStore.get('accToken')
+      if(this.isBank(acctoken)){
+        // base64加密
+        let Base64 = require('js-base64').Base64
+        acctoken = Base64.encode(new Date().getTime())
+        this.$localStore.set('accToken', acctoken)
+      }
+      return acctoken
     }
   }
 }
