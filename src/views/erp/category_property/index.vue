@@ -221,6 +221,30 @@ export default {
       this.categoryProperty.propertys[index].propertyVals = ts.join(',')
     },
     saveProperty(){
+      let that = this
+      if(this.isBank(this.categoryProperty.category)){
+        this.$message({
+          message: '请选择产品类目',
+          type: 'warning'
+        })
+        return
+      }
+      let flag = true
+      let ps = this.categoryProperty.propertys
+      ps.forEach(e=>{
+        if(that.isBank(e.property) || that.isBank(e.propertyVals)){
+          flag = false
+          return
+        }
+      })
+      if(!flag){
+        this.$message({
+          message: '请填写产品类目属性名或属性值',
+          type: 'warning'
+        })
+        return
+      }
+
       save(this.categoryProperty).then(r => {
         this.$message({
           message: '保存成功',
