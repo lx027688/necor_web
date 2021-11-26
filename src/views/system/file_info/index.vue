@@ -16,10 +16,10 @@
     <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
       <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间" width="160"></el-table-column>
       <el-table-column prop="fileType" header-align="center" align="center" label="文件类型" width="100">
-        <template slot-scope="scope">{{convertDict('102',scope.row.fileType)}}</template>
+        <template slot-scope="scope">{{convertDict(scope.row.fileType)}}</template>
       </el-table-column>
       <el-table-column prop="busiType" header-align="center" align="center" label="业务类型" width="120">
-        <template slot-scope="scope">{{convertDict('199',scope.row.busiType)}}</template>
+        <template slot-scope="scope">{{convertDict(scope.row.busiType)}}</template>
       </el-table-column>
       <el-table-column prop="busiNo" header-align="center" align="center" label="业务编号" width="300"></el-table-column>
       <el-table-column prop="saveName" header-align="center" align="center" label="文件存储名" width="220"></el-table-column>
@@ -62,6 +62,9 @@ export default {
       },
       data: []
     }
+  },
+  beforeCreate() {
+    this.cacheDict('102,199')
   },
   mounted () {
     this.getList()

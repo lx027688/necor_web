@@ -22,16 +22,16 @@
 		<el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
 		<el-table-column prop="mnCode" header-align="center" align="center" label="助记码"></el-table-column>
 		<el-table-column prop="category" header-align="center" align="center" label="类目">
-      <template slot-scope="scope">{{convertDict('300',scope.row.category)}}</template>
+      <template slot-scope="scope">{{convertDict(scope.row.category)}}</template>
     </el-table-column>
 		<el-table-column prop="brand" header-align="center" align="center" label="品牌">
-      <template slot-scope="scope">{{convertDict('301',scope.row.brand)}}</template>
+      <template slot-scope="scope">{{convertDict(scope.row.brand)}}</template>
     </el-table-column>
 		<el-table-column prop="suppliers" header-align="center" align="center" label="供应商">
       <template slot-scope="scope">{{ scope.row.suppliers.map(e=>{return e.name}).join(",") }}</template>
     </el-table-column>
 		<el-table-column prop="isEnable" header-align="center" align="center" label="起禁用">
-      <template slot-scope="scope">{{convertDict('100',scope.row.isEnable)}}</template>
+      <template slot-scope="scope">{{convertDict(scope.row.isEnable)}}</template>
     </el-table-column>
 		<el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
 			<template slot-scope="scope">
@@ -72,7 +72,10 @@ export default {
 			saveVisible: false
 		}
 	},
-	mounted() {
+  beforeCreate() {
+    this.cacheDict('100,300000000,301')
+  },
+  mounted() {
 		this.getList()
 	},
 	methods: {

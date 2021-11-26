@@ -37,14 +37,14 @@
         </template>
       </el-table-column>
       <el-table-column prop="country" header-align="center" align="center" label="国家">
-        <template slot-scope="scope">{{convertDict('106',scope.row.country)}}</template>
+        <template slot-scope="scope">{{convertDict(scope.row.country)}}</template>
       </el-table-column>
       <el-table-column prop="isEnable" header-align="center" align="center" label="是否启用">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateNavEnable(scope.row.id,scope.row.isEnable)" style="cursor:pointer;">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="ID" width="300"></el-table-column>
+<!--      <el-table-column prop="id" header-align="center" align="center" label="ID" width="300"></el-table-column>-->
       <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="detailHandle(scope.row.id)">查看</el-button>
@@ -93,6 +93,9 @@ export default {
       detailVisible: false,
       positions: []
     }
+  },
+  beforeCreate() {
+    this.cacheDict('106')
   },
   mounted () {
     this.getPosition()

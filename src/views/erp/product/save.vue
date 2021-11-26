@@ -166,6 +166,9 @@ export default {
       }
 		}
 	},
+  beforeCreate() {
+    this.cacheDict('301')
+  },
 	methods: {
 		async init (id) {
 			this.form.id = id || ''
@@ -195,7 +198,7 @@ export default {
             this.form.name = r.data.name,
             this.form.category = r.data.category,
             this.form.brand = r.data.brand,
-            this.form.brandName = this.convertDict('301',r.data.brand)
+            this.form.brandName = this.convertDict(r.data.brand)
             this.form.supplierIds = r.data.suppliers.map(e=>{return e.id})
             this.form.supplierNames = r.data.suppliers.map(e=>{return e.name}).join(',')
             this.form.descr = r.data.descr

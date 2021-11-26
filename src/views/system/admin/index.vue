@@ -35,7 +35,7 @@
       <el-table-column prop="birthday" header-align="center" align="center" label="生日"></el-table-column>
       <el-table-column prop="age" header-align="center" align="center" label="年龄" width="80"></el-table-column>
       <el-table-column prop="gender" header-align="center" align="center" label="性别" width="80">
-        <template slot-scope="scope">{{convertDict('101',scope.row.gender)}}</template>
+        <template slot-scope="scope">{{convertDict(scope.row.gender)}}</template>
       </el-table-column>
       <el-table-column prop="loginIp" header-align="center" align="center" label="登陆IP"></el-table-column>
       <el-table-column prop="loginDate" header-align="center" align="center" label="登陆时间" sortable="custom"></el-table-column>
@@ -108,6 +108,9 @@ export default {
       roles: [],
       selectRoles: []
     }
+  },
+  beforeCreate() {
+    this.cacheDict('101')
   },
   mounted () {
     this.getList()

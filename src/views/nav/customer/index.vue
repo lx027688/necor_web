@@ -25,7 +25,7 @@
     <el-table-column prop="username" header-align="center" align="center" label="用户名"></el-table-column>
     <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
     <el-table-column prop="gender" header-align="center" align="center" label="性别">
-      <template slot-scope="scope">{{convertDict('101',scope.row.gender)}}</template>
+      <template slot-scope="scope">{{convertDict(scope.row.gender)}}</template>
     </el-table-column>
     <el-table-column prop="phone" header-align="center" align="center" label="手机号"></el-table-column>
     <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
@@ -67,6 +67,9 @@ export default {
       data: [],
       saveVisible: false
     }
+  },
+  beforeCreate() {
+    this.cacheDict('101')
   },
   mounted () {
     this.getList()
