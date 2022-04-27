@@ -113,7 +113,7 @@ export default {
           params.append('types', this.redis.types)
           params.append('key', this.redis.key)
           params.append('value', this.redis.value)
-          params.append('expire', this.isNotBank(this.redis.expire)?this.redis.expire:0)
+          params.append('expire', this.isNotBlank(this.redis.expire)?this.redis.expire:0)
           add(params).then(r => {
             this.$message({
               message: '操作成功',

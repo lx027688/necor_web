@@ -178,7 +178,7 @@ export default {
       }
     },
     getShowTitles (data) {
-      if(this.isNotBank(data) && data.code !== '300'){
+      if(this.isNotBlank(data) && data.code !== '300'){
         this.showTitles.push(data.name)
         this.getShowTitles(data.parent);
       }
@@ -194,13 +194,13 @@ export default {
     showInput(index) {
       this.categoryProperty.propertys[index].tagVisible = true;
       // this.$nextTick(_ => {
-      //   this.$refs.saveTagInput.$refs.input.focus();
+      //   this.$refs.savetaginput.$refs.input.focus();
       // });
     },
     handleInputConfirm(index) {
       let inputValue = this.categoryProperty.propertys[index].inputValue
       if (inputValue) {
-        if(this.isBank(this.categoryProperty.propertys[index].propertyVals)){
+        if(this.isBlank(this.categoryProperty.propertys[index].propertyVals)){
           this.categoryProperty.propertys[index].propertyVals = inputValue
         }else {
           this.categoryProperty.propertys[index].propertyVals += ','+inputValue
@@ -222,7 +222,7 @@ export default {
     },
     saveProperty(){
       let that = this
-      if(this.isBank(this.categoryProperty.category)){
+      if(this.isBlank(this.categoryProperty.category)){
         this.$message({
           message: '请选择产品类目',
           type: 'warning'
@@ -232,7 +232,7 @@ export default {
       let flag = true
       let ps = this.categoryProperty.propertys
       ps.forEach(e=>{
-        if(that.isBank(e.property) || that.isBank(e.propertyVals)){
+        if(that.isBlank(e.property) || that.isBlank(e.propertyVals)){
           flag = false
           return
         }

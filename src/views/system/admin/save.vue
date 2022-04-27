@@ -171,7 +171,7 @@ export default {
           // 封装入参
           let params = new FormData()
           for (let key of Object.keys(this.form)) {
-            if (this.isNotBank(this.form[key])) {
+            if (this.isNotBlank(this.form[key])) {
               params.append(key, this.form[key])
             }
           }

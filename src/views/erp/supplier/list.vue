@@ -65,7 +65,7 @@ export default {
       this.visible = true
       this.$nextTick(() => {
         this.$refs['form'].resetFields()
-        if(this.isNotBank(ids)){
+        if(this.isNotBlank(ids)){
           this.supplierIds = ids
         }
         this.getList()

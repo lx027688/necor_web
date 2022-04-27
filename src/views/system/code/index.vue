@@ -116,9 +116,9 @@ export default {
       this.form.fields.splice(i, 1)
     },
     changePage () {
-      if (this.isNotBank(this.form.prefix)) {
+      if (this.isNotBlank(this.form.prefix)) {
         this.form.package = 'com.necor.' + this.form.prefix
-        if (this.isNotBank(this.form.entityName)) {
+        if (this.isNotBlank(this.form.entityName)) {
           let classLowercase = this.form.entityName.replace(/([A-Z])/g, '_$1').toLowerCase()
           this.form.package = 'com.necor.' + this.form.prefix + '.' + classLowercase
         }

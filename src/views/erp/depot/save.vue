@@ -126,7 +126,7 @@ export default {
         this.form.cityId = ''
         this.districts = []
         this.form.districtId = ''
-        if(this.isBank(this.form.provinceId)){
+        if(this.isBlank(this.form.provinceId)){
           return
         }
         params.append('parentId', this.form.provinceId)
@@ -134,7 +134,7 @@ export default {
       if(areaType === 'd'){
         this.districts = []
         this.form.districtId = ''
-        if(this.isBank(this.form.cityId)){
+        if(this.isBlank(this.form.cityId)){
           return
         }
         params.append('parentId', this.form.cityId)

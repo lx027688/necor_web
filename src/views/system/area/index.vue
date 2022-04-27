@@ -97,7 +97,7 @@ export default {
       })
     },
     load (tree, treeNode, resolve) {
-      if (this.isNotBank(tree) && this.isNotBank(tree.id)) {
+      if (this.isNotBlank(tree) && this.isNotBlank(tree.id)) {
         var params = new URLSearchParams()
         params.append('parentId', tree.id)
         getArea(params).then(res => {

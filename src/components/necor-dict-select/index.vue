@@ -55,7 +55,7 @@ export default {
       this.options = []
       for (let i = 0; i < dicts.length; i++) {
         if (dicts[i]['code'] === this.code) {
-          if(this.isBank(this.placeholder) || '请选择' === this.isBank(this.placeholder)){
+          if(this.isBlank(this.placeholder) || '请选择' === this.isBlank(this.placeholder)){
             this.placeholder = '请选择'+dicts[i]['name']
           }
 

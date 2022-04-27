@@ -101,7 +101,7 @@ export default {
             this.form.country = r.country
             this.form.url = r.url
             this.form.description = r.description
-            if (this.isNotBank(r.tag)) {
+            if (this.isNotBlank(r.tag)) {
               this.tags = r.tag.split(',')
             }
             let that = this
@@ -128,13 +128,13 @@ export default {
         if (valid) {
           this.$refs.upload.submit()
 
-          if (this.isNotBank(this.tags)) {
+          if (this.isNotBlank(this.tags)) {
             this.form.tag = this.tags.join(',')
           }
 
           let params = new FormData()
           for (let key of Object.keys(this.form)) {
-            if (this.isNotBank(this.form[key])) {
+            if (this.isNotBlank(this.form[key])) {
               params.append(key, this.form[key])
             }
           }

@@ -179,7 +179,7 @@ export default {
           // 封装入参
           let params = new FormData()
           for (let key of Object.keys(that.baseSettingForm)) {
-            if (this.isNotBank(that.baseSettingForm[key])) {
+            if (this.isNotBlank(that.baseSettingForm[key])) {
               params.append(key, that.baseSettingForm[key])
             }
           }

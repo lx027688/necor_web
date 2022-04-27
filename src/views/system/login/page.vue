@@ -231,7 +231,7 @@ export default {
     },
     getAccToken(){
       let acctoken = this.$localStore.get('accToken')
-      if(this.isBank(acctoken)){
+      if(this.isBlank(acctoken)){
         // base64加密
         let Base64 = require('js-base64').Base64
         acctoken = Base64.encode(new Date().getTime())

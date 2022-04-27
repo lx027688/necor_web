@@ -74,7 +74,7 @@ export default {
         this.form.jobGroupName = group || ''
 
         this.params = []
-        if(this.isNotBank(ps)){
+        if(this.isNotBlank(ps)){
           let kv = ps.split(",")
           for(let i=0;i<kv.length;i++){
             let k = kv[i];

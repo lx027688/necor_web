@@ -156,13 +156,13 @@ export default {
       let that = this
       this.selectMenuIds = []
       let params = new FormData()
-      if (this.isNotBank(id)) {
+      if (this.isNotBlank(id)) {
         params.append('roleId', id)
       }
       getMenusByRole(params).then(r => {
         let res = r.data
         this.menuList = res.menus
-        if (this.isNotBank(res.roleMenus)) {
+        if (this.isNotBlank(res.roleMenus)) {
           res.roleMenus.map(function (v) {
             that.selectMenuIds.push(v.id)
           })
@@ -170,7 +170,7 @@ export default {
       })
     },
     handleCheckChange (data, checked, indeterminate) {
-      if (this.isBank(this.currentRow)) {
+      if (this.isBlank(this.currentRow)) {
         this.$message({
           message: '请选择角色',
           type: 'warning'

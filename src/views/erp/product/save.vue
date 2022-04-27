@@ -1,6 +1,6 @@
 <template>
 <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible" width="80%">
-  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px">
+  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading">
     <el-tabs>
       <el-tab-pane label="产品基本信息">
         <el-row>
@@ -46,8 +46,12 @@
       </el-tab-pane>
 
       <el-tab-pane label="产品属性">
-        <el-form-item v-for="item in property.propertys" v-bind:key="item.property" :label="item.property">
+        <el-form-item v-for="(item) in property.propertys" v-bind:key="item.property" :label="item.property">
           <el-checkbox v-for="it in item.propertyVals.split(',')" v-bind:key="it" :label="it" @change="handleProperty(item.property+'-'+it+'-'+item.isSale+'-'+item.isQuery)" :checked="isSelected(item.property,it)"></el-checkbox>
+
+          <el-input v-if="item.tagVisible" class="input-new-tag" size="small" v-model="item.inputValue"
+                    @blur="handleInputConfirm(item)" @keyup.enter.native="handleInputConfirm(item)"></el-input>
+          <el-button class="button-new-tag" size="small" @click="showInput(item)">+ 属性值</el-button>
         </el-form-item>
 
         <el-form-item label="SKU">
@@ -115,6 +119,7 @@ export default {
 	data () {
 		return {
 			visible: false,
+      loading: true,
 			form: {
 				spu: '',
 				name: '',
@@ -158,8 +163,9 @@ export default {
       brandVisible: false,
       supplierVisible: false,
       property:{
-        propertys: [],
-        selectedPros: []
+        propertys: [ { property: '', propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' } ],
+        selectedPros: [],
+        customizePros: []
       },
       editorOption:{
         placeholder: '产品描述'
@@ -174,7 +180,7 @@ export default {
 			this.form.id = id || ''
 			this.visible = true
 
-      if (this.isBank(this.categorys)) {
+      if (this.isBlank(this.categorys)) {
         let res = await dictTree('300')
         this.categorys = res.data.children
       }
@@ -203,9 +209,8 @@ export default {
             this.form.supplierNames = r.data.suppliers.map(e=>{return e.name}).join(',')
             this.form.descr = r.data.descr
 
+            let self = this;
             all({'category':this.form.category}).then(res => {
-              this.property.propertys = res.data
-
               for(let i=0;i<r.data.skus.length;i++){
                 let s = r.data.skus[i]
                 s.price = parseFloat(s.price.match(/^\d+(?:\.\d{0,2})?/))
@@ -217,14 +222,12 @@ export default {
 
                   let isSale = '100001'
                   let isQuery = '100001'
-                  for(let j=0;j<this.property.propertys.length;j++){
-                    let p = this.property.propertys[j]
-                    if(p.property === key){
-                      isSale = p.isSale
-                      isQuery = p.isQuery
-                      break
+                  res.data.forEach(function(x){
+                    if(x.property === key){
+                      isSale = x.isSale
+                      isQuery = x.isQuery
                     }
-                  }
+                  })
 
                   let val = spec[key]
                   if(this.property.selectedPros.length === 0){
@@ -261,11 +264,31 @@ export default {
                   }
                 }
               }
+
+              res.data.forEach(function (e){
+                let vs = self.property.selectedPros.filter(function(x){
+                  return x.key === e.property
+                });
+                // console.log(self.union(e.propertyVals.split(','),vs[0].val).join(','))
+                let pro = { property: '', propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' }
+                pro.property = e.property
+                if(self.isBlank(vs)){
+                  pro.propertyVals = e.propertyVals
+                }else {
+                  pro.propertyVals = self.union(e.propertyVals.split(','),vs[0].val).join(',')
+                }
+                pro.isSale = e.isSale
+                pro.isQuery = e.isQuery
+                self.property.propertys.push(pro)
+              })
             }).catch(err => {
               console.log('err', err)
             })
 					})
-				}
+          this.loading = false;
+				}else {
+          this.loading = false;
+        }
 			})
 		},
 		saveData () {
@@ -312,7 +335,15 @@ export default {
     },
     getPropertyByCategory () {
       all({'category':this.form.category}).then(r => {
-        this.property.propertys = r.data
+        let self = this
+        r.data.forEach(function (e){
+          let pro = { property: '', propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' }
+          pro.property = e.property
+          pro.propertyVals = e.propertyVals
+          pro.isSale = e.isSale
+          pro.isQuery = e.isQuery
+          self.property.propertys.push(pro)
+        })
         this.property.selectedPros = []
       }).catch(err => {
         console.log('err', err)
@@ -325,7 +356,7 @@ export default {
         isSale: '100001',
         isQuery: '100001'
       }
-      if(this.isBank(this.property.selectedPros)){
+      if(this.isBlank(this.property.selectedPros)){
         selectedPro.key = p.split('-')[0]
         selectedPro.val.push(p.split('-')[1])
         selectedPro.isSale = p.split('-')[2]
@@ -345,7 +376,7 @@ export default {
           }
         }
 
-        if(this.isNotBank(ps)){
+        if(this.isNotBlank(ps)){
           let c = -1
           for(let i=0;i<ps.val.length;i++){
             let v = ps.val[i]
@@ -372,7 +403,7 @@ export default {
       let skus = []
       for(let i=0;i<this.property.selectedPros.length;i++){
         let po = this.property.selectedPros[i]
-        if(this.isNotBank(po.val)){
+        if(this.isNotBlank(po.val)){
           if(i===0){
             for(let j=0;j<po.val.length;j++){
               let pro = {}
@@ -400,10 +431,10 @@ export default {
       let delIsQuerys = []
       for(let i=0;i<this.property.selectedPros.length;i++){
         let pro = this.property.selectedPros[i]
-        if(pro.isSale === '100001'){
+        if(pro.isSale === '100000'){
           delIsSales.push(pro.key)
         }
-        if(pro.isQuery === '100001'){
+        if(pro.isQuery === '100000'){
           delIsQuerys.push(pro.key)
         }
       }
@@ -420,7 +451,7 @@ export default {
             break
           }
         }
-        if(this.isNotBank(existSku)){
+        if(this.isNotBlank(existSku)){
           this.form.skus.push(existSku)
         }else{
           let saleSpec = JSON.parse(JSON.stringify(ds))
@@ -446,8 +477,6 @@ export default {
           this.form.skus.push(sku)
         }
       }
-
-      // console.log(this.form.skus)
     },
     isSelected (key,value) {
       for(let i=0;i<this.property.selectedPros.length;i++){
@@ -459,8 +488,30 @@ export default {
       }
       return false
     },
-    handleUpload (raw) {
-      console.log(raw)
+    showInput (item) {
+      this.property.propertys.forEach(function(e){
+        if(item.property !== e.property && e.tagVisible){
+          e.tagVisible = false;
+        }
+      })
+      item.tagVisible = true;
+    },
+    handleInputConfirm (item) {
+      if(this.isNotBlank(item.inputValue)){
+        let vs = item.propertyVals.split(',').filter(function(e){
+          return e === item.inputValue
+        });
+        if(this.isNotBlank(vs)){
+          this.$message({
+            message: '属性值重复',
+            type: 'error'
+          })
+        }else {
+          item.propertyVals = this.isNotBlank(item.propertyVals)?item.propertyVals+','+item.inputValue:item.inputValue;
+        }
+      }
+      item.inputValue = null;
+      item.tagVisible = false;
     }
 	}
 }
