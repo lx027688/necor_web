@@ -73,7 +73,6 @@ export default {
     }
   },
   beforeCreate() {
-    this.cacheDict('105')
   },
   mounted () {
     this.getList()

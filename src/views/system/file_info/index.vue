@@ -64,7 +64,6 @@ export default {
     }
   },
   beforeCreate() {
-    this.cacheDict('102,199')
   },
   mounted () {
     this.getList()

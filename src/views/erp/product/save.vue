@@ -1,6 +1,6 @@
 <template>
 <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible" width="80%">
-  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading">
+  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading" label-suffix=":">
     <el-tabs>
       <el-tab-pane label="产品基本信息">
         <el-row>
@@ -47,12 +47,21 @@
 
       <el-tab-pane label="产品属性">
         <el-form-item v-for="(item) in property.propertys" v-bind:key="item.property" :label="item.property">
-          <el-checkbox v-for="it in item.propertyVals.split(',')" v-bind:key="it" :label="it" @change="handleProperty(item.property+'-'+it+'-'+item.isSale+'-'+item.isQuery)" :checked="isSelected(item.property,it)"></el-checkbox>
+          <el-checkbox v-show="item.propertyVals!=null && item.propertyVals!='' && typeof (item.propertyVals) != 'undefined'"
+                       v-for="it in item.propertyVals.split(',')" v-bind:key="it" :label="it"
+                       @change="handleProperty(item.property+'-'+it+'-'+item.isSale+'-'+item.isQuery)"
+                       :checked="isSelected(item.property,it)"></el-checkbox>
 
           <el-input v-if="item.tagVisible" class="input-new-tag" size="small" v-model="item.inputValue"
                     @blur="handleInputConfirm(item)" @keyup.enter.native="handleInputConfirm(item)"></el-input>
           <el-button class="button-new-tag" size="small" @click="showInput(item)">+ 属性值</el-button>
         </el-form-item>
+
+        <div style="margin-bottom: 22px; margin-left: 28px;">
+          <el-button class="button-new-tag" @click="addPropertyVisible = true">
+            添加属性<i class="el-icon-plus el-icon--right"></i>
+          </el-button>
+        </div>
 
         <el-form-item label="SKU">
           <el-table :data="form.skus" border style="width: 100%">
@@ -94,11 +103,40 @@
 		<!--点击确定添加内容-->
 		<el-button type="primary" @click="saveData()" >确 定</el-button>
 	</div>
+
   <brandlist v-if="brandVisible" ref="brandlist" @listenDictResp="handBrand"></brandlist>
   <supplierlist v-if="supplierVisible" ref="supplierlist" @listenResp="handSupplier"></supplierlist>
+
+  <el-dialog title="收货地址" :visible.sync="addPropertyVisible" append-to-body>
+    <el-form ref="form" >
+      <el-form-item prop="fields">
+        <el-table :data="property.customizePros" border style="width: 100%">
+          <el-table-column prop="property" label="属性名称">
+            <template slot-scope="scope">
+              <el-input v-model="property.customizePros[scope.$index].property" placeholder="属性名称"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="isQuery" label="查询属性" align="center">
+            <template slot-scope="scope">
+              <el-checkbox v-model="property.customizePros[scope.$index].isQuery" true-label="100001" false-label="100000"></el-checkbox>
+            </template>
+          </el-table-column>
+          <el-table-column prop="isSale" label="销售属性" align="center">
+            <template slot-scope="scope">
+              <el-checkbox v-model="property.customizePros[scope.$index].isSale" true-label="100001" false-label="100000"></el-checkbox>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="addPropertyVisible = false">取 消</el-button>
+      <el-button type="primary" @click="addProperty()">确 定</el-button>
+    </div>
+  </el-dialog>
+
 </el-dialog>
 </template>
-
 <script>
 
 import {save, detail, validateRepeatSpu, list} from '@api/erp/product'
@@ -118,6 +156,7 @@ export default {
   components: { brandlist, supplierlist, quillEditor },
 	data () {
 		return {
+      addPropertyVisible:false,
 			visible: false,
       loading: true,
 			form: {
@@ -165,7 +204,7 @@ export default {
       property:{
         propertys: [ { property: '', propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' } ],
         selectedPros: [],
-        customizePros: []
+        customizePros: [{property:'', isSale: '100000', isQuery: '100000'}]
       },
       editorOption:{
         placeholder: '产品描述'
@@ -173,7 +212,6 @@ export default {
 		}
 	},
   beforeCreate() {
-    this.cacheDict('301')
   },
 	methods: {
 		async init (id) {
@@ -186,6 +224,7 @@ export default {
       }
 
 			this.$nextTick(() => {
+
 				this.$refs['saveForm'].resetFields()
         this.form.brand = ''
         this.form.brandName = ''
@@ -195,11 +234,13 @@ export default {
 
         this.property = {
           propertys: [],
-          selectedPros: []
+          selectedPros: [],
+          customizePros: [{property:'', isSale: '100000', isQuery: '100000'}]
         }
 
 				if (this.form.id) {
 					detail(id).then(r => {
+
             this.form.spu = r.data.spu,
             this.form.name = r.data.name,
             this.form.category = r.data.category,
@@ -209,28 +250,41 @@ export default {
             this.form.supplierNames = r.data.suppliers.map(e=>{return e.name}).join(',')
             this.form.descr = r.data.descr
 
-            let self = this;
-            all({'category':this.form.category}).then(res => {
-              for(let i=0;i<r.data.skus.length;i++){
-                let s = r.data.skus[i]
-                s.price = parseFloat(s.price.match(/^\d+(?:\.\d{0,2})?/))
-                s.cost = parseFloat(s.cost.match(/^\d+(?:\.\d{0,2})?/))
-                this.form.skus.push(s)
+            // 1.处理表单属性skus  2.封装已选中的属性(不处理是否为销售属性、不处理是否为查询属性)
+            for(let i=0;i<r.data.skus.length;i++){
+              let s = r.data.skus[i]
+              s.price = parseFloat(s.price.match(/^\d+(?:\.\d{0,2})?/))
+              s.cost = parseFloat(s.cost.match(/^\d+(?:\.\d{0,2})?/))
+              this.form.skus.push(s)
 
-                let spec = JSON.parse(s.spec)
-                for (var key in spec){
+              let spec = JSON.parse(s.spec)
+              for (var key in spec){
+                let isSale = '100000'
+                let isQuery = '100000'
 
-                  let isSale = '100001'
-                  let isQuery = '100001'
-                  res.data.forEach(function(x){
-                    if(x.property === key){
-                      isSale = x.isSale
-                      isQuery = x.isQuery
+                let val = spec[key]
+                if(this.property.selectedPros.length === 0){
+                  let selectedPro = {
+                    key: key,
+                    isSale: isSale,
+                    isQuery: isQuery,
+                    val: []
+                  }
+                  selectedPro.val.push(val)
+                  this.property.selectedPros.push(selectedPro)
+                }else{
+                  let flag = false
+                  for (let j=0;j<this.property.selectedPros.length;j++) {
+                    let sp = this.property.selectedPros[j]
+                    if(sp.key === key){
+                      if(!this.contains(sp.val,val)){
+                        sp.val.push(val)
+                      }
+                      flag = true
+                      break
                     }
-                  })
-
-                  let val = spec[key]
-                  if(this.property.selectedPros.length === 0){
+                  }
+                  if(!flag){
                     let selectedPro = {
                       key: key,
                       isSale: isSale,
@@ -239,47 +293,76 @@ export default {
                     }
                     selectedPro.val.push(val)
                     this.property.selectedPros.push(selectedPro)
-                  }else{
-                    let flag = false
-                    for (let j=0;j<this.property.selectedPros.length;j++) {
-                      let sp = this.property.selectedPros[j]
-                      if(sp.key === key){
-                        if(!this.contains(sp.val,val)){
-                          sp.val.push(val)
-                        }
-                        flag = true
-                        break
-                      }
-                    }
-                    if(!flag){
-                      let selectedPro = {
-                        key: key,
-                        isSale: isSale,
-                        isQuery: isQuery,
-                        val: []
-                      }
-                      selectedPro.val.push(val)
-                      this.property.selectedPros.push(selectedPro)
-                    }
                   }
                 }
               }
+            }
 
-              res.data.forEach(function (e){
-                let vs = self.property.selectedPros.filter(function(x){
-                  return x.key === e.property
-                });
-                // console.log(self.union(e.propertyVals.split(','),vs[0].val).join(','))
-                let pro = { property: '', propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' }
-                pro.property = e.property
-                if(self.isBlank(vs)){
-                  pro.propertyVals = e.propertyVals
-                }else {
-                  pro.propertyVals = self.union(e.propertyVals.split(','),vs[0].val).join(',')
+            let self = this;
+            all({'category':this.form.category}).then(res => {
+              // 处理已选中属性是否为销售属性、是否为查询属性1
+              this.property.selectedPros.forEach(function (o) {
+                let cp = res.data.filter(function(x){
+                  return x.property === o.key
+                })
+                if(self.isNotBlank(cp)){
+                  o.isQuery = cp[0].isQuery
+                  o.isSale = cp[0].isSale
+                }else{
+                  let sku = r.data.skus[0]
+                  if(sku.querySpec.indexOf(o.key)!=-1){ // 是查询属性
+                    o.isQuery = '100001'
+                  }
+                  if(sku.saleSpec.indexOf(o.key)!=-1){ // 是销售属性
+                    o.isSale = '100001'
+                  }
                 }
-                pro.isSale = e.isSale
-                pro.isQuery = e.isQuery
-                self.property.propertys.push(pro)
+              });
+
+              /* 封装展示产品属性对象(为保证属性的展示顺序采用该方式封装) */
+              // 获取产品分类中的所有属性名
+              let attr1 = res.data.map(function(e){
+                return e.property;
+              })
+              // 获取产品的所有属性名（商品有自定义属性）
+              let attr2 = self.property.selectedPros.map(function(e){
+                return e.key;
+              })
+              // 合并双方属性名
+              let attrs = self.union(attr1,attr2);
+              // 循环属性名从产品分类和产品中获取属性对象，并对对象重新封装展示在前端
+              attrs.forEach(function (e){
+                // 定义展示属性对象
+                let pro = { property: e, propertyVals: '', isSale: '100001', isQuery: '100001', tagVisible: false, inputValue: '' }
+                // 从产品分类获取属性对象
+                let vs1 = res.data.filter(function(x){
+                  return x.property === e
+                });
+                // 从产品获取属性对象
+                let vs2 = self.property.selectedPros.filter(function(x){
+                  return x.key === e
+                });
+                // 如果产品分类中不存在该属性
+                if(self.isBlank(vs1)){
+                  pro.propertyVals = vs2[0].val.join(',')
+                  pro.isSale = vs2[0].isSale
+                  pro.isQuery = vs2[0].isQuery
+                  self.property.propertys.push(pro)
+                }
+                // 如果产品中不存在该属性
+                if(self.isBlank(vs2)){
+                  pro.propertyVals = vs1[0].propertyVals
+                  pro.isSale = vs1[0].isSale
+                  pro.isQuery = vs1[0].isQuery
+                  self.property.propertys.push(pro)
+                }
+                // 产品分类和产品均存在该属性，合并双方的属性值
+                if(self.isNotBlank(vs1) && self.isNotBlank(vs2)){
+                  pro.propertyVals = self.union(vs1[0].propertyVals.split(','),vs2[0].val).join(',')
+                  pro.isSale = vs1[0].isSale
+                  pro.isQuery = vs1[0].isQuery
+                  self.property.propertys.push(pro)
+                }
               })
             }).catch(err => {
               console.log('err', err)
@@ -345,6 +428,7 @@ export default {
           self.property.propertys.push(pro)
         })
         this.property.selectedPros = []
+        this.property.customizePros = [{property:'', isSale: '100000', isQuery: '100000'}]
       }).catch(err => {
         console.log('err', err)
       })
@@ -512,6 +596,20 @@ export default {
       }
       item.inputValue = null;
       item.tagVisible = false;
+    },
+    addProperty () {
+      if(this.isNotBlank(this.property.customizePros)){
+        let pro = {};
+        pro.property = this.property.customizePros[0].property;
+        pro.isQuery = this.property.customizePros[0].isQuery;
+        pro.isSale = this.property.customizePros[0].isSale;
+        pro.propertyVals = '';
+        pro.tagVisible = false;
+        pro.inputValue = '';
+        this.property.propertys.push(pro)
+      }
+      this.property.customizePros = [ {property:'', isSale: '100000', isQuery: '100000'} ]
+      this.addPropertyVisible = false;
     }
 	}
 }

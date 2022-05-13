@@ -110,7 +110,6 @@ export default {
     }
   },
   beforeCreate() {
-    this.cacheDict('101')
   },
   mounted () {
     this.getList()

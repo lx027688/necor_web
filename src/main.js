@@ -11,7 +11,7 @@ import store from '@/store/index'
 import router from './router'
 
 // 引入公共的js文件
-import {convertDict, isBlank, isNotBlank, abbr, contains, union, cacheDict} from '@/utils/common.js'
+import {convertDict, isBlank, isNotBlank, abbr, contains, union} from '@/utils/common.js'
 
 // 引入封装好的js文件的路径
 import localStore from '@/utils/localStore.js'
@@ -28,7 +28,6 @@ import util from "@/libs/util";
 // 把全局js挂接到vue原型上
 Vue.prototype.$localStore = localStore
 
-Vue.prototype.cacheDict = cacheDict
 Vue.prototype.convertDict = convertDict
 Vue.prototype.isBlank = isBlank
 Vue.prototype.isNotBlank = isNotBlank

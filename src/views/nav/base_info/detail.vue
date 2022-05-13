@@ -61,7 +61,6 @@ export default {
     }
   },
   beforeCreate() {
-    this.cacheDict('106')
   },
   methods: {
     init (id) {

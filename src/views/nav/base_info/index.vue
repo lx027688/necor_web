@@ -95,7 +95,6 @@ export default {
     }
   },
   beforeCreate() {
-    this.cacheDict('106')
   },
   mounted () {
     this.getPosition()
