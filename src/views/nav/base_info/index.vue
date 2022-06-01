@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column prop="tag" header-align="center" align="center" label="标签" width="300">
         <template slot-scope="scope">
-          <el-tag v-for="t in scope.row.tag.split(',')">{{t}}</el-tag>
+          <el-tag v-for="(t,index) in scope.row.tag.split(',')" :key="index"> {{ t }} </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="country" header-align="center" align="center" label="国家">
