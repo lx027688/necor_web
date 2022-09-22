@@ -1,6 +1,9 @@
 import {dictChilds1} from "@api/system/dict"
 
 export function convertDict (code) {
+  if(isBlank(code)){
+    return ;
+  }
   let dict = this.$localStore.get(code);
   if (this.isBlank(dict)) {
     let parentCode = code.slice(0, code.length-3)
