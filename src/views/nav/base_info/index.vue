@@ -37,7 +37,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="country" header-align="center" align="center" label="国家">
-        <template slot-scope="scope">{{convertDict(scope.row.country)}}</template>
+        <template slot-scope="scope">
+          <necor-dict-convert :code="scope.row.country"></necor-dict-convert>
+        </template>
       </el-table-column>
       <el-table-column prop="isEnable" header-align="center" align="center" label="是否启用">
         <template slot-scope="scope">

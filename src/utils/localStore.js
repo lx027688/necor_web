@@ -21,9 +21,13 @@ localStore.remove = function (key) {
   db.unset(key).write()
 }
 
-// 删除数据
-localStore.aa = function (key) {
-  return db
+// 清除所有缓存
+localStore.clear = function () {
+  for ( var d in db.getState() ) {
+    if (d != 'posts' && d != 'admin' && d != 'basic') {
+      db.unset(d).write()
+    }
+  }
 }
 
 export default localStore

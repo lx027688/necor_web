@@ -1,23 +1,29 @@
-import {dictChilds1} from "@api/system/dict"
+import {dictTree} from "@api/system/dict"
 
 export function convertDict (code) {
   if(isBlank(code)){
     return ;
   }
-  let dict = this.$localStore.get(code);
+  let dict = this.$localStore.get(code)
   if (this.isBlank(dict)) {
     let parentCode = code.slice(0, code.length-3)
-    dictChilds1(parentCode).then(r => {
-      for(let i=0;i<r.data.length;i++){
-        let d = r.data[i]
-        this.$localStore.set(d.code, d.name)
-      }
-    })
+    dict = this.$localStore.get(parentCode)
+    if(this.isBlank(dict)){
+      dictTree(parentCode).then(res => {
+        // 本地保存数据字典
+        this.$localStore.set(parentCode, res.data)
 
-    dict = this.$localStore.get(code);
-    return this.isBlank(dict)?code:dict
+        let d = res.data.children.filter(e=> e.code === code)
+        return this.isNotBlank(d)?d[0].name:''
+      }).catch(err => {
+        console.log('err', err)
+      })
+    }else {
+      let d = dict.children.filter(e=> e.code === code)
+      return this.isNotBlank(d)?d[0].name:''
+    }
   }else {
-    return dict
+    return dict.name
   }
 }
 

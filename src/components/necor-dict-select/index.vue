@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import {dictTree} from "@api/system/dict";
+
 export default {
   name: 'necor-dict-select',
   componentName: 'NecorDictSelect',
@@ -50,25 +52,31 @@ export default {
     }
   },
   mounted () {
-    let dicts = this.$localStore.get('dicts')
-    if (dicts.length > 0) {
+    let dict = this.$localStore.get(this.code)
+    if (this.isNotBlank(dict)) {
       this.options = []
-      for (let i = 0; i < dicts.length; i++) {
-        if (dicts[i]['code'] === this.code) {
-          if(this.isBlank(this.placeholder) || '请选择' === this.isBlank(this.placeholder)){
-            this.placeholder = '请选择'+dicts[i]['name']
-          }
-
-          let children = dicts[i].children
-          for (let j = 0; j < children.length; j++) {
-            this.options[j] = {}
-            this.options[j].label = children[j]['name']
-            this.options[j].value = children[j]['code']
-            this.options[j].key = j
-          }
-          break
-        }
+      if(this.isBlank(this.placeholder) || '请选择' === this.placeholder){
+        this.placeholder = '请选择'+ dict.name
       }
+
+      let children = dict.children
+      for (let j = 0; j < children.length; j++) {
+        this.options[j] = {}
+        this.options[j].label = children[j]['name']
+        this.options[j].value = children[j]['code']
+        this.options[j].key = j
+      }
+    }else{
+      dictTree(this.code).then(res => {
+        // 本地保存数据字典
+        this.$localStore.set(this.code, res.data)
+
+        if(this.isBlank(this.placeholder) || '请选择' === this.placeholder){
+          this.placeholder = '请选择'+ res.data.name
+        }
+      }).catch(err => {
+        console.log('err', err)
+      })
     }
   },
   methods: {

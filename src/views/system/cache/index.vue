@@ -103,6 +103,7 @@ export default {
       let self = this
       buildAll().then(r => {
         self.init()
+        self.$localStore.clear();
         getBaseSetting().then(r1 => {
           self.$localStore.set('basic', r1.data)
           this.$message({

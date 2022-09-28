@@ -138,9 +138,9 @@ export default {
       this.$localStore.set('a', 'cccc')
     },
     getStore () {
-      console.log(this.$localStore.get('basic'))
-      console.log(this.$localStore.aa('a'))
-      console.log(this.$localStore.get('dicts'))
+      console.log(this.$localStore.get('a'))
+      // console.log(this.$localStore.aa('a'))
+      // console.log(this.$localStore.get('dicts'))
     },
     removeStore () {
       this.$localStore.remove('a')

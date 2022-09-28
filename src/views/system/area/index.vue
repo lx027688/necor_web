@@ -25,7 +25,9 @@
       <template slot-scope="scope">{{scope.row.parent.name}}</template>
     </el-table-column>
     <el-table-column prop="level" header-align="center" align="center" label="级别" sortable="custom">
-      <template slot-scope="scope">{{convertDict(scope.row.level)}}</template>
+      <template slot-scope="scope">
+        <necor-dict-convert :code="scope.row.level"></necor-dict-convert>
+      </template>
     </el-table-column>
     <el-table-column prop="code" header-align="center" align="center" label="区域代码"></el-table-column>
     <el-table-column prop="lon" header-align="center" align="center" label="区域经度"></el-table-column>

@@ -49,10 +49,6 @@ let fetchPermissionInfo = async () => {
   let admin = loginData.admin
   // 本地保存admin
   localStore.set('admin', admin)
-  // 获取数据字典数据
-  let dicts = loginData.dicts
-  // 本地保存数据字典
-  localStore.set('dicts', dicts)
   // 获取用户系统菜单
   let systemMenus = loginData.menus
   // 定义主路由集

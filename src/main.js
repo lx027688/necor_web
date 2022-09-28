@@ -18,7 +18,8 @@ import localStore from '@/utils/localStore.js'
 
 import { getBaseSetting } from '@api/system/cache'
 
-// 导入数据字典
+// 导入组件
+import NecorDictConvert from './components/necor-dict-convert'
 import NecorDictSelect from './components/necor-dict-select'
 import NecorDictRadio from './components/necor-dict-radio'
 import NecorSelectTree from './components/necor-select-tree'
@@ -35,6 +36,7 @@ Vue.prototype.abbr = abbr
 Vue.prototype.contains = contains
 Vue.prototype.union = union
 
+Vue.component('necor-dict-convert', NecorDictConvert)
 Vue.component('necor-dict-select', NecorDictSelect)
 Vue.component('necor-dict-radio', NecorDictRadio)
 Vue.component('necor-select-tree', NecorSelectTree)

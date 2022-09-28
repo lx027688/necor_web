@@ -25,7 +25,9 @@
     <el-table-column prop="username" header-align="center" align="center" label="用户名"></el-table-column>
     <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
     <el-table-column prop="gender" header-align="center" align="center" label="性别">
-      <template slot-scope="scope">{{convertDict(scope.row.gender)}}</template>
+      <template slot-scope="scope">
+        <necor-dict-convert :code="scope.row.gender"></necor-dict-convert>
+      </template>
     </el-table-column>
     <el-table-column prop="phone" header-align="center" align="center" label="手机号"></el-table-column>
     <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">

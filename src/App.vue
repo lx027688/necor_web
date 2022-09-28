@@ -23,6 +23,12 @@ export default {
 }
 </script>
 
+<style>
+.el-table th.gutter {
+  display: table-cell !important;
+}
+</style>
+
 <style lang="scss">
 @import '~@/assets/style/public-class.scss';
 </style>

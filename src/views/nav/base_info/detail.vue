@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="国家" prop="country" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{convertDict(form.country)}}</span>
+            <necor-dict-convert :code="form.country"></necor-dict-convert>
           </el-form-item>
         </el-col>
       </el-row>
