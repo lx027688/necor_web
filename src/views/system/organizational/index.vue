@@ -5,7 +5,7 @@
         <organizational ref="organizational" @addMembers="addMembers"></organizational>
       </el-col>
       <el-col :span="12">
-        <admins-organizationals ref="adminsOrganizationals"></admins-organizationals>
+        <admins-orgs ref="adminsOrgs"></admins-orgs>
       </el-col>
     </el-row>
   </d2-container>
@@ -13,14 +13,14 @@
 
 <script>
 import organizational from './organizational'
-import adminsOrganizationals from './admins_organizationals'
+import adminsOrgs from './admins_orgs'
 
 export default {
   name: 'system-organizational',
-  components: { organizational, adminsOrganizationals },
+  components: { organizational, adminsOrgs },
   methods: {
     addMembers (id,name) {
-      this.$refs.adminsOrganizationals.selectOrganizational(id, name)
+      this.$refs.adminsOrgs.selectOrganizational(id, name)
     }
   }
 }

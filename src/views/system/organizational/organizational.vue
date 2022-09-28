@@ -9,14 +9,14 @@
     </el-form>
 
     <!-- 列表-->
-    <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border  highlight-current-row @current-change="addMembers"
+    <el-table :data="data" v-loading="loading" stripe border  highlight-current-row @current-change="addMembers"
               style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
-      <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
+      <el-table-column prop="createDate" header-align="center" align="center" label="创建时间"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="openSaveDialog('','',scope.row.id)">添加下级机构</el-button>
-          <el-button type="text" size="small" @click="openSaveDialog(scope.row.id,scope.row.name,scope.row.parent.id)">修改</el-button>
+          <el-button type="text" size="small" @click="openSaveDialog(scope.row.id,scope.row.name)">修改</el-button>
           <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -83,13 +83,6 @@ export default {
         console.log('err', err)
         this.loading = false
       })
-    },
-    sortChange (column, prop, order) {
-      this.query.orderKey = column.prop
-      this.query.orderVal = column.order
-      if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
-        this.getList()
-      }
     },
     removeHandle (id) {
       this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {

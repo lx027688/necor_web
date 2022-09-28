@@ -17,12 +17,12 @@
     <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%; margin-top:10px;margin-bottom: 20px;">
       <el-table-column header-align="center" align="center" label="管理员" width="80">
         <template slot-scope="scope">
-          <el-checkbox :value="checkedPosition(scope.row.adminsOrganizationals,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(organizational.id)"></el-checkbox>
+          <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(organizational.id)"></el-checkbox>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="组员" width="80">
         <template slot-scope="scope">
-          <el-checkbox :value="checkedPosition(scope.row.adminsOrganizationals,'107001')"  @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(organizational.id)"></el-checkbox>
+          <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107001')"  @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(organizational.id)"></el-checkbox>
         </template>
       </el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
@@ -36,11 +36,11 @@
 </template>
 
 <script>
-import { list,save } from '@api/system/admins_organizationals'
+import { list,save } from '@api/system/admins_orgs'
 import pagination from '@/components/pagination'
 
 export default {
-  name: 'admins-organizationals-index',
+  name: 'admins-orgs-index',
   components: { pagination },
   data () {
     return {
