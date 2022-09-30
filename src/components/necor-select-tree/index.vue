@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="valueTitle" :clearable="clearable" @clear="clearHandle">
+  <el-select v-model="valueTitle" :clearable="clearable" @clear="clearHandle" :placeholder="placeholder">
     <el-option v-model="valueTitle" :label="valueTitle">
       <el-tree  id="tree-option" ref="selectTree" :accordion="accordion" :data="options" :props="props" :node-key="props.value" :default-expanded-keys="defaultExpandedKey" @node-click="handleNodeClick">
       </el-tree>
@@ -26,6 +26,10 @@ export default {
     options: {
       type: Array,
       default: () => { return [] }
+    },
+    placeholder: {
+      type: String,
+      default: () => { return '请选择' }
     },
     /* 初始值 */
     value: {
