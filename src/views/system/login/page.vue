@@ -40,7 +40,7 @@
                     </template>
                   </el-input>
                 </el-form-item>
-                <el-button size="default" @click="submit" type="primary" class="button-login">
+                <el-button size="default" @click="submit" type="primary" class="button-login" native-type="submit">
                   登录
                 </el-button>
               </el-form>
