@@ -7,11 +7,9 @@
 </template>
 
 <script>
-import {dictTree} from "@api/system/dict";
 
 export default {
   name: 'necor-dict-radio',
-  componentName: 'NecorDictRadio',
   data () {
     return {
       options: [],
@@ -48,23 +46,16 @@ export default {
     }
   },
   mounted () {
-    let dict = this.$localStore.get(this.code)
+    const dict = this.getDict(this.code)
     if (this.isNotBlank(dict)) {
       this.options = []
-      let children = dict.children
+      const children = dict.children
       for (let j = 0; j < children.length; j++) {
         this.options[j] = {}
-        this.options[j].label = children[j]['name']
-        this.options[j].value = children[j]['code']
+        this.options[j].label = children[j].name
+        this.options[j].value = children[j].code
         this.options[j].key = j
       }
-    }else{
-      dictTree(this.code).then(res => {
-        // 本地保存数据字典
-        this.$localStore.set(this.code, res.data)
-      }).catch(err => {
-        console.log('err', err)
-      })
     }
   },
   methods: {

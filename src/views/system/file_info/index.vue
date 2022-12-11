@@ -29,9 +29,6 @@
       <el-table-column prop="saveName" header-align="center" align="center" label="文件存储名" width="220"></el-table-column>
       <el-table-column prop="expandName" header-align="center" align="center" label="扩展名" width="100"></el-table-column>
       <el-table-column prop="size" header-align="center" align="center" label="文件大小（B）"></el-table-column>
-      <el-table-column prop="netPath" header-align="center" align="center" label="网络路径" width="500">
-        <template slot-scope="scope"><a :href="scope.row.netPath" target="_blank">{{scope.row.netPath}}</a></template>
-      </el-table-column>
       <!--<el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small">查看</el-button>
@@ -47,7 +44,7 @@
 </template>
 
 <script>
-import { list } from '@api/fileInfo'
+import { list } from '@api/system/fileInfo'
 import pagination from '@/components/pagination'
 
 export default {
@@ -67,7 +64,7 @@ export default {
       data: []
     }
   },
-  beforeCreate() {
+  beforeCreate () {
   },
   mounted () {
     this.getList()
@@ -80,7 +77,7 @@ export default {
     getList () {
       this.loading = true
       list({ ...this.query }).then(r => {
-        let res = r.data
+        const res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false

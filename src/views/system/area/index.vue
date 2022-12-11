@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { list, getArea, remove } from '@api/area'
+import { list, getArea, remove } from '@api/system/area'
 import pagination from '@/components/pagination'
 import save from './save'
 
@@ -74,7 +74,7 @@ export default {
       saveVisible: false
     }
   },
-  beforeCreate() {
+  beforeCreate () {
   },
   mounted () {
     this.getList()
@@ -88,7 +88,7 @@ export default {
       this.loading = true
       // 开始请求登录接口
       list({ ...this.query }).then(r => {
-        let res = r.data
+        const res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false

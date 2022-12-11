@@ -1,4 +1,4 @@
-import request from '@/plugin/axios'
+import { request } from '@/api/service'
 
 export function index () {
   return request({
@@ -20,4 +20,3 @@ export function getBaseSetting () {
     method: 'post'
   })
 }
-

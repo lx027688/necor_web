@@ -78,11 +78,11 @@ import { index, buildAll, getBaseSetting } from '@api/system/cache'
 
 export default {
   name: 'system-cache',
-  components: {  },
+  components: { },
   data () {
     return {
       loading: false,
-      data: [],
+      data: []
     }
   },
   mounted () {
@@ -100,12 +100,12 @@ export default {
       })
     },
     flushCache () {
-      let self = this
+      const self = this
       buildAll().then(r => {
         self.init()
-        self.$localStore.clear();
+        // self.$localStore.clear()
         getBaseSetting().then(r1 => {
-          self.$localStore.set('basic', r1.data)
+          // self.$localStore.set('basic', r1.data)
           this.$message({
             message: '缓存刷新成功',
             type: 'success'

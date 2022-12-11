@@ -1,10 +1,31 @@
-import request from '@/plugin/axios'
+import { request } from '@/api/service'
 
 export function AccountLogin (data) {
   return request({
     url: '/login/login',
     method: 'post',
-    data
+    params: data
+  })
+}
+export function oauth2Login (data) {
+  return request({
+    url: '/oauth2/github',
+    method: 'post',
+    params: data
+  })
+}
+
+export function AccountLogout () {
+  return request({
+    url: '/login/logout',
+    method: 'post'
+  })
+}
+
+export function getLoginData () {
+  return request({
+    url: '/login/get_login_data',
+    method: 'post'
   })
 }
 
@@ -13,7 +34,7 @@ export function getCaptcha (data) {
     url: '/captcha',
     responseType: 'blob',
     method: 'post',
-    data
+    params: data
   })
 }
 

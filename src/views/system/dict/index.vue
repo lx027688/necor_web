@@ -89,7 +89,7 @@ export default {
     getList () {
       this.loading = true
       list({ ...this.query }).then(r => {
-        let res = r.data
+        const res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
@@ -135,15 +135,15 @@ export default {
       })
     },
     addStore () {
-      this.$localStore.set('a', 'cccc')
+      // this.$localStore.set('a', 'cccc')
     },
     getStore () {
-      console.log(this.$localStore.get('a'))
+      // console.log(this.$localStore.get('a'))
       // console.log(this.$localStore.aa('a'))
       // console.log(this.$localStore.get('dicts'))
     },
     removeStore () {
-      this.$localStore.remove('a')
+      // this.$localStore.remove('a')
     }
   }
 }

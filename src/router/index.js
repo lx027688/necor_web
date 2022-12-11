@@ -7,16 +7,14 @@ import 'nprogress/nprogress.css'
 
 import store from '@/store/index'
 import util from '@/libs/util.js'
+import { dbGet } from '@/libs/util.db'
+import { isURL } from '@/utils/validate'
 
+import { getLoginData } from '@/api/system/login'
+import { menuHeader } from '@/menu'
+import layoutHeaderAside from '@/layout/header-aside'
 // 路由数据
 import routes, { frameInRoutes } from './routes'
-import { menuHeader } from '@/menu'
-import { getLoginData } from '@/api/menu'
-
-import { isURL } from '@/utils/validate'
-import layoutHeaderAside from '@/layout/header-aside'
-
-import localStore from '@/utils/localStore.js'
 
 // fix vue-router NavigationDuplicated
 const VueRouterPush = VueRouter.prototype.push
@@ -32,114 +30,82 @@ Vue.use(VueRouter)
 
 // 导出路由 在 main.js 里使用
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
 // 获取登录数据
 let isFetchPermissionInfo = false
-// 拉取登录数据
-let fetchPermissionInfo = async () => {
-  // 获取登录数据
-  let loginData = await getLoginData().catch(err => {
-    router.replace('/login')
-    localStore.remove('admin')
-    console.log('错误信息', err)
-  })
-  // 获取登录用户数据
-  let admin = loginData.admin
-  // 本地保存admin
-  localStore.set('admin', admin)
-  // 获取用户系统菜单
-  let systemMenus = loginData.menus
-  // 定义主路由集
-  let mainRoutes = []
 
-  // 遍历菜单,处理动态路由
-  for (let i = 0; i < systemMenus.length; i++) {
-    if (systemMenus[i].menuType === '103000') { //  判断菜单是否时按钮
-      let mainPath = ''
-      // 设置菜单的path 属性 后端会将path为空的属性处理掉
-      if (systemMenus[i].path !== null && systemMenus[i].path !== '' && typeof systemMenus[i].path !== 'undefined') {
-        mainPath = systemMenus[i].path
-      } else {
-        systemMenus[i].path = ''
-      }
-      // 定义子路由
-      let routeChildren = []
-      // 初始化主路由
-      let mainRoute = { name: mainPath.replace('/', ''), children: routeChildren, path: mainPath, redirect: { name: '404' }, component: layoutHeaderAside }
-      // 初始化主路由下的路由
-      handleMenuAndRoutes(systemMenus[i].children, routeChildren)
-      // 将主路由添加至主路由集
-      mainRoutes.push(mainRoute)
-      // 动态添加至路由
-      router.addRoutes(mainRoutes)
-    }
-  }
-
-  // 设置系统菜单 本地静态菜单数据+后端动态菜单数据
-  systemMenus = [...menuHeader, ...systemMenus]
-
-  // 处理路由 得到每一级的路由设置
-  store.commit('d2admin/page/init', [...frameInRoutes, ...mainRoutes])
-  // 设置顶栏菜单
-  store.commit('d2admin/menu/headerSet', systemMenus)
-  // 设置侧边栏菜单
-  store.commit('d2admin/menu/fullAsideSet', systemMenus)
-  // 初始化菜单搜索功能
-  store.commit('d2admin/search/init', systemMenus)
-}
 // 免校验token白名单
-let whiteList = ['/login']
+const whiteList = ['/login', '/oauth2']
 
 /**
  * 路由拦截
  * 权限验证
  */
 router.beforeEach(async (to, from, next) => {
+  // 确认已经加载多标签页数据 https://github.com/d2-projects/d2-admin/issues/201
+  await store.dispatch('d2admin/page/isLoaded')
+  // 确认已经加载组件尺寸设置 https://github.com/d2-projects/d2-admin/issues/198
+  await store.dispatch('d2admin/size/isLoaded')
   // 进度条
   NProgress.start()
   // 关闭搜索面板
   store.commit('d2admin/search/set', false)
-  // 获取登录token
-  const token = util.cookies.get('token')
-  // 判断跳转非登录页
+  // 验证当前路由所有的匹配中是否需要有登录验证的
   if (whiteList.indexOf(to.path) === -1) {
-    // 判断登录token是否有值
-    if (token && token !== 'undefined') { // token值存在
-      // 获取本地存储的用户信息
-      let admin = localStore.get('admin')
-      // 如果本地存储用户信息不存在且拉取登录数据标识为false 则请求后端拉取登录数据
-      if (admin === null || admin === '' || typeof admin === 'undefined' || !isFetchPermissionInfo) {
+    // 这里暂时将cookie里是否存有token作为验证是否登录的条件
+    // 请根据自身业务需要修改
+    const token = util.cookies.get('token')
+    if (token && token !== 'undefined') {
+      const user = dbGet({
+        dbName: 'sys',
+        path: 'user',
+        user: true
+      })
+      const name = user.info.name
+      if (name && name !== 'undefined' && !isFetchPermissionInfo) {
         // 请求拉取登录数据
-        await fetchPermissionInfo()
+        await loadMenu()
         // 拉取登录数据标识设为true 表示已拉取
         isFetchPermissionInfo = true
         // 跳转至请求页面
         next(to.path, true)
-      } else { // 登录数据已拉取
+      } else {
         next()
       }
-    } else { // token不存在 表示没有登录
-      // 将当前预计打开的页面完整地址临时存储 登录后继续跳转
-      // 这个 cookie(redirect) 会在登录后自动删除
-      util.cookies.set('redirect', to.fullPath)
+    } else {
       // 没有登录的时候跳转到登录界面
+      // 携带上登陆成功之后需要跳转的页面完整路径
       next({
-        name: 'login'
+        name: 'login',
+        query: {
+          redirect: to.fullPath
+        }
       })
+      // https://github.com/d2-projects/d2-admin/issues/138
+      NProgress.done()
     }
-  } else { // 跳转至登录页或三方页面
+  } else {
     if (to.name === 'login') { // 登录页面
-      // 获取本地存储的用户信息
-      let admin = localStore.get('admin')
+      // 请根据自身业务需要修改
+      const token = util.cookies.get('token')
+      const user = dbGet({
+        dbName: 'sys',
+        path: 'user',
+        user: true
+      })
+      const name = user.info.name
       // 如果已经登录，则直接进入系统
-      if (token && token !== undefined && admin !== null && admin !== '' && typeof admin !== 'undefined') {
+      if (token && token !== undefined && name !== null && name !== '' && typeof name !== 'undefined') {
         next(from.path, true)
         NProgress.done()
       } else {
         next()
       }
+    } else if (to.name === 'login') { // 登录页面
+
     } else { // 三方页面 无需登录的页面
       next()
     }
@@ -155,6 +121,58 @@ router.afterEach(to => {
   util.title(to.meta.title)
 })
 
+/**
+ * 加载菜单
+ */
+// eslint-disable-next-line no-unused-vars
+async function loadMenu () {
+  // 获取登录数据
+  const loginData = await getLoginData().catch(err => {
+    router.replace('/login')
+    console.log('错误信息', err)
+  })
+
+  // 获取用户系统菜单
+  const systemMenus = loginData.menus
+  // 定义主路由集
+  const mainRoutes = []
+
+  // 遍历菜单,处理动态路由
+  for (let i = 0; i < systemMenus.length; i++) {
+    if (systemMenus[i].menuType === '103000') { //  判断菜单是否时按钮
+      let mainPath = ''
+      // 设置菜单的path 属性 后端会将path为空的属性处理掉
+      if (systemMenus[i].path !== null && systemMenus[i].path !== '' && typeof systemMenus[i].path !== 'undefined') {
+        mainPath = systemMenus[i].path
+      } else {
+        systemMenus[i].path = ''
+      }
+      // 定义子路由
+      const routeChildren = []
+      // 初始化主路由
+      const mainRoute = { name: mainPath.replace('/', ''), children: routeChildren, path: mainPath, redirect: { name: '404' }, component: layoutHeaderAside }
+      // 初始化主路由下的路由
+      handleMenuAndRoutes(systemMenus[i].children, routeChildren)
+      // 将主路由添加至主路由集
+      mainRoutes.push(mainRoute)
+      // 动态添加至路由
+      router.addRoutes(mainRoutes)
+    }
+  }
+
+  // 设置系统菜单 本地静态菜单数据+后端动态菜单数据
+  const menus = [...menuHeader, ...systemMenus]
+  frameInRoutes.push.apply(frameInRoutes, mainRoutes)
+  // 处理路由 得到每一级的路由设置
+  store.commit('d2admin/page/init', [...frameInRoutes])
+  // 设置顶栏菜单
+  store.commit('d2admin/menu/headerSet', menus)
+  // 设置侧边栏菜单
+  store.commit('d2admin/menu/asideSet', menus)
+  // 初始化菜单搜索功能
+  store.commit('d2admin/search/init', menus)
+}
+
 // 由于懒加载页面太多的话会造成webpack热更新太慢，所以开发环境不使用懒加载，只有生产环境使用懒加载
 const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 
@@ -169,10 +187,10 @@ function handleMenuAndRoutes (systemMenuList = [], routes = []) {
       handleMenuAndRoutes(systemMenuList[i].children, routes)
     } else if (systemMenuList[i].path && /\S/.test(systemMenuList[i].path)) {
       // 处理路由
-      let id = systemMenuList[i].id
-      let title = systemMenuList[i].title
-      let path = systemMenuList[i].path
-      let route = {
+      const id = systemMenuList[i].id
+      const title = systemMenuList[i].title
+      const path = systemMenuList[i].path
+      const route = {
         path: path,
         component: null,
         name: path,
@@ -186,12 +204,12 @@ function handleMenuAndRoutes (systemMenuList = [], routes = []) {
       }
       // url以http[s]://开头, 通过iframe展示
       if (isURL(systemMenuList[i].url)) {
-        route['path'] = `i-${systemMenuList[i].menuId}`
-        route['name'] = `i-${systemMenuList[i].menuId}`
-        route['meta']['iframeUrl'] = systemMenuList[i].url
+        route.path = `i-${systemMenuList[i].id}`
+        route.name = `i-${systemMenuList[i].id}`
+        route.meta.iframeUrl = systemMenuList[i].url
       } else {
         try {
-          route['component'] = _import(`${path.replace(/^\//, '')}`) || null
+          route.component = _import(`${path.replace(/^\//, '')}`) || null
         } catch (e) {
         }
       }
@@ -199,4 +217,5 @@ function handleMenuAndRoutes (systemMenuList = [], routes = []) {
     }
   }
 }
+
 export default router

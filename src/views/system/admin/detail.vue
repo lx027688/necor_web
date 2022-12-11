@@ -48,7 +48,7 @@
 
 <script>
 
-import { detail } from '@api/admin'
+import { detail } from '@api/system/admin'
 
 export default {
   data () {
@@ -74,7 +74,7 @@ export default {
       this.visible = true
 
       this.$nextTick(() => {
-        this.$refs['detailForm'].resetFields()
+        this.$refs.detailForm.resetFields()
         if (this.form.id) {
           detail(id).then(r => {
             this.form = r.data

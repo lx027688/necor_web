@@ -1,29 +1,51 @@
-import {dictTree} from "@api/system/dict"
+import { dictTree } from '@api/system/dict'
+import { dbSet, dbGet } from '@/libs/util.db'
 
-export function convertDict (code) {
-  if(isBlank(code)){
-    return ;
+export function getDict (code) {
+  if (isBlank(code)) {
+    return
   }
-  let dict = this.$localStore.get(code)
+  let dict = dbGet({ path: code, user: false })
   if (this.isBlank(dict)) {
-    let parentCode = code.slice(0, code.length-3)
-    dict = this.$localStore.get(parentCode)
-    if(this.isBlank(dict)){
-      dictTree(parentCode).then(res => {
+    if (code.length === 3) {
+      dictTree(code).then(res => {
         // 本地保存数据字典
-        this.$localStore.set(parentCode, res.data)
+        dbSet({
+          path: code,
+          value: res.data,
+          user: false
+        })
 
-        let d = res.data.children.filter(e=> e.code === code)
-        return this.isNotBlank(d)?d[0].name:''
+        return res.data
       }).catch(err => {
         console.log('err', err)
       })
-    }else {
-      let d = dict.children.filter(e=> e.code === code)
-      return this.isNotBlank(d)?d[0].name:''
     }
-  }else {
-    return dict.name
+    const parentCode = code.slice(0, code.length - 3)
+    dict = dbGet({
+      path: parentCode,
+      user: false
+    })
+    if (this.isBlank(dict)) {
+      dictTree(parentCode).then(res => {
+        // 本地保存数据字典
+        dbSet({
+          path: parentCode,
+          value: res.data,
+          user: false
+        })
+
+        const d = res.data.children.filter(e => e.code === code)
+        return this.isNotBlank(d) ? d[0] : ''
+      }).catch(err => {
+        console.log('err', err)
+      })
+    } else {
+      const d = dict.children.filter(e => e.code === code)
+      return this.isNotBlank(d) ? d[0] : ''
+    }
+  } else {
+    return dict
   }
 }
 
@@ -32,21 +54,21 @@ export function isBlank (value) {
 }
 
 export function isNotBlank (value) {
-  return !this.isBlank(value)
+  return !isBlank(value)
 }
 
-export function abbr (str,length,ellipsis) {
-  if(this.isNotBlank(str) && !isNaN(length) && str.length > length){
-    if(this.isBlank(ellipsis)){
+export function abbr (str, length, ellipsis) {
+  if (isNotBlank(str) && !isNaN(length) && str.length > length) {
+    if (isBlank(ellipsis)) {
       ellipsis = '...'
     }
-    return str.substring(0,length) + ellipsis;
-  }else{
+    return str.substring(0, length) + ellipsis
+  } else {
     return str
   }
 }
 
-export function contains (arr= [],item) {
+export function contains (arr = [], item) {
   return arr.indexOf(item) !== -1
 }
 
@@ -56,7 +78,7 @@ export function contains (arr= [],item) {
  * @param arr2
  * @returns {*[]}
  */
-export function union (arr1,arr2){
-  let arr = Array.from(new Set([...arr1, ...arr2]));
+export function union (arr1, arr2) {
+  const arr = Array.from(new Set([...arr1, ...arr2]))
   return arr
 }

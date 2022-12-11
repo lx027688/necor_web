@@ -9,38 +9,17 @@ import store from '@/store/index'
 
 // 菜单和路由设置
 import router from './router'
+// import { menuHeader, menuAside } from '@/menu'
+// import { frameInRoutes } from '@/router/routes'
 
-// 引入公共的js文件
-import {convertDict, isBlank, isNotBlank, abbr, contains, union} from '@/utils/common.js'
+import { getDict, isBlank, isNotBlank, abbr, contains, union } from '@/utils/common.js'
 
-// 引入封装好的js文件的路径
-import localStore from '@/utils/localStore.js'
-
-import { getBaseSetting } from '@api/system/cache'
-
-// 导入组件
-import NecorDictConvert from './components/necor-dict-convert'
-import NecorDictSelect from './components/necor-dict-select'
-import NecorDictRadio from './components/necor-dict-radio'
-import NecorSelectTree from './components/necor-select-tree'
-import NecorSelectTreeLazy from './components/necor-select-tree-lazy'
-import util from "@/libs/util";
-
-// 把全局js挂接到vue原型上
-Vue.prototype.$localStore = localStore
-
-Vue.prototype.convertDict = convertDict
+Vue.prototype.getDict = getDict
 Vue.prototype.isBlank = isBlank
 Vue.prototype.isNotBlank = isNotBlank
 Vue.prototype.abbr = abbr
 Vue.prototype.contains = contains
 Vue.prototype.union = union
-
-Vue.component('necor-dict-convert', NecorDictConvert)
-Vue.component('necor-dict-select', NecorDictSelect)
-Vue.component('necor-dict-radio', NecorDictRadio)
-Vue.component('necor-select-tree', NecorSelectTree)
-Vue.component('necor-select-tree-lazy', NecorSelectTreeLazy)
 
 // 核心插件
 Vue.use(d2Admin)
@@ -51,6 +30,14 @@ new Vue({
   i18n,
   render: h => h(App),
   created () {
+    // // 处理路由 得到每一级的路由设置
+    // this.$store.commit('d2admin/page/init', frameInRoutes)
+    // // 设置顶栏菜单
+    // this.$store.commit('d2admin/menu/headerSet', menuHeader)
+    // // 设置侧边栏菜单
+    // this.$store.commit('d2admin/menu/asideSet', menuAside)
+    // // 初始化菜单搜索功能
+    // this.$store.commit('d2admin/search/init', menuHeader)
   },
   mounted () {
     // 展示系统信息
@@ -61,31 +48,5 @@ new Vue({
     this.$store.commit('d2admin/ua/get')
     // 初始化全屏监听
     this.$store.dispatch('d2admin/fullscreen/listen')
-
-    const token = util.cookies.get('token')
-    if (token && token !== 'undefined') {// token值存在
-      this.getSystemBasicInfo()
-    }
-  },
-  watch: {
-    // 检测路由变化切换侧边栏内容
-    '$route.matched': {
-      handler (matched) {
-        if (matched.length > 0) {
-          let fullAside = this.$store.state.d2admin.menu.fullAside
-          const _side = fullAside.filter(menu => menu.path === matched[0].path)
-          this.$store.commit('d2admin/menu/asideSet', _side.length > 0 ? _side[0].children : [])
-        }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    getSystemBasicInfo () {
-      getBaseSetting().then(r => {
-        // console.log(r)
-        this.$localStore.set('basic', r.data)
-      })
-    }
   }
 }).$mount('#app')

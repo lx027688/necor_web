@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { list, remove, updateEnable, getMenusByRole, saveRoleMenu } from '@api/role'
+import { list, remove, updateEnable, getMenusByRole, saveRoleMenu } from '@api/system/role'
 import pagination from '@/components/pagination'
 import save from './save'
 
@@ -94,7 +94,7 @@ export default {
     getList () {
       this.loading = true
       list({ ...this.query }).then(r => {
-        let res = r.data
+        const res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.loading = false
@@ -140,7 +140,7 @@ export default {
       })
     },
     updateRoleEnable (id, isEnable) {
-      let params = new FormData()
+      const params = new FormData()
       params.append('id', id)
       isEnable = isEnable === '100000' ? '100001' : '100000'
       params.append('isEnable', isEnable)
@@ -153,14 +153,15 @@ export default {
       })
     },
     getMenus (id) {
-      let that = this
+      const that = this
       this.selectMenuIds = []
-      let params = new FormData()
-      if (this.isNotBlank(id)) {
-        params.append('roleId', id)
+      if (this.isBlank(id)) {
+        return
       }
+      const params = new FormData()
+      params.append('roleId', id)
       getMenusByRole(params).then(r => {
-        let res = r.data
+        const res = r.data
         this.menuList = res.menus
         if (this.isNotBlank(res.roleMenus)) {
           res.roleMenus.map(function (v) {
@@ -176,8 +177,8 @@ export default {
           type: 'warning'
         })
       } else {
-        let params = new FormData()
-        let menuIds = []
+        const params = new FormData()
+        const menuIds = []
         this.$refs.tree.getCheckedNodes(false, true).map(function (v) {
           menuIds.push(v.id)
         })

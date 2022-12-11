@@ -64,14 +64,14 @@ export default {
         this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label] // 初始化显示
         this.$refs.selectTree.setCurrentKey(this.valueId) // 设置默认选中
         this.defaultExpandedKey = [this.valueId] // 设置默认展开
-      }else {
+      } else {
         this.valueTitle = ''
         this.$refs.selectTree.setCurrentKey('') // 设置默认选中
         this.defaultExpandedKey = []
       }
       this.$nextTick(() => {
-        let scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0]
-        let scrollBar = document.querySelectorAll('.el-scrollbar .el-scrollbar__bar')
+        const scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0]
+        const scrollBar = document.querySelectorAll('.el-scrollbar .el-scrollbar__bar')
         scrollWrap.style.cssText = 'margin: 0px; max-height: none; overflow: hidden;'
         scrollBar.forEach(ele => {
           ele.style.width = 0
@@ -96,7 +96,7 @@ export default {
     },
     /* 清空选中样式 */
     clearSelected () {
-      let allNode = document.querySelectorAll('#tree-option .el-tree-node')
+      const allNode = document.querySelectorAll('#tree-option .el-tree-node')
       allNode.forEach((element) => element.classList.remove('is-current'))
     }
   },

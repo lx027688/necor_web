@@ -1,4 +1,4 @@
-import request from '@/plugin/axios'
+import { request } from '@/api/service'
 
 export function list (data) {
   return request({

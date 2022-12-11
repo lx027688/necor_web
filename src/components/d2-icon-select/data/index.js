@@ -4,7 +4,6 @@ export default [
   {
     title: '网页',
     icon: [
-      'icon system i-dianhua',
       'address-book',
       'address-book-o',
       'address-card',

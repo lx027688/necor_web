@@ -8,7 +8,6 @@
     <div class="page-login--layer page-login--layer-time" flex="main:center cross:center">
       {{time}}
     </div>
-
     <div class="page-login--layer">
       <div class="page-login--content" flex="dir:top main:justify cross:stretch box:justify">
         <div class="page-login--content-header">
@@ -40,16 +39,12 @@
                     </template>
                   </el-input>
                 </el-form-item>
-                <el-button size="default" @click="submit" type="primary" class="button-login" native-type="submit">
-                  登录
-                </el-button>
+                <el-button size="default" @click="submit" type="primary" class="button-login" v-loading.fullscreen.lock="loginLoading">登录</el-button>
               </el-form>
             </el-card>
             <p class="page-login--options" flex="main:justify cross:center">
-              <span>
-                <d2-icon name="question-circle" /> 忘记密码
-              </span>
-              <span @click="downloadAgreement">下载协议</span>
+              <span><d2-icon name="question-circle"/> 忘记密码</span>
+              <span>注册用户</span>
             </p>
             <!-- quick login -->
             <el-button class="page-login--quick" size="default" type="info" @click="dialogVisible = true">
@@ -65,13 +60,14 @@
           </p>
           <p class="page-login--content-footer-copyright">
             Copyright
-            <d2-icon name="copyright" />
+            <d2-icon name="copyright"/>
             2018 D2 Projects 开源组织出品
             <a href="https://github.com/FairyEver">
               @FairyEver
             </a>
           </p>
           <p class="page-login--content-footer-options">
+            <a href="https://github.com/login/oauth/authorize?client_id=a07f932223a859b9fccf&state=github&redirect_uri=http://localhost:9527/oauth2">github</a>
             <a href="#">帮助</a>
             <a href="#">隐私</a>
             <a href="#">条款</a>
@@ -79,10 +75,7 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      title="快速选择用户"
-      :visible.sync="dialogVisible"
-      width="400px">
+    <el-dialog title="快速选择用户" :visible.sync="dialogVisible" width="400px">
       <el-row :gutter="10" style="margin: -20px 0px -10px 0px;">
         <el-col v-for="(user, index) in users" :key="index" :span="8">
           <div class="page-login--quick-user" @click="handleUserBtnClick(user)">
@@ -99,7 +92,8 @@
 import dayjs from 'dayjs'
 import { mapActions } from 'vuex'
 import localeMixin from '@/locales/mixin.js'
-import { getCaptcha,agreement } from '@api/system/login'
+import { getCaptcha, agreement } from '@api/system/login'
+import { dbDel, dbGet, dbSet } from '@/libs/util.db'
 
 export default {
   mixins: [
@@ -111,11 +105,12 @@ export default {
       time: dayjs().format('HH:mm:ss'),
       // 快速选择用户
       dialogVisible: false,
+      loginLoading: false,
       users: [
         {
           name: 'Admin',
-          username: 'lx027688',
-          password: '123456lx'
+          username: 'admin',
+          password: 'admin'
         },
         {
           name: 'Editor',
@@ -191,51 +186,55 @@ export default {
      */
     // 提交登录信息
     submit () {
+      this.loginLoading = true
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           // base64加密
-          let Base64 = require('js-base64').Base64
+          const Base64 = require('js-base64').Base64
           // 登录
-          // 注意 这里的演示没有传验证码
-          // 具体需要传递的数据请自行修改代码
-          this.login({ username: this.formLogin.username, password: Base64.encode(this.formLogin.password), captcha: this.formLogin.code}).then(() => {
+          this.login({
+            username: this.formLogin.username,
+            password: Base64.encode(this.formLogin.password),
+            captcha: this.formLogin.code
+          }).then(() => {
+            dbDel({ path: 'acctoken', user: true })
             // 重定向对象不存在则返回顶层路径
             this.$router.replace(this.$route.query.redirect || '/')
+            this.loginLoading = false
           }).catch(err => {
+            console.log(err)
+            this.loginLoading = false
             this.captcha()
           })
+        } else {
+          this.loginLoading = false
+          // 登录表单校验失败
+          // this.$message.error('表单校验失败，请检查')
         }
       })
     },
-    captcha () {
-
+    async captcha () {
       var params = new URLSearchParams()
-      params.append('accToken', this.getAccToken())
+      const accToken = await this.getAccToken()
+      params.append('accToken', accToken)
       getCaptcha(params).then(res => {
         this.loginCaptcha = window.URL.createObjectURL(res)
       })
     },
-    downloadAgreement () {
-      agreement().then(res => {
-        if (!res) {
-          return
-        }
-        let url = window.URL.createObjectURL(new Blob([res]))
-        let link = document.createElement('a')
-        link.style.display = 'none'
-        link.href = url
-        link.setAttribute('download', '注册协议.pdf')
-        document.body.appendChild(link)
-        link.click()
+    async getAccToken () {
+      let acctoken = dbGet({
+        path: 'acctoken',
+        user: true
       })
-    },
-    getAccToken(){
-      let acctoken = this.$localStore.get('accToken')
-      if(this.isBlank(acctoken)){
+      if (this.isBlank(acctoken)) {
         // base64加密
-        let Base64 = require('js-base64').Base64
-        acctoken = Base64.encode(new Date().getTime())
-        this.$localStore.set('accToken', acctoken)
+        const base64 = require('js-base64').Base64
+        acctoken = base64.encode(new Date().getTime())
+        dbSet({
+          path: 'acctoken',
+          value: acctoken,
+          user: true
+        })
       }
       return acctoken
     }

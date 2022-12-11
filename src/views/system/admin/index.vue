@@ -70,15 +70,15 @@
     <!-- 弹窗, 详情 -->
     <detail v-if="detailVisible" ref="detail"></detail>
 
-    <el-dialog title="角色配置" :visible.sync="configRoleVisible" width="35%" center>
+    <el-dialog title="角色配置" :visible.sync="configRoleVisible" width="45%" center>
       <el-transfer v-model="selectRoles" :data="roles" @change="updateRole" :titles="['所有角色', '已选角色']"></el-transfer>
     </el-dialog>
   </d2-container>
 </template>
 
 <script>
-import { list, remove, updateEnable, resetPassword, saveRoles, exportAdmin } from '@api/admin'
-import { all } from '@api/role'
+import { list, remove, updateEnable, resetPassword, saveRoles, exportAdmin } from '@api/system/admin'
+import { all } from '@api/system/role'
 import pagination from '@/components/pagination'
 import save from './save'
 import detail from './detail'
@@ -99,9 +99,9 @@ export default {
         orderVal: ''
       },
       data: [],
-      userStatistics:{
+      userStatistics: {
         total: 0,
-        online: 0,
+        online: 0
       },
       saveVisible: false,
       detailVisible: false,
@@ -111,7 +111,7 @@ export default {
       selectRoles: []
     }
   },
-  beforeCreate() {
+  beforeCreate () {
   },
   mounted () {
     this.getList()
@@ -124,7 +124,7 @@ export default {
     getList () {
       this.loading = true
       list({ ...this.query }).then(r => {
-        let res = r.data
+        const res = r.data
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.userStatistics.total = res.recordsTotal
@@ -182,7 +182,7 @@ export default {
       })
     },
     updateAdminEnable (id, isEnable) {
-      let params = new FormData()
+      const params = new FormData()
       params.append('id', id)
       isEnable = isEnable === '100000' ? '100001' : '100000'
       params.append('isEnable', isEnable)
@@ -195,7 +195,7 @@ export default {
       })
     },
     resetAdminPassword (id) {
-      let params = new FormData()
+      const params = new FormData()
       params.append('id', id)
       resetPassword(params).then(res => {
         this.$message({
@@ -208,10 +208,10 @@ export default {
       this.roles = []
       this.selectRoles = roles
       this.currentAdmin = id
-      let that = this
+      const that = this
       this.configRoleVisible = true
       all().then(r => {
-        let res = r.data
+        const res = r.data
         res.map(function (v) {
           that.roles.push({
             key: v.id,
@@ -223,7 +223,7 @@ export default {
       })
     },
     updateRole () {
-      let params = new FormData()
+      const params = new FormData()
       params.append('adminId', this.currentAdmin)
       params.append('roleIds[]', this.selectRoles)
       saveRoles(params).then(res => {
@@ -234,8 +234,8 @@ export default {
         if (!res) {
           return
         }
-        let url = window.URL.createObjectURL(new Blob([res]))
-        let link = document.createElement('a')
+        const url = window.URL.createObjectURL(new Blob([res]))
+        const link = document.createElement('a')
         link.style.display = 'none'
         link.href = url
         link.setAttribute('download', '管理员.xlsx')

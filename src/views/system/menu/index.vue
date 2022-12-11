@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { findMenuTreeList, saveMenu, removeMenu, menuDetail } from '@api/menu'
+import { findMenuTreeList, saveMenu, removeMenu, menuDetail } from '@api/system/menu'
 export default {
   name: 'system-menu',
   data () {
@@ -88,7 +88,7 @@ export default {
         menuType: ''
       },
       saveRules: {
-        name: [ { required: true, message: '请输入菜单名', trigger: 'blur' } ]
+        name: [{ required: true, message: '请输入菜单名', trigger: 'blur' }]
       }
     }
   },
@@ -111,7 +111,7 @@ export default {
         this.form.parentId = this.menuId
       } else if (this.model === 'edit') {
         menuDetail(this.menuId).then(res => {
-          let r = res.data
+          const r = res.data
           this.form = r
           this.form.parentId = r.parent.id
           this.parentName = r.parent.name

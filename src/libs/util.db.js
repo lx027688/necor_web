@@ -3,7 +3,7 @@ import LocalStorage from 'lowdb/adapters/LocalStorage'
 import util from '@/libs/util'
 import { cloneDeep } from 'lodash'
 
-const adapter = new LocalStorage(`d2admin-${process.env.VUE_APP_VERSION}`)
+const adapter = new LocalStorage(`${process.env.VUE_APP_NAME}-${process.env.VUE_APP_VERSION}`)
 const db = low(adapter)
 
 db
@@ -77,14 +77,30 @@ export function dbGet ({
   defaultValue = '',
   user = false
 }) {
-  return new Promise(resolve => {
-    resolve(cloneDeep(db.get(pathInit({
-      dbName,
-      path,
-      user,
-      defaultValue
-    })).value()))
-  })
+  return cloneDeep(db.get(pathInit({
+    dbName,
+    path,
+    user,
+    defaultValue
+  })).value())
+}
+
+/**
+ * @description 删除数据
+ * @param {Object} payload dbName {String} 数据库名称
+ * @param {Object} payload path {String} 存储路径
+ * @param {Object} payload user {Boolean} 是否区分用户
+ */
+export function dbDel ({
+  dbName = 'database',
+  path = '',
+  user = false
+}) {
+  db.unset(pathInit({
+    dbName,
+    path,
+    user
+  })).write()
 }
 
 /**
@@ -98,9 +114,7 @@ export function database ({
   validator = () => true,
   defaultValue = ''
 } = {}) {
-  return new Promise(resolve => {
-    resolve(db.get(pathInit({
-      dbName, path, user, validator, defaultValue
-    })))
-  })
+  return db.get(pathInit({
+    dbName, path, user, validator, defaultValue
+  }))
 }

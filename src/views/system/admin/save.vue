@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
-    <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px">
+    <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username"></el-input>
       </el-form-item>
@@ -41,12 +41,13 @@
 
 <script>
 
-import { save, detail, validateRepeatUsername, validateRepeatIdCard, validateRepeatEmail, validateRepeatMobile } from '@api/admin'
+import { save, detail, validateRepeatUsername, validateRepeatIdCard, validateRepeatEmail, validateRepeatMobile } from '@api/system/admin'
 
 export default {
   data () {
     return {
       visible: false,
+      loading: false,
       form: {
         id: '',
         username: '',
@@ -143,14 +144,14 @@ export default {
       this.fileListLength = 0
 
       this.$nextTick(() => {
-        this.$refs['saveForm'].resetFields()
+        this.$refs.saveForm.resetFields()
         this.fileList = []
         if (this.form.id) {
           detail(id).then(res => {
-            let r = res.data
+            const r = res.data
             this.form = r
             if (r.headPortrait !== null && r.headPortrait !== '') {
-              let file = {
+              const file = {
                 name: r.headPortrait.split('.')[r.headPortrait.split('.').length - 1],
                 url: r.headPortrait
               }
@@ -162,15 +163,13 @@ export default {
       })
     },
     saveAdmin () {
-      this.$refs['saveForm'].validate((valid) => {
+      this.loading = true
+      this.$refs.saveForm.validate((valid) => {
         if (valid) {
           this.$refs.upload.submit()
-          // // base64加密
-          // let Base64 = require('js-base64').Base64
-          // this.form.password = Base64.encode(this.form.password)
           // 封装入参
-          let params = new FormData()
-          for (let key of Object.keys(this.form)) {
+          const params = new FormData()
+          for (const key of Object.keys(this.form)) {
             if (this.isNotBlank(this.form[key])) {
               params.append(key, this.form[key])
             }
@@ -185,12 +184,16 @@ export default {
               message: '保存成功',
               type: 'success'
             })
-            this.$refs['saveForm'].resetFields()
+            this.$refs.saveForm.resetFields()
             this.$emit('refreshList')
+            this.loading = false
             this.visible = false
           }).catch(err => {
+            this.loading = false
             console.log('err', err)
           })
+        } else {
+          this.loading = false
         }
       })
     },

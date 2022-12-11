@@ -1,6 +1,6 @@
 <template>
 <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
-  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="150px">
+  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="150px" v-loading="loading">
     <el-form-item label="所属地区" prop="parentId">
       <necor-select-tree-lazy v-model="form.parentId" @load="loadArea" :label="form.parentName"></necor-select-tree-lazy>
     </el-form-item>
@@ -37,7 +37,7 @@
 
 <script>
 
-import { save, detail, getArea } from '@api/area'
+import { save, detail, getArea } from '@api/system/area'
 
 export default {
   data () {
@@ -57,13 +57,13 @@ export default {
         parentName: ''
       },
       saveRule: {
-        name: [ { required: true, message: '请输入区域名称', trigger: 'blur' } ],
-        code: [ { required: true, message: '请输入区域代码', trigger: 'blur' } ],
-        zipCode: [ { required: true, message: '请输入区域邮编', trigger: 'blur' } ],
-        lon: [ { required: true, message: '请输入区域经度', trigger: 'blur' } ],
-        lat: [ { required: true, message: '请输入区域纬度', trigger: 'blur' } ],
-        simpleName: [ { required: true, message: '请输入区域简称', trigger: 'blur' } ],
-        wholeName: [ { required: true, message: '请输入区域完整名称', trigger: 'blur' } ]
+        name: [{ required: true, message: '请输入区域名称', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入区域代码', trigger: 'blur' }],
+        zipCode: [{ required: true, message: '请输入区域邮编', trigger: 'blur' }],
+        lon: [{ required: true, message: '请输入区域经度', trigger: 'blur' }],
+        lat: [{ required: true, message: '请输入区域纬度', trigger: 'blur' }],
+        simpleName: [{ required: true, message: '请输入区域简称', trigger: 'blur' }],
+        wholeName: [{ required: true, message: '请输入区域完整名称', trigger: 'blur' }]
       },
       areas: [],
       placeholder: '请选择地区'
@@ -75,10 +75,10 @@ export default {
       this.visible = true
 
       this.$nextTick(() => {
-        this.$refs['saveForm'].resetFields()
+        this.$refs.saveForm.resetFields()
         if (this.form.id) {
           detail(id).then(res => {
-            let r = res.data
+            const r = res.data
             this.form = r
             this.form.parentId = r.parent.id
             this.form.parentName = r.parent.name
@@ -87,19 +87,24 @@ export default {
       })
     },
     saveData () {
-      this.$refs['saveForm'].validate((valid) => {
+      this.loading = true
+      this.$refs.saveForm.validate((valid) => {
         if (valid) {
           save(this.form).then(r => {
             this.$message({
               message: '保存成功',
               type: 'success'
             })
-            this.$refs['saveForm'].resetFields()
+            this.$refs.saveForm.resetFields()
             this.$emit('refreshList')
+            this.loading = false
             this.visible = false
           }).catch(err => {
+            this.loading = false
             console.log('err', err)
           })
+        } else {
+          this.loading = false
         }
       })
     },
@@ -112,7 +117,7 @@ export default {
         })
       }
       if (node.level >= 1) {
-        let params = new FormData()
+        const params = new URLSearchParams()
         params.append('parentId', node.data.id)
         getArea(params).then(r => {
           return resolve(r.data)
