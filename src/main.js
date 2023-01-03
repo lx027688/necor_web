@@ -12,8 +12,9 @@ import router from './router'
 // import { menuHeader, menuAside } from '@/menu'
 // import { frameInRoutes } from '@/router/routes'
 
-import { getDict, isBlank, isNotBlank, abbr, contains, union } from '@/utils/common.js'
+import { loadDict, getDict, isBlank, isNotBlank, abbr, contains, union } from '@/utils/common.js'
 
+Vue.prototype.loadDict = loadDict
 Vue.prototype.getDict = getDict
 Vue.prototype.isBlank = isBlank
 Vue.prototype.isNotBlank = isNotBlank

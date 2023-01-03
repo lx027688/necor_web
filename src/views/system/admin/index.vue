@@ -114,7 +114,9 @@ export default {
   beforeCreate () {
   },
   mounted () {
-    this.getList()
+    this.loadDict(['101']).then(() => {
+      this.getList()
+    })
   },
   methods: {
     search () {

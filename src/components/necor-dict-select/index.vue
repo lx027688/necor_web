@@ -8,9 +8,6 @@
 
 <script>
 
-import { dbSet, dbGet } from '@/libs/util.db'
-import { dictTree } from '@api/system/dict'
-
 export default {
   name: 'necor-dict-select',
   componentName: 'NecorDictSelect',
@@ -53,9 +50,27 @@ export default {
       }
     }
   },
+  created () {
+    this.loadDict([this.code])
+  },
   mounted () {
-    const dict = this.getDict(this.code)
+    let dict = this.getDict(this.code)
     if (this.isNotBlank(dict)) {
+      this.rendering(dict)
+    } else {
+      this.loadDict([this.code]).then(() => {
+        dict = this.getDict(this.code)
+        if (this.isNotBlank(dict)) {
+          this.rendering(dict)
+        }
+      })
+    }
+  },
+  methods: {
+    changeHand () {
+      this.$emit('change')
+    },
+    rendering (dict) {
       this.options = []
       if (this.isBlank(this.placeholder) || this.placeholder === '请选择') {
         this.placeholder = '请选择' + dict.name
@@ -67,11 +82,6 @@ export default {
         this.options[j].value = children[j].code
         this.options[j].key = j
       }
-    }
-  },
-  methods: {
-    changeHand () {
-      this.$emit('change')
     }
   }
 }

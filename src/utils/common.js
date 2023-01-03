@@ -1,52 +1,50 @@
 import { dictTree } from '@api/system/dict'
 import { dbSet, dbGet } from '@/libs/util.db'
 
+export function loadDict (codes = []) {
+  return new Promise((resolve, reject) => {
+    codes.forEach(code => {
+      if (isBlank(code)) {
+        return
+      }
+      const dict = dbGet({ path: code, user: false })
+      if (this.isBlank(dict)) {
+        dictTree(code).then(res => {
+          // 本地保存数据字典
+          dbSet({
+            path: code,
+            value: res.data,
+            user: false
+          })
+          resolve(1)
+        }).catch(err => {
+          console.log('err', err)
+        })
+      }
+    })
+  })
+}
+
 export function getDict (code) {
   if (isBlank(code)) {
     return
   }
+  if (code.length === 3) {
+    return dbGet({ path: code, user: false })
+  }
+
   let dict = dbGet({ path: code, user: false })
-  if (this.isBlank(dict)) {
-    if (code.length === 3) {
-      dictTree(code).then(res => {
-        // 本地保存数据字典
-        dbSet({
-          path: code,
-          value: res.data,
-          user: false
-        })
-
-        return res.data
-      }).catch(err => {
-        console.log('err', err)
-      })
-    }
-    const parentCode = code.slice(0, code.length - 3)
-    dict = dbGet({
-      path: parentCode,
-      user: false
-    })
-    if (this.isBlank(dict)) {
-      dictTree(parentCode).then(res => {
-        // 本地保存数据字典
-        dbSet({
-          path: parentCode,
-          value: res.data,
-          user: false
-        })
-
-        const d = res.data.children.filter(e => e.code === code)
-        return this.isNotBlank(d) ? d[0] : ''
-      }).catch(err => {
-        console.log('err', err)
-      })
-    } else {
-      const d = dict.children.filter(e => e.code === code)
-      return this.isNotBlank(d) ? d[0] : ''
-    }
-  } else {
+  if (this.isNotBlank(dict)) {
     return dict
   }
+
+  const parentCode = code.slice(0, code.length - 3)
+  dict = dbGet({ path: parentCode, user: false })
+  if (this.isBlank(dict)) {
+    return code
+  }
+  const d = dict.children.filter(e => e.code === code)
+  return this.isNotBlank(d) ? d[0] : code
 }
 
 export function isBlank (value) {
