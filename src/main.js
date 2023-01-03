@@ -3,7 +3,7 @@ import Vue from 'vue'
 import i18n from './i18n'
 import App from './App'
 // 核心插件
-import d2Admin from '@/plugin/d2admin'
+import necor from '@/plugin/necor'
 // store
 import store from '@/store/index'
 
@@ -23,7 +23,7 @@ Vue.prototype.contains = contains
 Vue.prototype.union = union
 
 // 核心插件
-Vue.use(d2Admin)
+Vue.use(necor)
 
 new Vue({
   router,
