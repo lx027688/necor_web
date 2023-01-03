@@ -20,6 +20,8 @@ export function loadDict (codes = []) {
         }).catch(err => {
           console.log('err', err)
         })
+      } else {
+        resolve(1)
       }
     })
   })
