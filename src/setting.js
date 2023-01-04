@@ -33,7 +33,7 @@ export default {
   theme: {
     list: [
       {
-        title: 'd2admin 经典',
+        title: 'necor 经典',
         name: 'd2',
         preview: 'image/theme/d2/preview@2x.png'
       },

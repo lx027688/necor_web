@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('d2admin/search', [
+    ...mapState('necor/search', [
       'hotkey',
       'pool'
     ]),

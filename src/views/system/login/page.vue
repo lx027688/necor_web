@@ -17,7 +17,7 @@
         </div>
         <div class="page-login--content-main" flex="dir:top main:center cross:center">
           <!-- logo -->
-          <img class="page-login--logo" src="./image/logo@2x.png">
+          <img class="page-login--logo" src="./image/logo.png">
           <!-- form -->
           <div class="page-login--form">
             <el-card shadow="never">
@@ -43,7 +43,10 @@
               </el-form>
             </el-card>
             <p class="page-login--options" flex="main:justify cross:center">
-              <span><d2-icon name="question-circle"/> 忘记密码</span>
+              <span>
+                <d2-icon name="question-circle" /> 忘记密码
+              </span>
+              <span @click="downloadAgreement">下载协议</span>
               <span>注册用户</span>
             </p>
             <!-- quick login -->
@@ -166,7 +169,7 @@ export default {
     clearInterval(this.timeInterval)
   },
   methods: {
-    ...mapActions('d2admin/account', [
+    ...mapActions('necor/account', [
       'login'
     ]),
     refreshTime () {
@@ -219,6 +222,20 @@ export default {
       params.append('accToken', accToken)
       getCaptcha(params).then(res => {
         this.loginCaptcha = window.URL.createObjectURL(res)
+      })
+    },
+    downloadAgreement () {
+      agreement().then(res => {
+        if (!res) {
+          return
+        }
+        const url = window.URL.createObjectURL(new Blob([res]))
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', '注册协议.pdf')
+        document.body.appendChild(link)
+        link.click()
       })
     },
     async getAccToken () {

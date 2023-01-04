@@ -36,7 +36,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('d2admin/menu', [
+    ...mapState('necor/menu', [
       'aside',
       'asideCollapse',
       'asideTransition'

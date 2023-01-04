@@ -13,7 +13,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('d2admin', {
+    ...mapGetters('necor', {
       logLength: 'log/length',
       logLengthError: 'log/lengthError'
     }),
@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('d2admin/log', [
+    ...mapMutations('necor/log', [
       'clean'
     ]),
     handleClick () {

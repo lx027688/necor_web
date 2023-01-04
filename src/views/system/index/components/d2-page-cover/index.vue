@@ -1,9 +1,9 @@
 <template>
   <div class="d2-page-cover">
     <div class="d2-page-cover__logo">
-      <slot/>
+      <img src="./image/necor.png" alt="Fork me on GitHub">
     </div>
-    <p class="d2-page-cover__title">D2 Admin {{$version}}</p>
+    <p class="d2-page-cover__title">{{ $title }} {{$version}}</p>
     <p class="d2-page-cover__sub-title">优雅的中后台集成方案</p>
     <p class="d2-page-cover__build-time">FINAL BUILD TIME {{$buildTime}}</p>
     <slot name="footer"/>

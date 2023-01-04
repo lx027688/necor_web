@@ -84,13 +84,13 @@ export default {
     }
   },
   computed: {
-    ...mapState('d2admin/page', [
+    ...mapState('necor/page', [
       'opened',
       'current'
     ])
   },
   methods: {
-    ...mapActions('d2admin/page', [
+    ...mapActions('necor/page', [
       'close',
       'closeLeft',
       'closeRight',

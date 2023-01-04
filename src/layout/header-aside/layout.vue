@@ -11,8 +11,8 @@
           :class="{'logo-group': true, 'logo-transition': asideTransition}"
           :style="{width: asideCollapse ? asideWidthCollapse : asideWidth}"
           flex-box="0">
-          <img v-if="asideCollapse" :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/icon-only.png`">
-          <img v-else :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/all.png`">
+          <img v-if="asideCollapse" :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/necor-close.png`">
+          <img v-else :src="`${$baseUrl}image/theme/${themeActiveSetting.name}/logo/necor-open.png`">
         </router-link>
         <div class="toggle-aside-btn" @click="handleToggleAside" flex-box="0">
           <d2-icon name="bars"/>
@@ -116,14 +116,14 @@ export default {
     }
   },
   computed: {
-    ...mapState('d2admin', {
+    ...mapState('necor', {
       keepAlive: state => state.page.keepAlive,
       grayActive: state => state.gray.active,
       transitionActive: state => state.transition.active,
       asideCollapse: state => state.menu.asideCollapse,
       asideTransition: state => state.menu.asideTransition
     }),
-    ...mapGetters('d2admin', {
+    ...mapGetters('necor', {
       themeActiveSetting: 'theme/activeSetting'
     }),
     /**
@@ -145,7 +145,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('d2admin/menu', [
+    ...mapActions('necor/menu', [
       'asideCollapseToggle'
     ]),
     /**

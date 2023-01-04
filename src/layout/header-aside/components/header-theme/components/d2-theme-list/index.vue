@@ -26,13 +26,13 @@ export default {
     }
   },
   computed: {
-    ...mapState('d2admin/theme', [
+    ...mapState('necor/theme', [
       'list',
       'activeName'
     ])
   },
   methods: {
-    ...mapActions('d2admin/theme', [
+    ...mapActions('necor/theme', [
       'set'
     ]),
     handleSelectTheme (name) {

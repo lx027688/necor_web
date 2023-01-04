@@ -31,7 +31,7 @@ export default {
         console.log(res)
         util.cookies.set('uuid', res.data.username)
         util.cookies.set('token', res.data.token)
-        store.dispatch('d2admin/user/set', { name: res.data.name }, { root: true })
+        store.dispatch('necor/user/set', { name: res.data.name }, { root: true })
         store.dispatch('load')
         this.$router.replace(this.$route.query.redirect || '/')
       }).catch(err => {

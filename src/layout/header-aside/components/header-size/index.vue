@@ -26,16 +26,16 @@ export default {
     }
   },
   computed: {
-    ...mapState('d2admin/size', [
+    ...mapState('necor/size', [
       'value'
     ])
   },
   methods: {
     ...mapMutations({
-      pageKeepAliveClean: 'd2admin/page/keepAliveClean'
+      pageKeepAliveClean: 'necor/page/keepAliveClean'
     }),
     ...mapActions({
-      sizeSet: 'd2admin/size/set'
+      sizeSet: 'necor/size/set'
     }),
     handleChange (value) {
       this.sizeSet(value)

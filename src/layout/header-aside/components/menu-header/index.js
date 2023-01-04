@@ -54,7 +54,7 @@ export default {
     </div>
   },
   computed: {
-    ...mapState('d2admin/menu', [
+    ...mapState('necor/menu', [
       'header'
     ])
   },

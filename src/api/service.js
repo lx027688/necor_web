@@ -61,7 +61,7 @@ function createService () {
           MessageBox.confirm('登录已失效, 是否确认退出?', '退出系统', { type: 'warning' })
             .then(() => {
               // 清空 vuex 用户信息
-              store.dispatch('d2admin/user/set', {}, { root: true })
+              store.dispatch('necor/user/set', {}, { root: true })
               // 跳转路由
               router.push({
                 name: 'login'

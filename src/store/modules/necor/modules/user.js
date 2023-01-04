@@ -14,7 +14,7 @@ export default {
       // store 赋值
       state.info = info
       // 持久化
-      await dispatch('d2admin/db/set', {
+      await dispatch('necor/db/set', {
         dbName: 'sys',
         path: 'user.info',
         value: info,
@@ -27,7 +27,7 @@ export default {
      */
     async load ({ state, dispatch }) {
       // store 赋值
-      state.info = await dispatch('d2admin/db/get', {
+      state.info = await dispatch('necor/db/get', {
         dbName: 'sys',
         path: 'user.info',
         defaultValue: {},
