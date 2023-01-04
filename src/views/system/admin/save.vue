@@ -141,6 +141,7 @@ export default {
     init (id) {
       this.form.id = id || ''
       this.visible = true
+      this.loading = true
       this.fileListLength = 0
 
       this.$nextTick(() => {
@@ -158,7 +159,10 @@ export default {
               this.fileListLength = 1
               this.fileList.push(file)
             }
+            this.loading = false
           })
+        } else {
+          this.loading = false
         }
       })
     },

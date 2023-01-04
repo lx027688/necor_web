@@ -71,7 +71,7 @@
     <detail v-if="detailVisible" ref="detail"></detail>
 
     <el-dialog title="角色配置" :visible.sync="configRoleVisible" width="45%" center>
-      <el-transfer v-model="selectRoles" :data="roles" @change="updateRole" :titles="['所有角色', '已选角色']"></el-transfer>
+      <el-transfer v-model="selectRoles" :data="roles" @change="updateRole" :titles="['所有角色', '已选角色']" v-loading="roleLoading"></el-transfer>
     </el-dialog>
   </d2-container>
 </template>
@@ -88,6 +88,7 @@ export default {
   data () {
     return {
       loading: false,
+      roleLoading: false,
       query: {
         currentPage: 1,
         pageSize: 10,
@@ -197,9 +198,11 @@ export default {
       })
     },
     resetAdminPassword (id) {
+      this.loading = true
       const params = new FormData()
       params.append('id', id)
       resetPassword(params).then(res => {
+        this.loading = false
         this.$message({
           message: '重置成功',
           type: 'success'
@@ -207,6 +210,7 @@ export default {
       })
     },
     configRole (id, roles) {
+      this.roleLoading = true
       this.roles = []
       this.selectRoles = roles
       this.currentAdmin = id
@@ -220,7 +224,9 @@ export default {
             label: v.name
           })
         })
+        this.roleLoading = false
       }).catch(err => {
+        this.roleLoading = false
         console.log('err', err)
       })
     },

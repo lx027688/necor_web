@@ -14,7 +14,7 @@
         <el-button type="primary" @click="saveHandle()">
         <d2-icon name="plus"/>新增</el-button>
       </el-form-item>
-      <el-form-item>
+<!--      <el-form-item>
         <el-button type="primary" @click="addStore">
           <d2-icon name="plus"/>添加
         </el-button>
@@ -28,7 +28,7 @@
         <el-button type="primary" @click="removeStore">
           <d2-icon name="plus"/>删除
         </el-button>
-      </el-form-item>
+      </el-form-item>-->
     </el-form>
 
     <!-- 列表-->
@@ -133,18 +133,18 @@ export default {
           message: '已取消删除'
         })
       })
-    },
-    addStore () {
-      // this.$localStore.set('a', 'cccc')
-    },
-    getStore () {
-      // console.log(this.$localStore.get('a'))
-      // console.log(this.$localStore.aa('a'))
-      // console.log(this.$localStore.get('dicts'))
-    },
-    removeStore () {
-      // this.$localStore.remove('a')
     }
+    // addStore () {
+    //   // this.$localStore.set('a', 'cccc')
+    // },
+    // getStore () {
+    //   // console.log(this.$localStore.get('a'))
+    //   // console.log(this.$localStore.aa('a'))
+    //   // console.log(this.$localStore.get('dicts'))
+    // },
+    // removeStore () {
+    //   // this.$localStore.remove('a')
+    // }
   }
 }
 </script>

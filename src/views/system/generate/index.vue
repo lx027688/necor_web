@@ -1,86 +1,79 @@
 <template>
   <d2-container>
-    <el-row>
-      <el-col :span="8" style="margin-top:15px;">
-        11111
-      </el-col>
-      <el-col :span="16" style="margin-top:15px;">
-        <el-card shadow="always">
-          <el-form label-position="right" label-width="120px" :model="form" ref="form" >
-            <el-row>
-              <el-col :span="8">
-                <el-popover placement="top-start" title="提示" width="250" trigger="hover" content="模块前缀例如sys，表前缀将会是sys，如：sys_xxx。类名前缀将会是Sys，如SysXxx。">
-                  <el-form-item label="模块前缀：" slot="reference" prop="prefix">
-                    <el-input v-model="form.prefix" placeholder="模块前缀" @blur="changePage()"></el-input>
-                  </el-form-item>
-                </el-popover>
-              </el-col>
-              <el-col :span="8">
-                <el-popover placement="top-start" title="提示" width="250" trigger="hover" content="例如UserEntity,实体名称为：user">
-                  <el-form-item label="实体名称：" slot="reference" prop="entityName">
-                    <el-input v-model="form.entityName" placeholder="实体名称" @blur="changePage()"></el-input>
-                  </el-form-item>
-                </el-popover>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="作者：" prop="author">
-                  <el-input v-model="form.author" placeholder="作者"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="版本：" prop="version">
-                  <el-input v-model="form.version" placeholder="版本"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="包路径：" prop="package">
-                  <el-input v-model="form.package" placeholder="包路径"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="实体描述：" prop="entityDesc">
-                  <el-input v-model="form.entityDesc" placeholder="实体描述"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="字段："  prop="fields">
-                  <el-table :data="form.fields" border style="width: 100%">
-                    <el-table-column prop="fieldType" label="字段类型">
-                      <template slot-scope="scope">
-                        <el-input v-model="form.fields[scope.$index].fieldType" placeholder="字段类型"></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="fieldName" label="字段名称">
-                      <template slot-scope="scope">
-                        <el-input v-model="form.fields[scope.$index].fieldName" placeholder="字段名称"></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="fieldDesc" label="字段描述">
-                      <template slot-scope="scope">
-                        <el-input v-model="form.fields[scope.$index].fieldDesc" placeholder="字段描述"></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column fixed="right" header-align="center" align="center" label="操作">
-                      <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="deleteNode(scope.$index)">删除</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item>
-              <el-button type="primary" @click="addNode()">添加字段</el-button>
-              <el-button type="primary" @click="generate()">生成代码</el-button>
+    <el-card shadow="always">
+      <el-form label-position="right" label-width="120px" :model="form" ref="form" >
+        <el-row>
+          <el-col :span="8">
+            <el-popover placement="top-start" title="提示" width="250" trigger="hover" content="模块前缀例如sys，表前缀将会是sys，如：sys_xxx。类名前缀将会是Sys，如SysXxx。">
+              <el-form-item label="模块前缀：" slot="reference" prop="prefix">
+                <el-input v-model="form.prefix" placeholder="模块前缀" @blur="changePage()"></el-input>
+              </el-form-item>
+            </el-popover>
+          </el-col>
+          <el-col :span="8">
+            <el-popover placement="top-start" title="提示" width="250" trigger="hover" content="例如UserEntity,实体名称为：user">
+              <el-form-item label="实体名称：" slot="reference" prop="entityName">
+                <el-input v-model="form.entityName" placeholder="实体名称" @blur="changePage()"></el-input>
+              </el-form-item>
+            </el-popover>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="作者：" prop="author">
+              <el-input v-model="form.author" placeholder="作者"></el-input>
             </el-form-item>
-          </el-form>
-        </el-card>
-      </el-col>
-    </el-row>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="版本：" prop="version">
+              <el-input v-model="form.version" placeholder="版本"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="包路径：" prop="package">
+              <el-input v-model="form.package" placeholder="包路径"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="实体描述：" prop="entityDesc">
+              <el-input v-model="form.entityDesc" placeholder="实体描述"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="字段："  prop="fields">
+              <el-table :data="form.fields" border style="width: 100%">
+                <el-table-column prop="fieldType" label="字段类型">
+                  <template slot-scope="scope">
+                    <el-input v-model="form.fields[scope.$index].fieldType" placeholder="字段类型"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="fieldName" label="字段名称">
+                  <template slot-scope="scope">
+                    <el-input v-model="form.fields[scope.$index].fieldName" placeholder="字段名称"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="fieldDesc" label="字段描述">
+                  <template slot-scope="scope">
+                    <el-input v-model="form.fields[scope.$index].fieldDesc" placeholder="字段描述"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column fixed="right" header-align="center" align="center" label="操作">
+                  <template slot-scope="scope">
+                    <el-button type="text" size="small" @click="deleteNode(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item>
+          <el-button type="primary" @click="addNode()">添加字段</el-button>
+          <el-button type="primary" @click="generate()">生成代码</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </d2-container>
 </template>
 

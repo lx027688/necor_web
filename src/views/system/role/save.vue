@@ -40,13 +40,17 @@ export default {
     init (id) {
       this.form.id = id || ''
       this.visible = true
+      this.loading = true
 
       this.$nextTick(() => {
         this.$refs.saveForm.resetFields()
         if (this.form.id) {
           detail(id).then(r => {
             this.form = r.data
+            this.loading = false
           })
+        } else {
+          this.loading = false
         }
       })
     },

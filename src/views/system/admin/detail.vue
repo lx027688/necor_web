@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="详情" :close-on-click-modal="false" :visible.sync="visible">
-    <el-form :model="form" ref="detailForm" label-width="100px" label-suffix="：">
+    <el-form :model="form" ref="detailForm" label-width="100px" label-suffix="：" v-loading="loading">
       <el-row>
         <el-col :span="8">
           <el-form-item label="用户名" prop="username" style="font-size: 15px;font-weight: bold;">
@@ -54,6 +54,7 @@ export default {
   data () {
     return {
       visible: false,
+      loading: false,
       form: {
         id: '',
         username: '',
@@ -72,6 +73,7 @@ export default {
     init (id) {
       this.form.id = id || ''
       this.visible = true
+      this.loading = true
 
       this.$nextTick(() => {
         this.$refs.detailForm.resetFields()
@@ -81,7 +83,10 @@ export default {
             if (r.data.headPortrait !== null && r.data.headPortrait !== '') {
               this.srcList.push(r.data.headPortrait)
             }
+            this.loading = false
           })
+        } else {
+          this.loading = false
         }
       })
     }

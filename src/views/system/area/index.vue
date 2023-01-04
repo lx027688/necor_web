@@ -33,9 +33,8 @@
     <el-table-column prop="lon" header-align="center" align="center" label="区域经度"></el-table-column>
     <el-table-column prop="lat" header-align="center" align="center" label="区域纬度"></el-table-column>
     <el-table-column prop="zipCode" header-align="center" align="center" label="区域邮编"></el-table-column>
-    <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
+    <el-table-column fixed="right" header-align="center" align="center" width="120" label="操作">
       <template slot-scope="scope">
-        <el-button type="text" size="small">查看</el-button>
         <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
         <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
       </template>

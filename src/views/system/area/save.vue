@@ -73,6 +73,7 @@ export default {
     init (id) {
       this.form.id = id || ''
       this.visible = true
+      this.loading = true
 
       this.$nextTick(() => {
         this.$refs.saveForm.resetFields()
@@ -82,7 +83,10 @@ export default {
             this.form = r
             this.form.parentId = r.parent.id
             this.form.parentName = r.parent.name
+            this.loading = false
           })
+        } else {
+          this.loading = false
         }
       })
     },

@@ -31,7 +31,7 @@
         </el-table-column>
         <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleCurrentChange(scope.row.id)">配置菜单</el-button>
+            <el-button type="text" size="small" @click="getMenus(scope.row.id)">配置菜单</el-button>
             <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
             <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
           </template>
@@ -46,7 +46,7 @@
     </el-col>
     <el-col :span="8">
       <el-tree ref="tree" class="filter-tree" node-key="id" default-expand-all highlight-current :data="menuList" :props="defaultProps" check-strictly
-               show-checkbox :default-checked-keys="selectMenuIds" @check="handleCheckChange">
+               show-checkbox :default-checked-keys="selectMenuIds" @check="handleCheckChange" v-loading="menuLoading">
       </el-tree>
     </el-col>
   </el-row>
@@ -64,6 +64,7 @@ export default {
   data () {
     return {
       loading: false,
+      menuLoading: false,
       query: {
         currentPage: 1,
         pageSize: 10,
@@ -153,9 +154,11 @@ export default {
       })
     },
     getMenus (id) {
+      this.menuLoading = true
       const that = this
       this.selectMenuIds = []
       if (this.isBlank(id)) {
+        this.menuLoading = false
         return
       }
       const params = new FormData()
@@ -168,6 +171,7 @@ export default {
             that.selectMenuIds.push(v.id)
           })
         }
+        this.menuLoading = false
       })
     },
     handleCheckChange (data, checked, indeterminate) {
@@ -187,10 +191,6 @@ export default {
         saveRoleMenu(params).then(res => {
         })
       }
-    },
-    handleCurrentChange (id) {
-      this.currentRow = id
-      this.getMenus(id)
     }
   }
 }

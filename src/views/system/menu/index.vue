@@ -12,7 +12,8 @@
     </el-popover>
     <el-row>
       <el-col :span="8" style="margin-top:15px;">
-        <el-tree ref="tree" class="filter-tree" node-key="id" default-expand-all highlight-current :expand-on-click-node="false" :data="menuList" :props="defaultProps" @node-click="selectMenu"></el-tree>
+        <el-tree ref="tree" class="filter-tree" node-key="id" default-expand-all highlight-current :expand-on-click-node="false"
+                 :data="menuList" :props="defaultProps" @node-click="selectMenu" v-loading="loading"></el-tree>
       </el-col>
       <el-col :span="16" style="margin-top:15px;">
         <el-card shadow="always">
@@ -66,6 +67,7 @@ export default {
   name: 'system-menu',
   data () {
     return {
+      loading: false,
       menuList: [],
       defaultProps: {
         label: 'title'
@@ -97,9 +99,12 @@ export default {
   },
   methods: {
     getMenuList () {
+      this.loading = true
       findMenuTreeList().then(res => {
         this.menuList = res.data
+        this.loading = false
       }).catch(err => {
+        this.loading = false
         console.log('err', err)
       })
     },

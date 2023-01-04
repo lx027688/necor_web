@@ -52,6 +52,7 @@ export default {
         this.form.parentId = ''
       }
       this.visible = true
+      this.loading = true
 
       this.$nextTick(() => {
         this.$refs.saveForm.resetFields()
@@ -59,7 +60,10 @@ export default {
           detail(id).then(r => {
             this.form = r.data
             this.form.parentId = r.data.parent.id
+            this.loading = false
           })
+        } else {
+          this.loading = false
         }
       })
     },
