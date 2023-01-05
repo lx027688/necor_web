@@ -17,7 +17,7 @@
       </el-col>
       <el-col :span="16" style="margin-top:15px;">
         <el-card shadow="always">
-          <el-form label-position="right" label-width="80px" :model="form" ref="saveForm" :rules="saveRules">
+          <el-form label-position="right" label-width="80px" :model="form" ref="saveForm" :rules="saveRules" v-loading="saveLoading">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="父级节点" prop="parentId">
@@ -68,6 +68,7 @@ export default {
   data () {
     return {
       loading: false,
+      saveLoading: false,
       menuList: [],
       defaultProps: {
         label: 'title'
@@ -115,11 +116,13 @@ export default {
         this.parentName = this.menuName
         this.form.parentId = this.menuId
       } else if (this.model === 'edit') {
+        this.saveLoading = true
         menuDetail(this.menuId).then(res => {
           const r = res.data
           this.form = r
           this.form.parentId = r.parent.id
           this.parentName = r.parent.name
+          this.saveLoading = false
         })
       }
     },
@@ -149,14 +152,18 @@ export default {
     saveMenu () {
       this.$refs.saveForm.validate((valid) => {
         if (valid) {
+          this.saveLoading = true
           if (this.model == null || this.model === '') {
+            this.saveLoading = false
             this.$message.error('保存失败')
             return
           }
           saveMenu(this.form).then(r => {
+            this.saveLoading = false
             this.$message.success('保存成功')
             this.getMenuList()
           }).catch(err => {
+            this.saveLoading = false
             console.log('err', err)
           })
         }

@@ -11,9 +11,9 @@
     <div class="page-login--layer">
       <div class="page-login--content" flex="dir:top main:justify cross:stretch box:justify">
         <div class="page-login--content-header">
-          <p class="page-login--content-header-motto">
+<!--          <p class="page-login&#45;&#45;content-header-motto">
             时间是一切财富中最宝贵的财富
-          </p>
+          </p>-->
         </div>
         <div class="page-login--content-main" flex="dir:top main:center cross:center">
           <!-- logo -->
