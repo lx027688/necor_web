@@ -22,7 +22,7 @@
       </el-form-item>
       <el-form-item style="float: right">
         <span style="color:#303133;font-size: 20px;margin-right: 20px;">共有用户:<span style="color: #67C23A;">{{ userStatistics.total }}</span></span>
-        <span style="color:#303133;font-size: 20px;">在线用户:<span style="color: #d43333;">{{ userStatistics.online }}</span></span>
+<!--        <span style="color:#303133;font-size: 20px;">在线用户:<span style="color: #d43333;">{{ userStatistics.online }}</span></span>-->
       </el-form-item>
     </el-form>
 
@@ -131,7 +131,7 @@ export default {
         this.data = res.data
         this.query.total = res.recordsFiltered
         this.userStatistics.total = res.recordsTotal
-        this.userStatistics.online = res.params.onlineUser
+        // this.userStatistics.online = res.params.onlineUser
         this.loading = false
       }).catch(err => {
         console.log('err', err)
