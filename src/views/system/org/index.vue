@@ -20,7 +20,7 @@ export default {
   components: { org, adminsOrgs },
   methods: {
     addMembers (id, name) {
-      this.$refs.adminsOrgs.selectOrganizational(id, name)
+      this.$refs.adminsOrgs.selectOrg(id, name)
     }
   }
 }

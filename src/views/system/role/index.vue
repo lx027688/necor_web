@@ -1,56 +1,53 @@
 <template>
-<d2-container>
-  <el-row>
-    <el-col :span="14">
-      <!-- 查询 -->
-      <el-form :inline="true" :model="query" ref="form" style="margin-bottom: -18px;">
-        <el-form-item label="" prop="search">
-          <el-input v-model="query.search" placeholder="搜索项" style="width: 180px;"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="search()">
-            <d2-icon name="search"/>查询
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="saveHandle()">
-            <d2-icon name="plus"/>新增</el-button>
-        </el-form-item>
-      </el-form>
+  <d2-container>
+    <el-row>
+      <el-col :span="14">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
+          <el-form-item label="" prop="search">
+            <el-input v-model="query.search" placeholder="搜索项" clearable @keyup.enter.native="search" style="width: 180px;"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
+          </el-form-item>
+        </el-form>
 
-      <!-- 列表-->
-      <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"  highlight-current-row>
-        <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
-        <el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
-        <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
-        <el-table-column prop="mark" header-align="center" align="center" label="标识"></el-table-column>
-        <el-table-column prop="isEnable" header-align="center" align="center" label="是否启用">
-          <template slot-scope="scope">
-            <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateRoleEnable(scope.row.id,scope.row.isEnable)">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="getMenus(scope.row.id)">配置菜单</el-button>
-            <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
-            <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <!-- 列表-->
+        <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" highlight-current-row>
+          <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
+          <el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
+          <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
+          <el-table-column prop="mark" header-align="center" align="center" label="标识"></el-table-column>
+          <el-table-column prop="isEnable" header-align="center" align="center" label="是否启用">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateRoleEnable(scope.row.id,scope.row.isEnable)">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="getMenus(scope.row.id)">配置菜单</el-button>
+              <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
+              <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
 
-      <!-- 列表尾部-->
-      <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+        <!-- 列表尾部-->
+        <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
 
-      <!-- 弹窗, 新增 / 修改 -->
-      <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
-    </el-col>
-    <el-col :span="8">
-      <el-tree ref="tree" class="filter-tree" node-key="id" default-expand-all highlight-current :data="menuList" :props="defaultProps" check-strictly
-               show-checkbox :default-checked-keys="selectMenuIds" @check="handleCheckChange" v-loading="menuLoading">
-      </el-tree>
-    </el-col>
-  </el-row>
-</d2-container>
+        <!-- 弹窗, 新增 / 修改 -->
+        <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
+      </el-col>
+      <el-col :span="8">
+        <el-tree ref="tree" class="filter-tree" node-key="id" default-expand-all highlight-current :data="menuList" :props="defaultProps" check-strictly
+                 show-checkbox :default-checked-keys="selectMenuIds" @check="handleCheckChange" v-loading="menuLoading">
+        </el-tree>
+      </el-col>
+    </el-row>
+  </d2-container>
 </template>
 
 <script>

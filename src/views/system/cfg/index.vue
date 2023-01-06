@@ -10,7 +10,15 @@
           <el-form label-position="right" label-width="120px" :model="generalForm" ref="generalForm" label-suffix=":"
                    :rules="generalFormRule" :inline="true" v-loading="generalLoading">
             <el-form-item label="Allow Origin" prop="allowOrigin">
-              <el-input v-model="generalForm.allowOrigin" placeholder="Allow Origin"></el-input>
+              <el-input v-model="generalForm.allowOrigin" placeholder="Allow Origin">
+                <template slot="append">
+                  <el-popover placement="top-start" title="温馨提示" width="400" trigger="hover">
+                    <li>允许所有跨域请填写all</li>
+                    <li>多个域名设置跨域用逗号[,]隔开</li>
+                    <el-button slot="reference" size="mini" icon="el-icon-info" style="float:right"></el-button>
+                  </el-popover>
+                </template>
+              </el-input>
             </el-form-item>
           </el-form>
         </el-card>

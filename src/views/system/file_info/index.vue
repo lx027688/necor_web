@@ -1,14 +1,12 @@
 <template>
   <d2-container>
     <!-- 查询 -->
-    <el-form :inline="true" :model="query" ref="form" style="margin-bottom: -18px;">
+    <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
       <el-form-item label="" prop="search">
-        <el-input v-model="query.search" placeholder="搜索项" style="width: 180px;"/>
+        <el-input v-model="query.search" placeholder="搜索项" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="search()">
-          <d2-icon name="search"/>查询
-        </el-button>
+        <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
       </el-form-item>
     </el-form>
 

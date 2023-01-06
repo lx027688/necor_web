@@ -1,6 +1,6 @@
 <template>
 <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
-  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="150px" v-loading="loading">
+  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="150px" v-loading="loading" @keyup.enter.native="saveData">
     <el-form-item label="所属地区" prop="parentId">
       <necor-select-tree-lazy v-model="form.parentId" @load="loadArea" :label="form.parentName"></necor-select-tree-lazy>
     </el-form-item>

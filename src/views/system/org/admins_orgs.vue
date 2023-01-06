@@ -1,15 +1,15 @@
 <template>
   <div>
     <!-- 查询 -->
-    <el-form :inline="true" :model="query" ref="form" style="margin-bottom: -18px;">
+    <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
       <el-form-item label="" prop="search">
-        <el-input v-model="query.search" placeholder="用户名或姓名" style="width: 180px;"/>
+        <el-input v-model="query.search" placeholder="用户名或姓名" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="search()"><d2-icon name="search"/> 查询</el-button>
+        <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
       </el-form-item>
-      <el-form-item style="float: right" v-if="organizational.id">
-        <span style="font-size: 20px; color: #e1790d;">所选机构：{{organizational.name}}</span>
+      <el-form-item style="float: right" v-if="org.id">
+        <span style="font-size: 20px; color: #e1790d;">所选机构：{{ org.name }}</span>
       </el-form-item>
     </el-form>
 
@@ -17,12 +17,16 @@
     <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%; margin-top:10px;margin-bottom: 20px;">
       <el-table-column header-align="center" align="center" label="管理员" width="80">
         <template slot-scope="scope">
-          <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(organizational.id)"></el-checkbox>
+          <el-tooltip class="item" effect="dark" content="请先选择组织机构" :disabled="isNotBlank(org.id)" placement="top">
+            <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(org.id)"></el-checkbox>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="组员" width="80">
         <template slot-scope="scope">
-          <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107001')"  @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(organizational.id)"></el-checkbox>
+          <el-tooltip class="item" effect="dark" content="请先选择组织机构" :disabled="isNotBlank(org.id)" placement="top">
+            <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107001')"  @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(org.id)"></el-checkbox>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
@@ -60,7 +64,7 @@ export default {
         name: '',
         parentId: ''
       },
-      organizational: {
+      org: {
         id: '',
         name: ''
       }
@@ -93,19 +97,19 @@ export default {
         this.getList()
       }
     },
-    selectOrganizational (id, name) {
-      this.organizational = {
+    selectOrg (id, name) {
+      this.org = {
         id: id,
         name: name
       }
     },
     checkedPosition (rels, position) {
-      if (this.isBlank(this.organizational.id)) {
+      if (this.isBlank(this.org.id)) {
         return false
       }
       const self = this
       const flag = rels.some(function (value, index, array) {
-        return value.organizationalId === self.organizational.id && value.position === position
+        return value.orgId === self.org.id && value.position === position
       })
       return flag
     },
@@ -124,7 +128,7 @@ export default {
         })
         return
       }
-      if (this.isBlank(this.organizational.id)) {
+      if (this.isBlank(this.org.id)) {
         this.$message({
           message: '机构为空',
           type: 'warning'
@@ -132,7 +136,7 @@ export default {
         return
       }
 
-      save({ adminId: adminId, organizationalId: this.organizational.id, position: position }).then(r => {
+      save({ adminId: adminId, orgId: this.org.id, position: position }).then(r => {
         this.$message({
           message: '保存成功',
           type: 'success'

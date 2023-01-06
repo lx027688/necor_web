@@ -23,17 +23,17 @@
             <el-card shadow="never">
               <el-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
                 <el-form-item prop="username">
-                  <el-input type="text" v-model="formLogin.username" placeholder="用户名">
+                  <el-input type="text" v-model="formLogin.username" placeholder="用户名" @keyup.enter.native="submit">
                     <i slot="prepend" class="fa fa-user-circle-o"></i>
                   </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                  <el-input type="password" v-model="formLogin.password" placeholder="密码">
+                  <el-input type="password" v-model="formLogin.password" placeholder="密码" @keyup.enter.native="submit">
                     <i slot="prepend" class="fa fa-keyboard-o"></i>
                   </el-input>
                 </el-form-item>
                 <el-form-item prop="code">
-                  <el-input type="text" v-model="formLogin.code" placeholder="验证码">
+                  <el-input type="text" v-model="formLogin.code" placeholder="验证码" @keyup.enter.native="submit">
                     <template slot="append">
                       <img class="login-code" :src="loginCaptcha" @click="captcha">
                     </template>
@@ -64,7 +64,7 @@
           <p class="page-login--content-footer-copyright">
             Copyright
             <d2-icon name="copyright"/>
-            2018 D2 Projects 开源组织出品
+            2023 Necor Projects
             <a href="https://github.com/FairyEver">
               @FairyEver
             </a>
@@ -246,7 +246,7 @@ export default {
       if (this.isBlank(acctoken)) {
         // base64加密
         const base64 = require('js-base64').Base64
-        acctoken = base64.encode(new Date().getTime())
+        acctoken = base64.encode(String(new Date().getTime()))
         dbSet({
           path: 'acctoken',
           value: acctoken,

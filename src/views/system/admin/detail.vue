@@ -1,48 +1,29 @@
 <template>
   <el-dialog title="详情" :close-on-click-modal="false" :visible.sync="visible">
-    <el-form :model="form" ref="detailForm" label-width="100px" label-suffix="：" v-loading="loading">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="用户名" prop="username" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{form.username}}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="姓名" prop="name" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{form.name}}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="昵称" prop="nickName" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{form.nickName}}</span>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="身份证" prop="idCard" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{form.idCard}}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="email" prop="email" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{form.email}}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="手机号" prop="mobile" style="font-size: 15px;font-weight: bold;">
-            <span class="font-style">{{form.mobile}}</span>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="头像" prop="headPortrait" style="font-size: 15px;font-weight: bold;">
-           <el-image style="width: 100px; height: 100px" :src="form.headPortrait" :preview-src-list="srcList"></el-image>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
+    <el-descriptions class="margin-top" title="" :column="3" size="medium" border v-loading="loading">
+      <el-descriptions-item>
+        <template slot="label"><i class="el-icon-user"></i>&nbsp;用户名</template>{{form.username}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label"><i class="fa fa-user-o"></i>&nbsp;姓名</template>{{form.name}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label"><i class="fa fa-user-circle"></i>&nbsp;昵称</template>{{form.nickName}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label"><i class="fa fa-id-card"></i>&nbsp;身份证</template>{{form.idCard}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label"><i class="el-icon-mobile-phone"></i>&nbsp;手机号</template>{{form.mobile}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label"><i class="fa fa-envelope-o"></i>&nbsp;邮箱</template>{{form.email}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label"><i class="fa fa-file-image-o"></i>&nbsp;头像</template>
+        <el-image style="width: 100px; height: 100px" :src="form.headPortrait" :preview-src-list="srcList"></el-image>
+      </el-descriptions-item>
+    </el-descriptions>
   </el-dialog>
 </template>
 
@@ -76,7 +57,6 @@ export default {
       this.loading = true
 
       this.$nextTick(() => {
-        this.$refs.detailForm.resetFields()
         if (this.form.id) {
           detail(id).then(r => {
             this.form = r.data

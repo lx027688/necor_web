@@ -1,6 +1,6 @@
 <template>
 <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
-  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading">
+  <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading" @keyup.enter.native="saveData">
     <el-form-item label="名称" prop="name">
       <el-input v-model="form.name"></el-input>
     </el-form-item>

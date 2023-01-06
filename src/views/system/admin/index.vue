@@ -1,24 +1,24 @@
 <template>
   <d2-container>
     <!-- 查询 -->
-    <el-form :inline="true" :model="query" ref="form"  style="margin-bottom: -18px;">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="query.username" placeholder="用户名" style="width: 180px;"/>
+    <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
+      <el-form-item label="" prop="username">
+        <el-input v-model="query.username" placeholder="用户名" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input v-model="query.name" placeholder="姓名" style="width: 180px;"/>
+      <el-form-item label="" prop="name">
+        <el-input v-model="query.name" placeholder="姓名" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="query.mobile" placeholder="手机号" style="width: 180px;"/>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="search()"><d2-icon name="search"/> 查询</el-button>
+      <el-form-item label="" prop="mobile">
+        <el-input v-model="query.mobile" placeholder="手机号" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/> 新增</el-button>
+        <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/> 导出</el-button>
+        <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/>&nbsp;导出</el-button>
       </el-form-item>
       <el-form-item style="float: right">
         <span style="color:#303133;font-size: 20px;margin-right: 20px;">共有用户:<span style="color: #67C23A;">{{ userStatistics.total }}</span></span>
@@ -29,8 +29,8 @@
     <!-- 列表 -->
     <el-table :data="data" @sort-change="sortChange" @selection-change="selectionChangeHandle" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
       <el-table-column prop="username" header-align="center" align="center" label="用户名"></el-table-column>
+      <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
       <el-table-column prop="nickName" header-align="center" align="center" label="昵称"></el-table-column>
       <el-table-column prop="birthday" header-align="center" align="center" label="生日"></el-table-column>
       <el-table-column prop="age" header-align="center" align="center" label="年龄" width="80"></el-table-column>
