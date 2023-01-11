@@ -1,2 +1,4 @@
-开发运行命令：npm run dev
-打包生成命令：npm run build:prod
+dev 打包: npm run build
+运行: npm run dev
+prod 打包: npm run build:prod
+
