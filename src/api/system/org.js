@@ -15,6 +15,14 @@ export function findOrgTree () {
   })
 }
 
+export function treeList (data) {
+  return request({
+    url: '/org/tree_list',
+    method: 'post',
+    data
+  })
+}
+
 export function save (data) {
   return request({
     url: '/org/save',

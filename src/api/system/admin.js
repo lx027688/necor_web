@@ -8,6 +8,14 @@ export function list (data) {
   })
 }
 
+export function getAdminByOrgan (data) {
+  return request({
+    url: '/admin/get_admin_by_organ',
+    method: 'post',
+    data
+  })
+}
+
 export function save (data) {
   return request({
     url: '/admin/save',

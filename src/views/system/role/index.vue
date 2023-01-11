@@ -168,6 +168,7 @@ export default {
             that.selectMenuIds.push(v.id)
           })
         }
+        this.currentRow = id
         this.menuLoading = false
       })
     },
