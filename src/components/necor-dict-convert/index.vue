@@ -28,7 +28,11 @@ export default {
   },
   mounted () {
     const dict = this.getDict(this.code)
-    this.name = dict.name
+    if (this.isNotBlank(dict)) {
+      this.name = dict.name
+    } else {
+      this.name = this.code
+    }
   },
   methods: {
     changeHand () {

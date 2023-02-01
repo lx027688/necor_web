@@ -11,6 +11,7 @@ import { dbGet } from '@/libs/util.db'
 import { isURL } from '@/utils/validate'
 
 import { getLoginData } from '@/api/system/login'
+import { loadDict } from '@/utils/common'
 import { menuHeader } from '@/menu'
 import layoutHeaderAside from '@/layout/header-aside'
 // 路由数据
@@ -131,6 +132,9 @@ async function loadMenu () {
     router.replace('/login')
     console.log('错误信息', err)
   })
+
+  // 加载数据字典到缓存
+  loadDict()
 
   // 获取用户系统菜单
   const systemMenus = loginData.menus

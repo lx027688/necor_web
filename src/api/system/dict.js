@@ -38,6 +38,13 @@ export function dictTree (code) {
   })
 }
 
+export function dictRoot () {
+  return request({
+    url: '/dict/dict_root/',
+    method: 'post'
+  })
+}
+
 export function dictChilds (code) {
   return request({
     url: '/dict/childs/' + code,

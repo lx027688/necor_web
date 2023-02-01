@@ -46,16 +46,9 @@ export default {
     }
   },
   mounted () {
-    let dict = this.getDict(this.code)
+    const dict = this.getDict(this.code)
     if (this.isNotBlank(dict)) {
       this.rendering(dict)
-    } else {
-      this.loadDict([this.code]).then(() => {
-        dict = this.getDict(this.code)
-        if (this.isNotBlank(dict)) {
-          this.rendering(dict)
-        }
-      })
     }
   },
   methods: {

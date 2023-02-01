@@ -11,6 +11,9 @@
       <el-form-item>
         <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="flushDictCache()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新字典缓存</el-button>
+      </el-form-item>
 <!--      <el-form-item>
         <el-button type="primary" @click="addStore">
           <d2-icon name="plus"/>添加
@@ -130,6 +133,9 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    flushDictCache () {
+      this.loadDict()
     }
     // addStore () {
     //   // this.$localStore.set('a', 'cccc')

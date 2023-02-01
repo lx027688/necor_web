@@ -1,28 +1,16 @@
-import { dictTree } from '@api/system/dict'
+import { dictRoot } from '@api/system/dict'
 import { dbSet, dbGet } from '@/libs/util.db'
 
-export function loadDict (codes = []) {
+export function loadDict () {
   return new Promise((resolve, reject) => {
-    codes.forEach(code => {
-      if (isBlank(code)) {
-        return
+    dictRoot().then(res => {
+      if (isNotBlank(res) && isNotBlank(res.data)) {
+        const path = process.env.VUE_APP_TITLE + '-dict'
+        dbSet({ path: path, value: res.data, user: false })
       }
-      const dict = dbGet({ path: code, user: false })
-      if (this.isBlank(dict)) {
-        dictTree(code).then(res => {
-          // 本地保存数据字典
-          dbSet({
-            path: code,
-            value: res.data,
-            user: false
-          })
-          resolve(1)
-        }).catch(err => {
-          console.log('err', err)
-        })
-      } else {
-        resolve(1)
-      }
+      resolve(1)
+    }).catch(err => {
+      console.log('err', err)
     })
   })
 }
@@ -31,22 +19,44 @@ export function getDict (code) {
   if (isBlank(code)) {
     return
   }
-  if (code.length === 3) {
-    return dbGet({ path: code, user: false })
-  }
 
-  let dict = dbGet({ path: code, user: false })
-  if (this.isNotBlank(dict)) {
-    return dict
-  }
+  const path = process.env.VUE_APP_TITLE + '-dict'
 
-  const parentCode = code.slice(0, code.length - 3)
-  dict = dbGet({ path: parentCode, user: false })
+  let dict = dbGet({ path: path, user: false })
+
   if (this.isBlank(dict)) {
-    return code
+    return
   }
-  const d = dict.children.filter(e => e.code === code)
-  return this.isNotBlank(d) ? d[0] : code
+
+  if (code.length === 3) {
+    const d = dict.filter(e => e.code === code)
+    if (isBlank(d)) {
+      return
+    } else {
+      return d[0]
+    }
+  }
+
+  const rootCode = code.slice(0, 3)
+  const d = dict.filter(e => e.code === rootCode)
+  if (isBlank(d)) {
+    return
+  }
+  dict = d[0]
+
+  for (let i = 6; i <= code.length; i += 3) {
+    const childCode = code.slice(0, i)
+
+    const d = dict.children.filter(e => e.code === childCode)
+
+    if (isBlank(d)) {
+      return
+    } else {
+      dict = d[0]
+    }
+  }
+
+  return dict
 }
 
 export function isBlank (value) {
