@@ -65,9 +65,7 @@ export default {
   beforeCreate () {
   },
   mounted () {
-    this.loadDict(['102', '199']).then(() => {
-      this.getList()
-    })
+    this.getList()
   },
   methods: {
     search () {
