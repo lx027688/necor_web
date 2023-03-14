@@ -20,10 +20,19 @@
         <el-input v-model="form.mobile"></el-input>
       </el-form-item>
       <el-form-item label="头像" prop="headPortraitFile">
-        <el-upload ref="upload" action="/" :class="{disabled:fileListLength>0}" :on-preview="handlePreview" :on-remove="handleRemove" :on-change="handleChange" :http-request="handleUpload"
-                   list-type="picture-card" :file-list="fileList" :auto-upload="false" multiple :limit="1">
+        <el-upload ref="upload" action="/" :auto-upload="false" :limit="1" :class="'headPortrait'"
+                   list-type="picture-card" :file-list="fileList" :on-preview="handlePreview"
+                   :on-change="(file, fileList) => handleChange(file, fileList, 'headPortrait')"
+                   :on-remove="(file, fileList) => handleRemove(file, fileList, 'headPortrait')">
           <i class="el-icon-plus"></i>
         </el-upload>
+<!--        <el-upload ref="upload" action="" :auto-upload="false" :limit="1" :file-list="fileList" list-type="picture-card"
+                   :on-change="(file, fileList) => picChange1(file, fileList, 'blockRef1', 'backPic1', 'backPics')"
+                   :on-remove="(file, fileList) => picRemove1(file, fileList, 'backPic1', 'backPics')"
+                   :on-preview="(file) => picView(file)" :class="'picUpload backPic1'">
+          <i class="el-icon-plus picIcon"></i>
+          <span class="picSpan"></span>
+        </el-upload>-->
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -33,7 +42,7 @@
       <el-button type="primary" @click="saveAdmin" >确 定</el-button>
     </div>
 
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" append-to-body>
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
   </el-dialog>
@@ -57,7 +66,8 @@ export default {
         idCard: '',
         email: '',
         mobile: '',
-        headPortrait: ''
+        headPortrait: '',
+        headPortraitFile: null
       },
       saveRule: {
         name: [
@@ -130,9 +140,7 @@ export default {
           }
         ]
       },
-      isUploadHead: false,
       fileList: [],
-      fileListLength: 0,
       dialogImageUrl: '',
       dialogVisible: false
     }
@@ -152,11 +160,11 @@ export default {
             const r = res.data
             this.form = r
             if (r.headPortrait !== null && r.headPortrait !== '') {
+              document.querySelector('.headPortrait > div').style.display = 'none'
               const file = {
                 name: r.headPortrait.split('.')[r.headPortrait.split('.').length - 1],
                 url: r.headPortrait
               }
-              this.fileListLength = 1
               this.fileList.push(file)
             }
             this.loading = false
@@ -178,9 +186,6 @@ export default {
               params.append(key, this.form[key])
             }
           }
-          if (this.fileList.length > 0 && this.isUploadHead) {
-            params.append('headPortraitFile', this.fileList[0], this.fileList[0].name)
-          }
 
           // 报错数据
           save(params).then(r => {
@@ -201,21 +206,19 @@ export default {
         }
       })
     },
-    handleUpload (raw) {
-      this.fileList.push(raw.file)
-      this.fileListLength = this.fileList.length
-    },
-    handleRemove (file, fileList) {
-      this.fileList = fileList
-      this.fileListLength = this.fileList.length
-    },
     handlePreview (file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    handleChange (file, fileList) {
-      this.isUploadHead = true
-      this.fileListLength = fileList.length
+    handleChange (file, fileList, className) {
+      document.querySelector('.' + className + ' > div').style.display = 'none'
+      this.form.headPortraitFile = file.raw
+    },
+    handleRemove (file, fileList, className) {
+      document.querySelector('.' + className + ' > div').style.display = 'block'
+      this.form.headPortrait = ''
+      this.form.headPortraitFile = null
+      this.fileList = []
     }
   }
 }

@@ -20,6 +20,17 @@
                 </template>
               </el-input>
             </el-form-item>
+
+            <el-form-item label="域名地址" prop="websit">
+              <el-input v-model="generalForm.websit" placeholder="websit">
+                <template slot="append">
+                  <el-popover placement="top-start" title="温馨提示" width="400" trigger="hover">
+                    <li>前面需要加上http:// 或 https://</li>
+                    <el-button slot="reference" size="mini" icon="el-icon-info" style="float:right"></el-button>
+                  </el-popover>
+                </template>
+              </el-input>
+            </el-form-item>
           </el-form>
         </el-card>
       </el-col>
@@ -71,6 +82,7 @@ export default {
       generalLoading: false,
       storageLoading: false,
       generalForm: {
+        websit: '',
         allowOrigin: ''
       },
       storageForm: {
