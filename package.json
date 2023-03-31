@@ -12,6 +12,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^3.2.8",
     "axios": "^0.19.0",
     "axios-mock-adapter": "^1.18.1",
     "better-scroll": "^1.15.2",
@@ -29,6 +30,7 @@
     "nprogress": "^0.2.0",
     "screenfull": "^5.0.2",
     "sortablejs": "^1.10.1",
+    "tinymce": "^5.10.3",
     "ua-parser-js": "^0.7.32",
     "vue": "^2.6.11",
     "vue-i18n": "^8.15.1",

@@ -68,7 +68,7 @@ export const isPc = function () {
  * 判断姓名是否正确
  */
 export function isName (name) {
-  let regName = /^[\u4e00-\u9fa5]{2,4}$/
+  const regName = /^[\u4e00-\u9fa5]{2,4}$/
   if (!regName.test(name)) return false
   return true
 }
@@ -114,6 +114,24 @@ export function isNull (val) {
     return false
   }
   return false
+}
+
+/**
+ * 是否超过指定数据大小（单位M）
+ * @param val
+ * @returns {string}
+ */
+export function isExceedSize (val, maxSize) {
+  var bytes = 0
+  for (var i = 0; i < val.length; i++) {
+    if (val.charCodeAt(i) > 255) {
+      bytes += 3 // 中文字符占用3个字节
+    } else {
+      bytes += 1 // 非中文字符占用1个字节
+    }
+  }
+  var KB = bytes / 1024 / 1024
+  return KB < maxSize
 }
 
 /**
@@ -171,9 +189,9 @@ export function isCardId (code) {
         code = code.split('')
         // ∑(ai×Wi)(mod 11)
         // 加权因子
-        let factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+        const factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
         // 校验位
-        let parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2, 'x']
+        const parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2, 'x']
         let sum = 0
         let ai = 0
         let wi = 0
@@ -182,7 +200,7 @@ export function isCardId (code) {
           wi = factor[i]
           sum += ai * wi
         }
-        let last = parity[sum % 11]
+        const last = parity[sum % 11]
         if (last !== code[17]) {
           msg = '证件号码校验位错误'
           return false

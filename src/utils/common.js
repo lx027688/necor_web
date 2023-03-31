@@ -1,5 +1,7 @@
 import { dictRoot } from '@api/system/dict'
 import { dbSet, dbGet } from '@/libs/util.db'
+import axios from 'axios'
+import { Base64 } from 'js-base64'
 
 export function loadDict () {
   return new Promise((resolve, reject) => {
@@ -91,4 +93,15 @@ export function contains (arr = [], item) {
 export function union (arr1, arr2) {
   const arr = Array.from(new Set([...arr1, ...arr2]))
   return arr
+}
+
+export function getFileByBase64 (path) {
+  return new Promise((resolve, reject) => {
+    axios.get(path, { responseType: 'arraybuffer' }).then(response => {
+      resolve(Base64.encode(new Uint8Array(response.data)))
+    }).catch(error => {
+      console.log(error)
+      resolve(null)
+    })
+  })
 }
