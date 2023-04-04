@@ -63,6 +63,19 @@
 
 <script>
 import { findMenuTreeList, saveMenu, removeMenu, menuDetail } from '@api/system/menu'
+
+const originalData = {
+  id: '',
+  parentId: '',
+  name: '',
+  path: '',
+  url: '',
+  icon: '',
+  auth: '',
+  sort: 0,
+  menuType: ''
+}
+
 export default {
   name: 'system-menu',
   data () {
@@ -79,17 +92,7 @@ export default {
       menuId: '',
       menuName: '',
       parentName: '',
-      form: {
-        id: '',
-        parentId: '',
-        name: '',
-        path: '',
-        url: '',
-        icon: '',
-        auth: '',
-        sort: 0,
-        menuType: ''
-      },
+      form: Object.assign({}, originalData),
       saveRules: {
         name: [{ required: true, message: '请输入菜单名', trigger: 'blur' }],
         path: [{ required: true, message: '因端菜单组件原因，有三级菜单时不配置path会出现展开效果问题', trigger: 'blur' }]
@@ -132,8 +135,7 @@ export default {
       this.addType = 'primary'
       this.editType = 'info'
       if (this.menuId != null && this.menuId !== '') {
-        this.$refs.saveForm.resetFields()
-        this.form = {}
+        this.form = this.resetFormData('saveForm', originalData)
         this.parentName = this.menuName
         this.form.parentId = this.menuId
       }
@@ -185,7 +187,7 @@ export default {
       })
     },
     reset () {
-      this.$refs.saveForm.resetFields()
+      this.form = this.resetFormData('saveForm', originalData)
     },
     getValue (value) {
       this.form.parentId = value

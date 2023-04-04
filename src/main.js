@@ -12,7 +12,7 @@ import router from './router'
 // import { menuHeader, menuAside } from '@/menu'
 // import { frameInRoutes } from '@/router/routes'
 
-import { loadDict, getDict, isBlank, isNotBlank, abbr, contains, union, getFileByBase64 } from '@/utils/common.js'
+import { loadDict, getDict, isBlank, isNotBlank, abbr, contains, union, getFileByBase64, resetFormData } from '@/utils/common.js'
 
 Vue.prototype.loadDict = loadDict
 Vue.prototype.getDict = getDict
@@ -22,6 +22,7 @@ Vue.prototype.abbr = abbr
 Vue.prototype.contains = contains
 Vue.prototype.union = union
 Vue.prototype.getFileByBase64 = getFileByBase64
+Vue.prototype.resetFormData = resetFormData
 
 // 全局变量
 // 文件类型

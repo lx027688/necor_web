@@ -26,13 +26,13 @@
                    :on-remove="(file, fileList) => handleRemove(file, fileList, 'headPortrait')">
           <i class="el-icon-plus"></i>
         </el-upload>
-<!--        <el-upload ref="upload" action="" :auto-upload="false" :limit="1" :file-list="fileList" list-type="picture-card"
-                   :on-change="(file, fileList) => picChange1(file, fileList, 'blockRef1', 'backPic1', 'backPics')"
-                   :on-remove="(file, fileList) => picRemove1(file, fileList, 'backPic1', 'backPics')"
-                   :on-preview="(file) => picView(file)" :class="'picUpload backPic1'">
-          <i class="el-icon-plus picIcon"></i>
-          <span class="picSpan"></span>
-        </el-upload>-->
+        <!--        <el-upload ref="upload" action="" :auto-upload="false" :limit="1" :file-list="fileList" list-type="picture-card"
+                           :on-change="(file, fileList) => picChange1(file, fileList, 'blockRef1', 'backPic1', 'backPics')"
+                           :on-remove="(file, fileList) => picRemove1(file, fileList, 'backPic1', 'backPics')"
+                           :on-preview="(file) => picView(file)" :class="'picUpload backPic1'">
+                  <i class="el-icon-plus picIcon"></i>
+                  <span class="picSpan"></span>
+                </el-upload>-->
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -52,23 +52,25 @@
 
 import { save, detail, validateRepeatUsername, validateRepeatIdCard, validateRepeatEmail, validateRepeatMobile } from '@api/system/admin'
 
+const originalData = {
+  id: '',
+  username: '',
+  password: '',
+  name: '',
+  nickName: '',
+  idCard: '',
+  email: '',
+  mobile: '',
+  headPortrait: '',
+  headPortraitFile: null
+}
+
 export default {
   data () {
     return {
       visible: false,
       loading: false,
-      form: {
-        id: '',
-        username: '',
-        password: '',
-        name: '',
-        nickName: '',
-        idCard: '',
-        email: '',
-        mobile: '',
-        headPortrait: '',
-        headPortraitFile: null
-      },
+      form: Object.assign({}, originalData),
       saveRule: {
         name: [
           { pattern: /[\u4e00-\u9fa5]/, message: '姓名必须是中文', trigger: 'blur' }
@@ -147,15 +149,14 @@ export default {
   },
   methods: {
     init (id) {
-      this.form.id = id || ''
       this.visible = true
       this.loading = true
-      this.fileListLength = 0
 
       this.$nextTick(() => {
-        this.$refs.saveForm.resetFields()
+        this.form = this.resetFormData('saveForm', originalData)
+
         this.fileList = []
-        if (this.form.id) {
+        if (id) {
           detail(id).then(res => {
             const r = res.data
             this.form = r
@@ -193,7 +194,6 @@ export default {
               message: '保存成功',
               type: 'success'
             })
-            this.$refs.saveForm.resetFields()
             this.$emit('refreshList')
             this.loading = false
             this.visible = false

@@ -24,18 +24,20 @@
 
 import { save, detail } from '@api/system/dict'
 
+const originalData = {
+  id: '',
+  name: '',
+  code: '',
+  remark: '',
+  parentId: ''
+}
+
 export default {
   data () {
     return {
       visible: false,
       loading: false,
-      form: {
-        id: '',
-        name: '',
-        code: '',
-        remark: '',
-        parentId: ''
-      },
+      form: Object.assign({}, originalData),
       saveRule: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         code: [{ required: true, message: '请输入值', trigger: 'blur' }]
@@ -44,19 +46,18 @@ export default {
   },
   methods: {
     init (type, id) {
-      if (type === 'addItem') { // 添加字典项
-        this.form.parentId = id || ''
-        this.form.id = ''
-      } else {
-        this.form.id = id || ''
-        this.form.parentId = ''
-      }
       this.visible = true
       this.loading = true
 
       this.$nextTick(() => {
-        this.$refs.saveForm.resetFields()
-        if (this.form.id) {
+        this.form = this.resetFormData('saveForm', originalData)
+        if (type === 'addItem') { // 添加字典项
+          this.form.parentId = id || ''
+        } else {
+          this.form.parentId = ''
+        }
+
+        if (id) {
           detail(id).then(r => {
             this.form = r.data
             this.form.parentId = r.data.parent.id
@@ -76,7 +77,6 @@ export default {
               message: '保存成功',
               type: 'success'
             })
-            this.$refs.saveForm.resetFields()
             this.$emit('refreshList')
             this.loading = false
             this.visible = false

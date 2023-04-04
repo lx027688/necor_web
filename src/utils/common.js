@@ -95,6 +95,11 @@ export function union (arr1, arr2) {
   return arr
 }
 
+/**
+ * 根据连接地址获取文件并转成base64
+ * @param path
+ * @returns {Promise<unknown>}
+ */
 export function getFileByBase64 (path) {
   return new Promise((resolve, reject) => {
     axios.get(path, { responseType: 'arraybuffer' }).then(response => {
@@ -104,4 +109,15 @@ export function getFileByBase64 (path) {
       resolve(null)
     })
   })
+}
+
+/**
+ * 重试表单数据
+ * @param formName
+ * @param originalData
+ * @returns {*}
+ */
+export function resetFormData (formName, originalData) {
+  this.$refs[formName].resetFields()
+  return Object.assign({}, originalData)
 }
