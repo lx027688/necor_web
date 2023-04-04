@@ -11,15 +11,15 @@ export function isEmail (s) {
  * @param {*} s
  */
 export function isMobile (s) {
-  return /^1[0-9]{10}$/.test(s)
+  return /^1[3-9]\d{9}$/.test(s)
 }
 
 /**
- * 电话号码
+ * 电话号码 （需以区号开头，如028-xxxx）
  * @param {*} s
  */
 export function isPhone (s) {
-  return /^([0-9]{3,4}-)?[0-9]{7,8}$/.test(s)
+  return /^0\d{2,3}-\d{7,8}$/.test(s)
 }
 
 /**
