@@ -70,7 +70,7 @@ export default {
     return {
       visible: false,
       loading: false,
-      form: Object.assign({}, originalData),
+      form: this.cloneDeep(originalData),
       saveRule: {
         name: [
           { pattern: /[\u4e00-\u9fa5]/, message: '姓名必须是中文', trigger: 'blur' }
@@ -154,7 +154,6 @@ export default {
 
       this.$nextTick(() => {
         this.form = this.resetFormData('saveForm', originalData)
-
         this.fileList = []
         if (id) {
           detail(id).then(res => {
@@ -225,7 +224,7 @@ export default {
 </script>
 
 <style>
-  .disabled .el-upload--picture-card {
-    display: none;
-  }
+.disabled .el-upload--picture-card {
+  display: none;
+}
 </style>

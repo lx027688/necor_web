@@ -119,5 +119,5 @@ export function getFileByBase64 (path) {
  */
 export function resetFormData (formName, originalData) {
   this.$refs[formName].resetFields()
-  return Object.assign({}, originalData)
+  return this.cloneDeep(originalData)
 }

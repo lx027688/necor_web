@@ -70,6 +70,7 @@
         </el-row>
         <el-form-item>
           <el-button type="primary" @click="addNode()">添加字段</el-button>
+          <el-button type="primary" @click="refresh()">重置</el-button>
           <el-button type="primary" @click="generate()">生成代码</el-button>
         </el-form-item>
       </el-form>
@@ -81,19 +82,21 @@
 
 import { generateCode } from '@api/system/develop'
 
+const originalData = {
+  prefix: '',
+  entityName: '',
+  entityDesc: '',
+  package: 'com.necor',
+  author: 'necor',
+  version: '1.0',
+  fields: [{ fieldType: '', fieldName: '', fieldDesc: '' }]
+}
+
 export default {
   name: 'system-code',
   data () {
     return {
-      form: {
-        prefix: '',
-        entityName: '',
-        entityDesc: '',
-        package: 'com.necor',
-        author: 'necor',
-        version: '1.0',
-        fields: [{ fieldType: '', fieldName: '', fieldDesc: '' }]
-      }
+      form: this.cloneDeep(originalData)
     }
   },
   created () {
@@ -133,6 +136,9 @@ export default {
       }).catch(err => {
         console.log('err', err)
       })
+    },
+    refresh () {
+      this.form = this.resetFormData('form', originalData)
     }
   }
 }

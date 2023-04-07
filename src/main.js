@@ -11,7 +11,7 @@ import store from '@/store/index'
 import router from './router'
 // import { menuHeader, menuAside } from '@/menu'
 // import { frameInRoutes } from '@/router/routes'
-
+import { cloneDeep } from 'lodash'
 import { loadDict, getDict, isBlank, isNotBlank, abbr, contains, union, getFileByBase64, resetFormData } from '@/utils/common.js'
 
 Vue.prototype.loadDict = loadDict
@@ -23,6 +23,7 @@ Vue.prototype.contains = contains
 Vue.prototype.union = union
 Vue.prototype.getFileByBase64 = getFileByBase64
 Vue.prototype.resetFormData = resetFormData
+Vue.prototype.cloneDeep = cloneDeep
 
 // 全局变量
 // 文件类型

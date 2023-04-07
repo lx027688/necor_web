@@ -92,7 +92,7 @@ export default {
       menuId: '',
       menuName: '',
       parentName: '',
-      form: Object.assign({}, originalData),
+      form: this.cloneDeep(originalData),
       saveRules: {
         name: [{ required: true, message: '请输入菜单名', trigger: 'blur' }],
         path: [{ required: true, message: '因端菜单组件原因，有三级菜单时不配置path会出现展开效果问题', trigger: 'blur' }]

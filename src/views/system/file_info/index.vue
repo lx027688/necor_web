@@ -8,6 +8,9 @@
       <el-form-item>
         <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="refresh"><d2-icon name="refresh"/>&nbsp;重置</el-button>
+      </el-form-item>
     </el-form>
 
     <!-- 列表-->
@@ -45,20 +48,22 @@
 import { list } from '@api/system/fileInfo'
 import pagination from '@/components/pagination'
 
+const originalData = {
+  currentPage: 1,
+  pageSize: 10,
+  total: 0,
+  search: '',
+  orderKey: '',
+  orderVal: ''
+}
+
 export default {
   name: 'system-fileInfo',
   components: { pagination },
   data () {
     return {
       loading: false,
-      query: {
-        currentPage: 1,
-        pageSize: 10,
-        total: 0,
-        search: '',
-        orderKey: '',
-        orderVal: ''
-      },
+      query: this.cloneDeep(originalData),
       data: []
     }
   },
@@ -71,6 +76,10 @@ export default {
     search () {
       this.query.currentPage = 1
       this.getList()
+    },
+    refresh () {
+      this.query = this.resetFormData('form', originalData)
+      this.search()
     },
     getList () {
       this.loading = true

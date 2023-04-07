@@ -37,7 +37,7 @@ export default {
     return {
       visible: false,
       loading: false,
-      form: Object.assign({}, originalData),
+      form: this.cloneDeep(originalData),
       saveRule: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
         code: [{ required: true, message: '请输入值', trigger: 'blur' }]

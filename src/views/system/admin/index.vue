@@ -15,14 +15,17 @@
         <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/>&nbsp;导出</el-button>
+        <el-button type="primary" @click="refresh"><d2-icon name="refresh"/>&nbsp;重置</el-button>
       </el-form-item>
       <el-form-item style="float: right">
         <span style="color:#303133;font-size: 20px;margin-right: 20px;">共有用户:<span style="color: #67C23A;">{{ userStatistics.total }}</span></span>
-<!--        <span style="color:#303133;font-size: 20px;">在线用户:<span style="color: #d43333;">{{ userStatistics.online }}</span></span>-->
+        <!--        <span style="color:#303133;font-size: 20px;">在线用户:<span style="color: #d43333;">{{ userStatistics.online }}</span></span>-->
+      </el-form-item>
+      <el-form-item style="float: right">
+        <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/>&nbsp;导出</el-button>
+      </el-form-item>
+      <el-form-item style="float: right">
+        <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -51,7 +54,7 @@
           <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateAdminEnable(scope.row.id,scope.row.isEnable)" style="cursor:pointer;">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" header-align="center" align="center" width="250" label="操作">
+      <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="detailHandle(scope.row.id)">查看</el-button>
           <el-button type="text" size="small" @click="resetAdminPassword(scope.row.id)">重置密码</el-button>
@@ -82,6 +85,18 @@ import { all } from '@api/system/role'
 import pagination from '@/components/pagination'
 import save from './save'
 import detail from './detail'
+
+const originalData = {
+  currentPage: 1,
+  pageSize: 10,
+  total: 0,
+  username: '',
+  name: '',
+  mobile: '',
+  orderKey: '',
+  orderVal: ''
+}
+
 export default {
   name: 'system-admin',
   components: { pagination, save, detail },
@@ -89,16 +104,7 @@ export default {
     return {
       loading: false,
       roleLoading: false,
-      query: {
-        currentPage: 1,
-        pageSize: 10,
-        total: 0,
-        username: '',
-        name: '',
-        mobile: '',
-        orderKey: '',
-        orderVal: ''
-      },
+      query: this.cloneDeep(originalData),
       data: [],
       userStatistics: {
         total: 0,
@@ -121,6 +127,10 @@ export default {
     search () {
       this.query.currentPage = 1
       this.getList()
+    },
+    refresh () {
+      this.query = this.resetFormData('form', originalData)
+      this.search()
     },
     getList () {
       this.loading = true
