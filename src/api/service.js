@@ -39,6 +39,10 @@ function createService () {
           case 1000:
             // [ 示例 ] code === 0 代表没有错误
             return dataAxios
+          case 10001:
+          case 10002:
+            errorCreate(`${dataAxios.code}: ${dataAxios.msg}`)
+            break
           case 'xxx':
             // [ 示例 ] 其它和后台约定的 code
             errorCreate(`[ code: xxx ] ${dataAxios.msg}: ${response.config.url}`)
