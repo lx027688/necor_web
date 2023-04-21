@@ -59,13 +59,13 @@ export default {
       loading: false,
       form: this.cloneDeep(originalData),
       saveRule: {
-        name: [{ required: true, message: '请输入区域名称', trigger: 'blur' }],
-        code: [{ required: true, message: '请输入区域代码', trigger: 'blur' }],
-        zipCode: [{ required: true, message: '请输入区域邮编', trigger: 'blur' }],
-        lon: [{ required: true, message: '请输入区域经度', trigger: 'blur' }],
-        lat: [{ required: true, message: '请输入区域纬度', trigger: 'blur' }],
-        simpleName: [{ required: true, message: '请输入区域简称', trigger: 'blur' }],
-        wholeName: [{ required: true, message: '请输入区域完整名称', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入区域名称', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
+        code: [{ required: true, message: '请输入区域代码', trigger: 'blur' }, { min: 0, max: 15, message: '长度不能超过15个字符', trigger: 'blur' }],
+        zipCode: [{ required: true, message: '请输入区域邮编', trigger: 'blur' }, { min: 0, max: 10, message: '长度不能超过10个字符', trigger: 'blur' }],
+        lon: [{ required: true, message: '请输入区域经度', trigger: 'blur' }, { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }],
+        lat: [{ required: true, message: '请输入区域纬度', trigger: 'blur' }, { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }],
+        simpleName: [{ required: true, message: '请输入区域简称', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
+        wholeName: [{ required: true, message: '请输入区域完整名称', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }]
       },
       areas: [],
       placeholder: '请选择地区'

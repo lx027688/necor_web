@@ -94,8 +94,11 @@ export default {
       parentName: '',
       form: this.cloneDeep(originalData),
       saveRules: {
-        name: [{ required: true, message: '请输入菜单名', trigger: 'blur' }],
-        path: [{ required: true, message: '因端菜单组件原因，有三级菜单时不配置path会出现展开效果问题', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入菜单名', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
+        menuType: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
+        path: [{ required: true, message: '因前端菜单组件原因，有三级菜单时不配置path会出现展开效果问题', trigger: 'blur' }, { min: 0, max: 60, message: '长度不能超过60个字符', trigger: 'blur' }],
+        url: [{ min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
+        auth: [{ min: 0, max: 60, message: '长度不能超过60个字符', trigger: 'blur' }]
       }
     }
   },

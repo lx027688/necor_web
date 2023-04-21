@@ -27,7 +27,7 @@
 
     <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="saveVisible" width="30%">
       <el-form :model="form" ref="saveForm" :rules="saveRule" @submit.native.prevent label-width="80px">
-        <el-form-item label="机构名称" prop="name" :rules="[{required: true, message: '请填写机构名称'}]">
+        <el-form-item label="机构名称" prop="name" :rules="[{required: true, message: '请填写机构名称'}, { min: 0, max: 80, message: '长度不能超过80个字符'}]">
           <el-input v-model="form.name" @keyup.enter.native="saveData"></el-input>
         </el-form-item>
       </el-form>

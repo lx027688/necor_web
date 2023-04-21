@@ -73,7 +73,11 @@ export default {
       form: this.cloneDeep(originalData),
       saveRule: {
         name: [
-          { pattern: /[\u4e00-\u9fa5]/, message: '姓名必须是中文', trigger: 'blur' }
+          { pattern: /[\u4e00-\u9fa5]/, message: '姓名必须是中文', trigger: 'blur' },
+          { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }
+        ],
+        nickName: [
+          { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }
         ],
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -111,6 +115,7 @@ export default {
         ],
         email: [
           { type: 'email', message: '请输入正确的email', trigger: 'blur' },
+          { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
               var params = new URLSearchParams()

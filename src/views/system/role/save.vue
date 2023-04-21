@@ -33,8 +33,8 @@ export default {
       loading: false,
       form: this.cloneDeep(originalData),
       saveRule: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        mark: [{ required: true, message: '请输入标识', trigger: 'blur' }]
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
+        mark: [{ required: true, message: '请输入标识', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }]
       }
     }
   },
