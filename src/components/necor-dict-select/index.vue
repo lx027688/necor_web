@@ -58,6 +58,9 @@ export default {
     if (this.isNotBlank(dict)) {
       this.rendering(dict)
     }
+    if (this.isNotBlank(this.value)) {
+      this.selectValue = this.value
+    }
   },
   methods: {
     changeHand () {
