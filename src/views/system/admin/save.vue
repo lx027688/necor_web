@@ -50,7 +50,7 @@
 
 <script>
 
-import { save, detail, validateRepeatUsername, validateRepeatIdCard, validateRepeatEmail, validateRepeatMobile } from '@api/system/admin'
+import { save, detail, validateRepeat } from '@api/system/admin'
 
 const originalData = {
   id: '',
@@ -85,9 +85,10 @@ export default {
           {
             validator: (rule, value, callback) => {
               var params = new URLSearchParams()
-              params.append('username', value)
+              params.append('vType', 'username')
+              params.append('vParam', value)
               params.append('id', this.form.id)
-              validateRepeatUsername(params).then(res => {
+              validateRepeat(params).then(res => {
                 if (!res) {
                   return callback(new Error('用户名已存在'))
                 }
@@ -102,9 +103,10 @@ export default {
           {
             validator: (rule, value, callback) => {
               var params = new URLSearchParams()
-              params.append('mobile', value)
+              params.append('vType', 'mobile')
+              params.append('vParam', value)
               params.append('id', this.form.id)
-              validateRepeatMobile(params).then(res => {
+              validateRepeat(params).then(res => {
                 if (!res) {
                   return callback(new Error('手机号已存在'))
                 }
@@ -119,9 +121,10 @@ export default {
           {
             validator: (rule, value, callback) => {
               var params = new URLSearchParams()
-              params.append('email', value)
+              params.append('vType', 'email')
+              params.append('vParam', value)
               params.append('id', this.form.id)
-              validateRepeatEmail(params).then(res => {
+              validateRepeat(params).then(res => {
                 if (!res) {
                   return callback(new Error('邮箱已存在'))
                 }
@@ -135,9 +138,10 @@ export default {
           {
             validator: (rule, value, callback) => {
               var params = new URLSearchParams()
-              params.append('idCard', value)
+              params.append('vType', 'idCard')
+              params.append('vParam', value)
               params.append('id', this.form.id)
-              validateRepeatIdCard(params).then(res => {
+              validateRepeat(params).then(res => {
                 if (!res) {
                   return callback(new Error('身份证号码已存在'))
                 }

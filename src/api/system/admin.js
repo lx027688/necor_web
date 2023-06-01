@@ -65,36 +65,9 @@ export function resetPassword (data) {
   })
 }
 
-export function validateRepeatUsername (data) {
+export function validateRepeat (data) {
   return request({
-    url: '/admin/validate_repeat_username',
-    method: 'post',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    data
-  })
-}
-
-export function validateRepeatIdCard (data) {
-  return request({
-    url: '/admin/validate_repeat_idcard',
-    method: 'post',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    data
-  })
-}
-
-export function validateRepeatEmail (data) {
-  return request({
-    url: '/admin/validate_repeat_email',
-    method: 'post',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    data
-  })
-}
-
-export function validateRepeatMobile (data) {
-  return request({
-    url: '/admin/validate_repeat_mobile',
+    url: '/admin/validate_repeat',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
