@@ -43,22 +43,22 @@
           <el-form label-position="right" label-width="150px" :model="storageForm" ref="storageForm" :rules="storageFormRule"
                    v-loading="storageLoading">
             <el-form-item label="存储类型" prop="type">
-              <necor-dict-radio code="104" v-model="storageForm.type" placeholder="存储类型"></necor-dict-radio>
+              <necor-dict-radio code="104" v-model="storageForm.type" :value="storageForm.type" placeholder="存储类型"></necor-dict-radio>
             </el-form-item>
-            <el-form-item label="endpoint" prop="endpoint" v-if="storageForm.type === '104001'">
-              <el-input v-model="storageForm.endpoint" placeholder="endpoint" ></el-input>
+            <el-form-item label="endpoint" prop="oss.endpoint" v-if="storageForm.type === '104001'">
+              <el-input v-model="storageForm.oss.endpoint" placeholder="endpoint" ></el-input>
             </el-form-item>
-            <el-form-item label="accessKeyId" prop="accessKeyId" v-if="storageForm.type === '104001'">
-              <el-input v-model="storageForm.accessKeyId" placeholder="accessKeyId"></el-input>
+            <el-form-item label="accessKeyId" prop="oss.accessKeyId" v-if="storageForm.type === '104001'">
+              <el-input v-model="storageForm.oss.accessKeyId" placeholder="accessKeyId"></el-input>
             </el-form-item>
-            <el-form-item label="accessKeySecret" prop="accessKeySecret" v-if="storageForm.type === '104001'">
-              <el-input v-model="storageForm.accessKeySecret" placeholder="accessKeySecret"></el-input>
+            <el-form-item label="accessKeySecret" prop="oss.accessKeySecret" v-if="storageForm.type === '104001'">
+              <el-input v-model="storageForm.oss.accessKeySecret" placeholder="accessKeySecret"></el-input>
             </el-form-item>
-            <el-form-item label="bucket" prop="bucket" v-if="storageForm.type === '104001'">
-              <el-input v-model="storageForm.bucket" placeholder="bucket"></el-input>
+            <el-form-item label="bucket" prop="oss.bucket" v-if="storageForm.type === '104001'">
+              <el-input v-model="storageForm.oss.bucket" placeholder="bucket"></el-input>
             </el-form-item>
-            <el-form-item label="文件路径" prop="path" v-if="storageForm.type === '104000'">
-              <el-input v-model="storageForm.path" placeholder="文件路径"></el-input>
+            <el-form-item label="文件路径" prop="local.path" v-if="storageForm.type === '104000'">
+              <el-input v-model="storageForm.local.path" placeholder="文件路径"></el-input>
             </el-form-item>
           </el-form>
         </el-card>
@@ -87,11 +87,15 @@ export default {
       },
       storageForm: {
         type: '',
-        endpoint: '',
-        accessKeyId: '',
-        accessKeySecret: '',
-        bucket: '',
-        path: ''
+        oss: {
+          endpoint: '',
+          accessKeyId: '',
+          accessKeySecret: '',
+          bucket: ''
+        },
+        local: {
+          path: ''
+        }
       },
       generalFormRule: {
         allowOrigin: [{ required: true, message: '请填写Allow Origin', trigger: 'blur' }]
