@@ -57,7 +57,7 @@ export default {
           this.form.parentId = ''
         }
 
-        if (id) {
+        if (id && type === 'updateDict') {
           detail(id).then(r => {
             this.form = r.data
             this.form.parentId = r.data.parent.id
