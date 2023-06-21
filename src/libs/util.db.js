@@ -96,6 +96,7 @@ export function dbDel ({
   path = '',
   user = false
 }) {
+  db.unset(dbName + '.' + path).write()
   db.unset(pathInit({
     dbName,
     path,

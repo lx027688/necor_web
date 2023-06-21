@@ -1,12 +1,5 @@
 import { request } from '@/api/service'
 
-export function getLoginData () {
-  return request({
-    url: '/login/get_login_data',
-    method: 'post'
-  })
-}
-
 export function findMenuTreeList () {
   return request({
     url: '/menu/get_menu_tree_list',

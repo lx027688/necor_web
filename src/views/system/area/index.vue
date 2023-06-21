@@ -1,57 +1,58 @@
 <template>
-<d2-container>
-  <!-- 查询 -->
-  <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
-    <el-form-item label="" prop="search">
-      <el-input v-model="query.search" placeholder="搜索项" clearable @keyup.enter.native="search" style="width: 180px;"/>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="refresh"><d2-icon name="refresh"/>&nbsp;重置</el-button>
-    </el-form-item>
-    <el-form-item style="float: right">
-      <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
-    </el-form-item>
-  </el-form>
+  <d2-container>
+    <!-- 查询 -->
+    <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
+      <el-form-item label="" prop="search">
+        <el-input v-model="query.search" placeholder="搜索项" clearable @keyup.enter.native="search" style="width: 180px;"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="refresh"><d2-icon name="refresh"/>&nbsp;重置</el-button>
+      </el-form-item>
+      <el-form-item style="float: right" v-permission="['area:save']">
+        <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
+      </el-form-item>
+    </el-form>
 
-  <!-- 列表-->
-  <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
-            row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" lazy :load="load">
-    <el-table-column prop="name" header-align="left" align="left" label="区域名称"></el-table-column>
-    <el-table-column prop="simpleName" header-align="center" align="center" label="区域简称"></el-table-column>
-    <el-table-column prop="parentName" header-align="center" align="center" label="所属区域">
-      <template slot-scope="scope">{{scope.row.parent.name}}</template>
-    </el-table-column>
-    <el-table-column prop="level" header-align="center" align="center" label="级别" sortable="custom">
-      <template slot-scope="scope">
-        <necor-dict-convert :code="scope.row.level"></necor-dict-convert>
-      </template>
-    </el-table-column>
-    <el-table-column prop="code" header-align="center" align="center" label="区域代码"></el-table-column>
-    <el-table-column prop="lon" header-align="center" align="center" label="区域经度"></el-table-column>
-    <el-table-column prop="lat" header-align="center" align="center" label="区域纬度"></el-table-column>
-    <el-table-column prop="zipCode" header-align="center" align="center" label="区域邮编"></el-table-column>
-    <el-table-column fixed="right" header-align="center" align="center" width="120" label="操作">
-      <template slot-scope="scope">
-        <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
-        <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+    <!-- 列表-->
+    <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
+              row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" lazy :load="load">
+      <el-table-column prop="name" header-align="left" align="left" label="区域名称"></el-table-column>
+      <el-table-column prop="simpleName" header-align="center" align="center" label="区域简称"></el-table-column>
+      <el-table-column prop="parentName" header-align="center" align="center" label="所属区域">
+        <template slot-scope="scope">{{scope.row.parent.name}}</template>
+      </el-table-column>
+      <el-table-column prop="level" header-align="center" align="center" label="级别" sortable="custom">
+        <template slot-scope="scope">
+          <necor-dict-convert :code="scope.row.level"></necor-dict-convert>
+        </template>
+      </el-table-column>
+      <el-table-column prop="code" header-align="center" align="center" label="区域代码"></el-table-column>
+      <el-table-column prop="lon" header-align="center" align="center" label="区域经度"></el-table-column>
+      <el-table-column prop="lat" header-align="center" align="center" label="区域纬度"></el-table-column>
+      <el-table-column prop="zipCode" header-align="center" align="center" label="区域邮编"></el-table-column>
+      <el-table-column fixed="right" header-align="center" align="center" width="120" label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['area:save']">修改</el-button>
+          <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['area:remove']">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
-  <!-- 列表尾部-->
-  <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+    <!-- 列表尾部-->
+    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
 
-  <!-- 弹窗, 新增 / 修改 -->
-  <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
-</d2-container>
+    <!-- 弹窗, 新增 / 修改 -->
+    <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
+  </d2-container>
 </template>
 
 <script>
 import { list, getArea, remove } from '@api/system/area'
 import pagination from '@/components/pagination'
+import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
 const originalData = {
@@ -67,6 +68,7 @@ const originalData = {
 export default {
   name: 'system-area',
   components: { pagination, save },
+  directives: { permission },
   data () {
     return {
       loading: false,

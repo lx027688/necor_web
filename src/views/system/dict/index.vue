@@ -14,24 +14,24 @@
       <el-form-item style="float: right">
         <el-button type="primary" @click="flushDictCache()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新字典缓存</el-button>
       </el-form-item>
-      <el-form-item style="float: right">
+      <el-form-item style="float: right" v-permission="['dict:save']">
         <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
       </el-form-item>
-<!--      <el-form-item>
-        <el-button type="primary" @click="addStore">
-          <d2-icon name="plus"/>添加
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getStore">
-          <d2-icon name="plus"/>获取
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="removeStore">
-          <d2-icon name="plus"/>删除
-        </el-button>
-      </el-form-item>-->
+      <!--      <el-form-item>
+              <el-button type="primary" @click="addStore">
+                <d2-icon name="plus"/>添加
+              </el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="getStore">
+                <d2-icon name="plus"/>获取
+              </el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="removeStore">
+                <d2-icon name="plus"/>删除
+              </el-button>
+            </el-form-item>-->
     </el-form>
 
     <!-- 列表-->
@@ -43,9 +43,9 @@
       <el-table-column prop="remark" header-align="center" align="center" label="描述"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="saveHandle('addItem',scope.row.id)">添加字典项</el-button>
-          <el-button type="text" size="small" @click="saveHandle('updateDict',scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="saveHandle('addItem',scope.row.id)" v-permission="['dict:save']">添加字典项</el-button>
+          <el-button type="text" size="small" @click="saveHandle('updateDict',scope.row.id)" v-permission="['dict:save']">修改</el-button>
+          <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['dict:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,6 +61,7 @@
 <script>
 import { list, remove } from '@api/system/dict'
 import pagination from '@/components/pagination'
+import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
 const originalData = {
@@ -75,6 +76,7 @@ const originalData = {
 export default {
   name: 'system-dict',
   components: { pagination, save },
+  directives: { permission },
   data () {
     return {
       loading: false,

@@ -13,7 +13,7 @@
           <el-form-item>
             <el-button type="primary" @click="refresh"><d2-icon name="refresh"/>&nbsp;重置</el-button>
           </el-form-item>
-          <el-form-item style="float: right">
+          <el-form-item style="float: right" v-permission="['role:save']">
             <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
           </el-form-item>
         </el-form>
@@ -32,8 +32,8 @@
           <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="getMenus(scope.row.id)">配置菜单</el-button>
-              <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
-              <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
+              <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['role:save']">修改</el-button>
+              <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['role:remove']">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -56,6 +56,7 @@
 <script>
 import { list, remove, updateEnable, getMenusByRole, saveRoleMenu } from '@api/system/role'
 import pagination from '@/components/pagination'
+import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
 const originalData = {
@@ -70,6 +71,7 @@ const originalData = {
 export default {
   name: 'system-role',
   components: { pagination, save },
+  directives: { permission },
   data () {
     return {
       loading: false,

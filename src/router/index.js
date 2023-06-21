@@ -10,7 +10,6 @@ import util from '@/libs/util.js'
 import { dbGet } from '@/libs/util.db'
 import { isURL } from '@/utils/validate'
 
-import { getLoginData } from '@/api/system/login'
 import { loadDict } from '@/utils/common'
 import { menuHeader } from '@/menu'
 import layoutHeaderAside from '@/layout/header-aside'
@@ -127,17 +126,14 @@ router.afterEach(to => {
  */
 // eslint-disable-next-line no-unused-vars
 async function loadMenu () {
-  // 获取登录数据
-  const loginData = await getLoginData().catch(err => {
-    router.replace('/login')
-    console.log('错误信息', err)
-  })
-
   // 加载数据字典到缓存
   loadDict()
 
   // 获取用户系统菜单
-  const systemMenus = loginData.menus
+  const systemMenus = dbGet({
+    path: process.env.VUE_APP_TITLE + '-menus',
+    user: true
+  })
   // 定义主路由集
   const mainRoutes = []
 

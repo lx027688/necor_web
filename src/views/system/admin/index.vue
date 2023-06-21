@@ -24,7 +24,7 @@
       <el-form-item style="float: right">
         <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/>&nbsp;导出</el-button>
       </el-form-item>
-      <el-form-item style="float: right">
+      <el-form-item style="float: right" v-permission="['admin:save']">
         <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
       </el-form-item>
     </el-form>
@@ -56,11 +56,11 @@
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="detailHandle(scope.row.id)">查看</el-button>
+          <el-button type="text" size="small" @click="detailHandle(scope.row.id)" v-permission="['admin:detail']">查看</el-button>
           <el-button type="text" size="small" @click="resetAdminPassword(scope.row.id)">重置密码</el-button>
           <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.operations.roleIds)">配置角色</el-button>
-          <el-button type="text" size="small" @click="saveHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="removeAdmin(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['admin:save']">修改</el-button>
+          <el-button type="text" size="small" @click="removeAdmin(scope.row.id)" v-permission="['admin:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,6 +83,7 @@
 import { list, remove, updateEnable, resetPassword, saveRoles, exportAdmin } from '@api/system/admin'
 import { all } from '@api/system/role'
 import pagination from '@/components/pagination'
+import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 import detail from './detail'
 
@@ -100,6 +101,7 @@ const originalData = {
 export default {
   name: 'system-admin',
   components: { pagination, save, detail },
+  directives: { permission },
   data () {
     return {
       loading: false,

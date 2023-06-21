@@ -22,13 +22,6 @@ export function AccountLogout () {
   })
 }
 
-export function getLoginData () {
-  return request({
-    url: '/login/get_login_data',
-    method: 'post'
-  })
-}
-
 export function getCaptcha (data) {
   return request({
     url: '/captcha',

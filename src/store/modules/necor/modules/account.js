@@ -1,8 +1,9 @@
 import { Message, MessageBox } from 'element-ui'
 import util from '@/libs/util.js'
-import { dbGet } from '@/libs/util.db'
+import { dbDel, dbGet, dbSet } from '@/libs/util.db'
 import router from '@/router'
 import { AccountLogin, AccountLogout } from '@/api/system/login'
+import { isNotBlank } from '@/utils/common'
 
 export default {
   namespaced: true,
@@ -38,6 +39,19 @@ export default {
       // 如有必要 token 需要定时更新，默认保存一天
       util.cookies.set('uuid', res.data.username)
       util.cookies.set('token', res.data.token)
+
+      const roles = isNotBlank(res.data) && isNotBlank(res.data.roles) ? res.data.roles : []
+      const auths = isNotBlank(res.data) && isNotBlank(res.data.auths) ? res.data.auths : []
+      const menus = isNotBlank(res.data) && isNotBlank(res.data.menus) ? res.data.menus : []
+
+      const rolePath = process.env.VUE_APP_TITLE + '-roles'
+      const authPath = process.env.VUE_APP_TITLE + '-auths'
+      const menuPath = process.env.VUE_APP_TITLE + '-menus'
+
+      dbSet({ path: rolePath, value: roles, user: true })
+      dbSet({ path: authPath, value: auths, user: true })
+      dbSet({ path: menuPath, value: menus, user: true })
+
       // 设置 vuex 用户信息
       await dispatch('necor/user/set', { name: res.data.name }, { root: true })
       // 用户登录后从持久化数据加载一系列的设置
@@ -55,9 +69,14 @@ export default {
       async function logout () {
         const res = await AccountLogout()
         if (res.code === 1000) {
+          const username = util.cookies.get('uuid')
           // 删除cookie
           util.cookies.remove('token')
           util.cookies.remove('uuid')
+
+          dbDel({ path: 'user', user: true })
+          dbDel({ dbName: 'sys', path: 'user.' + username + '.user', user: true })
+
           // 清空 vuex 用户信息
           await dispatch('necor/user/set', {}, { root: true })
           // 跳转路由
