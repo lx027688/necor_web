@@ -16,7 +16,7 @@
       <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="openSaveDialog('','',scope.row.id)">添加下级机构</el-button>
-          <el-button type="text" size="small" @click="openSaveDialog(scope.row.id,scope.row.name)">修改</el-button>
+          <el-button type="text" size="small" @click="openSaveDialog(scope.row.id,scope.row.name,scope.row.parent.id)">修改</el-button>
           <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
