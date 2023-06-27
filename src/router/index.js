@@ -65,11 +65,12 @@ router.beforeEach(async (to, from, next) => {
         user: true
       })
       const name = user.info.name
-      if (name && name !== 'undefined' && !isFetchPermissionInfo) {
+      if (name && name !== 'undefined' && (!isFetchPermissionInfo || util.cookies.get('from') === 'login')) {
         // 请求拉取登录数据
         await loadMenu()
         // 拉取登录数据标识设为true 表示已拉取
         isFetchPermissionInfo = true
+        util.cookies.remove('from')
         // 跳转至请求页面
         next(to.path, true)
       } else {
@@ -134,9 +135,9 @@ async function loadMenu () {
     path: process.env.VUE_APP_TITLE + '-menus',
     user: true
   })
+
   // 定义主路由集
   const mainRoutes = []
-
   // 遍历菜单,处理动态路由
   for (let i = 0; i < systemMenus.length; i++) {
     if (systemMenus[i].menuType === '103000') { //  判断菜单是否时按钮
@@ -155,10 +156,10 @@ async function loadMenu () {
       handleMenuAndRoutes(systemMenus[i].children, routeChildren)
       // 将主路由添加至主路由集
       mainRoutes.push(mainRoute)
-      // 动态添加至路由
-      router.addRoutes(mainRoutes)
     }
   }
+  // 动态添加至路由
+  router.addRoutes(mainRoutes)
 
   // 设置系统菜单 本地静态菜单数据+后端动态菜单数据
   const menus = [...menuHeader, ...systemMenus]

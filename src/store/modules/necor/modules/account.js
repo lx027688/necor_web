@@ -39,6 +39,8 @@ export default {
       // 如有必要 token 需要定时更新，默认保存一天
       util.cookies.set('uuid', res.data.username)
       util.cookies.set('token', res.data.token)
+      // 加载菜单标识
+      util.cookies.set('from', 'login')
 
       const roles = isNotBlank(res.data) && isNotBlank(res.data.roles) ? res.data.roles : []
       const auths = isNotBlank(res.data) && isNotBlank(res.data.auths) ? res.data.auths : []
@@ -56,6 +58,8 @@ export default {
       await dispatch('necor/user/set', { name: res.data.name }, { root: true })
       // 用户登录后从持久化数据加载一系列的设置
       await dispatch('load')
+      // 加载路由及菜单
+      router.beforeEach()
     },
     /**
      * @description 注销用户并返回登录页面

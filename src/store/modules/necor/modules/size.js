@@ -17,7 +17,7 @@ export default {
       Vue.prototype.$ELEMENT.size = state.value
       if (refresh) {
         commit('necor/page/keepAliveClean', null, { root: true })
-        router.replace('/refresh')
+        router.replace('/index')
       }
     },
     /**
