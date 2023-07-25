@@ -52,13 +52,6 @@ export function dictChilds (code) {
   })
 }
 
-export function dictChilds1 (code) {
-  return request({
-    url: '/dict/cache_dict/' + code,
-    method: 'get'
-  })
-}
-
 export function dictChildsPage (data) {
   return request({
     url: '/dict/childs_page',
