@@ -8,21 +8,6 @@ export function list (data) {
   })
 }
 
-export function findOrgTree () {
-  return request({
-    url: '/org/tree',
-    method: 'post'
-  })
-}
-
-export function treeList (data) {
-  return request({
-    url: '/org/tree_list',
-    method: 'post',
-    data
-  })
-}
-
 export function save (data) {
   return request({
     url: '/org/save',

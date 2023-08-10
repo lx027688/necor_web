@@ -25,7 +25,7 @@
       <el-table-column header-align="center" align="center" label="组员" width="80">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="请先选择组织机构" :disabled="isNotBlank(org.id)" placement="top">
-            <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107001')"  @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(org.id)"></el-checkbox>
+            <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107001')" @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(org.id)"></el-checkbox>
           </el-tooltip>
         </template>
       </el-table-column>

@@ -1,12 +1,12 @@
 <template>
   <d2-container>
     <!-- 查询 -->
-    <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
-      <el-form-item label="" prop="search">
-        <el-input v-model="query.search" placeholder="搜索项" clearable @keyup.enter.native="search" style="width: 180px;"/>
+    <el-form :inline="true" ref="form" style="margin-bottom: -18px;">
+      <el-form-item label="" prop="keywords">
+        <el-input v-model="keywords" placeholder="搜索项" style="width: 180px;"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
+        <el-button type="primary" @click="search"><d2-icon name="search"/>查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="refresh"><d2-icon name="refresh"/>&nbsp;重置</el-button>
@@ -17,12 +17,12 @@
     </el-form>
 
     <!-- 列表-->
-    <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
+    <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
               row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" lazy :load="load">
       <el-table-column prop="name" header-align="left" align="left" label="区域名称"></el-table-column>
       <el-table-column prop="simpleName" header-align="center" align="center" label="区域简称"></el-table-column>
       <el-table-column prop="parentName" header-align="center" align="center" label="所属区域">
-        <template slot-scope="scope">{{scope.row.parent.name}}</template>
+        <template slot-scope="scope"><span v-if="scope.row.parent">{{scope.row.parent.name}}</span></template>
       </el-table-column>
       <el-table-column prop="level" header-align="center" align="center" label="级别" sortable="custom">
         <template slot-scope="scope">
@@ -42,7 +42,8 @@
     </el-table>
 
     <!-- 列表尾部-->
-    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+    <el-pagination layout="sizes, prev, pager, next" :current-page="page.currentPage" :page-size="page.pageSize"
+                   :page-sizes="page.pageSizes" :total="showData.length" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
 
     <!-- 弹窗, 新增 / 修改 -->
     <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
@@ -50,30 +51,26 @@
 </template>
 
 <script>
-import { list, getArea, remove } from '@api/system/area'
-import pagination from '@/components/pagination'
+import { list, remove } from '@api/system/area'
 import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
-const originalData = {
-  currentPage: 1,
-  pageSize: 10,
-  total: 0,
-  search: '',
-  orderKey: '',
-  orderVal: '',
-  parentId: ''
-}
-
 export default {
   name: 'system-area',
-  components: { pagination, save },
+  components: { save },
   directives: { permission },
   data () {
     return {
       loading: false,
-      query: this.cloneDeep(originalData),
+      page: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        pageSizes: [10, 20, 50, 100]
+      },
+      keywords: '',
       data: [],
+      showData: [],
       saveVisible: false
     }
   },
@@ -84,42 +81,44 @@ export default {
   },
   methods: {
     search () {
-      this.query.currentPage = 1
-      this.getList()
+      this.showData = this.data.filter(item => {
+        return this.contains(item.name, this.keywords) || this.contains(item.code, this.keywords)
+      })
+      this.page.currentPage = 1
     },
     refresh () {
-      this.query = this.resetFormData('form', originalData)
-      this.search()
+      this.keywords = ''
+      this.getList()
     },
     getList () {
       this.loading = true
       // 开始请求登录接口
-      list({ ...this.query }).then(r => {
-        const res = r.data
+      list().then(res => {
         this.data = res.data
-        this.query.total = res.recordsFiltered
+        this.showData = this.data
         this.loading = false
       }).catch(err => {
         console.log('err', err)
         this.loading = false
       })
     },
+    // 翻页方法
+    handleSizeChange (val) {
+      this.page.currentPage = 1
+      this.page.pageSize = val
+    },
+    handleCurrentChange (val) {
+      this.page.currentPage = val
+    },
     load (tree, treeNode, resolve) {
       if (this.isNotBlank(tree) && this.isNotBlank(tree.id)) {
         var params = new URLSearchParams()
         params.append('parentId', tree.id)
-        getArea(params).then(res => {
+        list(params).then(res => {
           resolve(res.data)
         }).catch(err => {
           console.log('err', err)
         })
-      }
-    },
-    sortChange (column, prop, order) {
-      this.query.orderKey = column.prop
-      this.query.orderVal = column.order
-      if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
-        this.getList()
       }
     },
     // 新增 / 修改

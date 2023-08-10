@@ -73,7 +73,7 @@
     <!-- 弹窗, 详情 -->
     <detail v-if="detailVisible" ref="detail"></detail>
 
-    <el-dialog title="角色配置" :visible.sync="configRoleVisible" width="45%" center>
+    <el-dialog title="角色配置" :visible.sync="configRoleVisible" width="35%" center>
       <el-transfer v-model="selectRoles" :data="roles" @change="updateRole" :titles="['所有角色', '已选角色']" v-loading="roleLoading"></el-transfer>
     </el-dialog>
   </d2-container>

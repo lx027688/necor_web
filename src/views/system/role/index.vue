@@ -3,9 +3,9 @@
     <el-row>
       <el-col :span="14">
         <!-- 查询 -->
-        <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
-          <el-form-item label="" prop="search">
-            <el-input v-model="query.search" placeholder="搜索项" clearable @keyup.enter.native="search" style="width: 180px;"/>
+        <el-form :inline="true" ref="form" style="margin-bottom: -18px;">
+          <el-form-item label="" prop="keywords">
+            <el-input v-model="keywords" placeholder="搜索项" style="width: 180px;"/>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
@@ -19,7 +19,8 @@
         </el-form>
 
         <!-- 列表-->
-        <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" highlight-current-row>
+        <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)"
+                  v-loading="loading" stripe border highlight-current-row style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
           <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
           <el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
           <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
@@ -39,7 +40,8 @@
         </el-table>
 
         <!-- 列表尾部-->
-        <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+        <el-pagination layout="sizes, prev, pager, next" :current-page="page.currentPage" :page-size="page.pageSize"
+                       :page-sizes="page.pageSizes" :total="showData.length" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
 
         <!-- 弹窗, 新增 / 修改 -->
         <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
@@ -54,33 +56,30 @@
 </template>
 
 <script>
-import { list, remove, updateEnable, getMenusByRole, saveRoleMenu } from '@api/system/role'
-import pagination from '@/components/pagination'
+import { all, remove, updateEnable, getMenusByRole, saveRoleMenu } from '@api/system/role'
 import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
-const originalData = {
-  currentPage: 1,
-  pageSize: 10,
-  total: 0,
-  search: '',
-  orderKey: '',
-  orderVal: ''
-}
-
 export default {
   name: 'system-role',
-  components: { pagination, save },
+  components: { save },
   directives: { permission },
   data () {
     return {
       loading: false,
       menuLoading: false,
-      query: this.cloneDeep(originalData),
+      page: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        pageSizes: [10, 20, 50, 100]
+      },
+      keywords: '',
       data: [],
+      showData: [],
       saveVisible: false,
       defaultProps: {
-        label: 'title'
+        label: 'name'
       },
       menuList: [],
       selectMenuIds: [],
@@ -93,31 +92,33 @@ export default {
   },
   methods: {
     search () {
-      this.query.currentPage = 1
-      this.getList()
+      this.showData = this.data.filter(item => {
+        return this.contains(item.name, this.keywords) || this.contains(item.code, this.keywords)
+      })
+      this.page.currentPage = 1
     },
     refresh () {
-      this.query = this.resetFormData('form', originalData)
-      this.search()
+      this.keywords = ''
+      this.getList()
     },
     getList () {
       this.loading = true
-      list({ ...this.query }).then(r => {
-        const res = r.data
+      all().then(res => {
         this.data = res.data
-        this.query.total = res.recordsFiltered
+        this.showData = this.data
         this.loading = false
       }).catch(err => {
         console.log('err', err)
         this.loading = false
       })
     },
-    sortChange (column, prop, order) {
-      this.query.orderKey = column.prop
-      this.query.orderVal = column.order
-      if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
-        this.getList()
-      }
+    // 翻页方法
+    handleSizeChange (val) {
+      this.page.currentPage = 1
+      this.page.pageSize = val
+    },
+    handleCurrentChange (val) {
+      this.page.currentPage = val
     },
     // 新增 / 修改
     saveHandle (id) {

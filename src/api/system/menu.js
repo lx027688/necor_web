@@ -1,8 +1,8 @@
 import { request } from '@/api/service'
 
-export function findMenuTreeList () {
+export function findMenuTree () {
   return request({
-    url: '/menu/get_menu_tree_list',
+    url: '/menu/get_menu_tree',
     method: 'post'
   })
 }

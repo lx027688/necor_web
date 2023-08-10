@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { findMenuTreeList, saveMenu, removeMenu, menuDetail } from '@api/system/menu'
+import { findMenuTree, saveMenu, removeMenu, menuDetail } from '@api/system/menu'
 
 const originalData = {
   id: '',
@@ -97,8 +97,8 @@ export default {
         name: [{ required: true, message: '请输入菜单名', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
         menuType: [{ required: true, message: '请选择菜单类型', trigger: 'blur' }],
         path: [{ required: true, message: '因前端菜单组件原因，有三级菜单时不配置path会出现展开效果问题', trigger: 'blur' }, { min: 0, max: 60, message: '长度不能超过60个字符', trigger: 'blur' }],
-        url: [{ min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
-        auth: [{ min: 0, max: 60, message: '长度不能超过60个字符', trigger: 'blur' }]
+        url: [{ required: true, message: 'url不能为空', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
+        auth: [{ required: true, message: 'auth不能为空', trigger: 'blur' }, { min: 0, max: 60, message: '长度不能超过60个字符', trigger: 'blur' }]
       }
     }
   },
@@ -108,7 +108,7 @@ export default {
   methods: {
     getMenuList () {
       this.loading = true
-      findMenuTreeList().then(res => {
+      findMenuTree().then(res => {
         this.menuList = res.data
         this.loading = false
       }).catch(err => {

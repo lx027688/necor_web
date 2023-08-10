@@ -31,11 +31,3 @@ export function remove (id) {
     method: 'post'
   })
 }
-
-export function getArea (data) {
-  return request({
-    url: '/area/get_area',
-    method: 'post',
-    params: data
-  })
-}

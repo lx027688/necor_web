@@ -7,14 +7,6 @@ export function all () {
   })
 }
 
-export function list (data) {
-  return request({
-    url: '/role/list',
-    method: 'post',
-    data
-  })
-}
-
 export function save (data) {
   return request({
     headers: { 'X-Requested-With': 'XMLHttpRequest' },

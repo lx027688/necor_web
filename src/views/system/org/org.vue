@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 查询 -->
-    <el-form :inline="true" :model="query" ref="form" style="margin-bottom: -18px;">
+    <el-form :inline="true" ref="form" style="margin-bottom: -18px;">
       <el-form-item>
         <el-button type="primary" @click="openSaveDialog()">
           <d2-icon name="plus"/>&nbsp;新增</el-button>
@@ -9,7 +9,7 @@
     </el-form>
 
     <!-- 列表-->
-    <el-table :data="data" v-loading="loading" stripe border  highlight-current-row @current-change="addMembers"
+    <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)" v-loading="loading" stripe border @current-change="addMembers"
               style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
       <el-table-column prop="createDate" header-align="center" align="center" label="创建时间"></el-table-column>
@@ -23,7 +23,8 @@
     </el-table>
 
     <!-- 列表尾部-->
-    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+    <el-pagination layout="sizes, prev, pager, next" :current-page="page.currentPage" :page-size="page.pageSize"
+                   :page-sizes="page.pageSizes" :total="showData.length" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
 
     <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="saveVisible" width="30%">
       <el-form :model="form" ref="saveForm" :rules="saveRule" @submit.native.prevent label-width="80px">
@@ -44,22 +45,22 @@
 
 <script>
 import { list, save, remove } from '@/api/system/org'
-import pagination from '@/components/pagination'
 
 export default {
   name: 'org-index',
-  components: { pagination },
+  components: { },
   data () {
     return {
       loading: false,
-      query: {
+      page: {
         currentPage: 1,
         pageSize: 10,
         total: 0,
-        orderKey: '',
-        orderVal: ''
+        pageSizes: [10, 20, 50, 100]
       },
+      keywords: '',
       data: [],
+      showData: [],
       saveVisible: false,
       form: {
         id: '',
@@ -74,17 +75,34 @@ export default {
     this.getList()
   },
   methods: {
+    search () {
+      this.showData = this.data.filter(item => {
+        return this.contains(item.name, this.keywords) || this.contains(item.code, this.keywords)
+      })
+      this.page.currentPage = 1
+    },
+    refresh () {
+      this.keywords = ''
+      this.getList()
+    },
     getList () {
       this.loading = true
-      list({ ...this.query }).then(r => {
-        const res = r.data
+      list({ ...this.query }).then(res => {
         this.data = res.data
-        this.query.total = res.recordsFiltered
+        this.showData = this.data
         this.loading = false
       }).catch(err => {
         console.log('err', err)
         this.loading = false
       })
+    },
+    // 翻页方法
+    handleSizeChange (val) {
+      this.page.currentPage = 1
+      this.page.pageSize = val
+    },
+    handleCurrentChange (val) {
+      this.page.currentPage = val
     },
     removeHandle (id) {
       this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {
