@@ -15,7 +15,7 @@
       <el-table-column prop="createDate" header-align="center" align="center" label="创建时间"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="openSaveDialog('','',scope.row.id)">添加下级机构</el-button>
+          <el-button type="text" size="small" @click="openSaveDialog('','',scope.row.id)">添加下级部门</el-button>
           <el-button type="text" size="small" @click="openSaveDialog(scope.row.id,scope.row.name,scope.row.parent.id)">修改</el-button>
           <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
         </template>
@@ -28,7 +28,7 @@
 
     <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="saveVisible" width="30%">
       <el-form :model="form" ref="saveForm" :rules="saveRule" @submit.native.prevent label-width="80px">
-        <el-form-item label="机构名称" prop="name" :rules="[{required: true, message: '请填写机构名称'}, { min: 0, max: 80, message: '长度不能超过80个字符'}]">
+        <el-form-item label="部门名称" prop="name" :rules="[{required: true, message: '请填写部门名称'}, { min: 0, max: 80, message: '长度不能超过80个字符'}]">
           <el-input v-model="form.name" @keyup.enter.native="saveData"></el-input>
         </el-form-item>
       </el-form>
@@ -44,10 +44,10 @@
 </template>
 
 <script>
-import { list, save, remove } from '@/api/system/org'
+import { list, save, remove } from '@/api/system/dept'
 
 export default {
-  name: 'org-index',
+  name: 'dept-index',
   components: { },
   data () {
     return {

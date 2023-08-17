@@ -2,7 +2,7 @@ import { request } from '@/api/service'
 
 export function list (data) {
   return request({
-    url: '/admins_orgs/list',
+    url: '/admin_dept/list',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function list (data) {
 
 export function save (data) {
   return request({
-    url: '/admins_orgs/save',
+    url: '/admin_dept/save',
     method: 'post',
     data
   })

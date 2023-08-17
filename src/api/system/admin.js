@@ -8,9 +8,9 @@ export function list (data) {
   })
 }
 
-export function getAdminByOrgan (data) {
+export function getAdminByDept (data) {
   return request({
-    url: '/admin/get_admin_by_organ',
+    url: '/admin/get_admin_by_dept',
     method: 'post',
     data
   })

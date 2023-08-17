@@ -8,8 +8,8 @@
       <el-form-item>
         <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
       </el-form-item>
-      <el-form-item style="float: right" v-if="org.id">
-        <span style="font-size: 20px; color: #e1790d;">所选机构：{{ org.name }}</span>
+      <el-form-item style="float: right" v-if="dept.id">
+        <span style="font-size: 20px; color: #e1790d;">所选部门：{{ dept.name }}</span>
       </el-form-item>
     </el-form>
 
@@ -17,15 +17,15 @@
     <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%; margin-top:10px;margin-bottom: 20px;">
       <el-table-column header-align="center" align="center" label="管理员" width="80">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="请先选择组织机构" :disabled="isNotBlank(org.id)" placement="top">
-            <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(org.id)"></el-checkbox>
+          <el-tooltip class="item" effect="dark" content="请先选择部门" :disabled="isNotBlank(dept.id)" placement="top">
+            <el-checkbox :value="checkedPosition(scope.row.adminDept,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(dept.id)"></el-checkbox>
           </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="组员" width="80">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="请先选择组织机构" :disabled="isNotBlank(org.id)" placement="top">
-            <el-checkbox :value="checkedPosition(scope.row.adminsOrgs,'107001')" @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(org.id)"></el-checkbox>
+          <el-tooltip class="item" effect="dark" content="请先选择部门" :disabled="isNotBlank(dept.id)" placement="top">
+            <el-checkbox :value="checkedPosition(scope.row.adminDept,'107001')" @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(dept.id)"></el-checkbox>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -40,11 +40,11 @@
 </template>
 
 <script>
-import { list, save } from '@api/system/admins_orgs'
+import { list, save } from '@api/system/admin_dept'
 import pagination from '@/components/pagination'
 
 export default {
-  name: 'admins-orgs-index',
+  name: 'admin-dept-index',
   components: { pagination },
   data () {
     return {
@@ -64,7 +64,7 @@ export default {
         name: '',
         parentId: ''
       },
-      org: {
+      dept: {
         id: '',
         name: ''
       }
@@ -97,19 +97,19 @@ export default {
         this.getList()
       }
     },
-    selectOrg (id, name) {
-      this.org = {
+    selectDept (id, name) {
+      this.dept = {
         id: id,
         name: name
       }
     },
     checkedPosition (rels, position) {
-      if (this.isBlank(this.org.id)) {
+      if (this.isBlank(this.dept.id)) {
         return false
       }
       const self = this
       const flag = rels.some(function (value, index, array) {
-        return value.orgId === self.org.id && value.position === position
+        return value.deptId === self.dept.id && value.position === position
       })
       return flag
     },
@@ -123,20 +123,20 @@ export default {
       }
       if (this.isBlank(adminId)) {
         this.$message({
-          message: '机构成员为空',
+          message: '部门成员为空',
           type: 'warning'
         })
         return
       }
-      if (this.isBlank(this.org.id)) {
+      if (this.isBlank(this.dept.id)) {
         this.$message({
-          message: '机构为空',
+          message: '部门为空',
           type: 'warning'
         })
         return
       }
 
-      save({ adminId: adminId, orgId: this.org.id, position: position }).then(r => {
+      save({ adminId: adminId, deptId: this.dept.id, position: position }).then(r => {
         this.$message({
           message: '保存成功',
           type: 'success'
