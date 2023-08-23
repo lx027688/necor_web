@@ -73,6 +73,7 @@ export default {
       form: this.cloneDeep(originalData),
       saveRule: {
         name: [
+          { required: true, message: '请输入姓名', trigger: 'blur' },
           { pattern: /[\u4e00-\u9fa5]/, message: '姓名必须是中文', trigger: 'blur' },
           { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }
         ],
