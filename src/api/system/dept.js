@@ -8,6 +8,13 @@ export function list (data) {
   })
 }
 
+export function listByAdmin () {
+  return request({
+    url: '/dept/list_by_admin',
+    method: 'post'
+  })
+}
+
 export function save (data) {
   return request({
     url: '/dept/save',

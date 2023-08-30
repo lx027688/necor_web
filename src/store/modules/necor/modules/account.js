@@ -55,7 +55,10 @@ export default {
       dbSet({ path: menuPath, value: menus, user: true })
 
       // 设置 vuex 用户信息
-      await dispatch('necor/user/set', { name: res.data.name }, { root: true })
+      await dispatch('necor/user/set', {
+        id: res.data.id,
+        name: isNotBlank(res.data.name) ? res.data.name : res.data.username
+      }, { root: true })
       // 用户登录后从持久化数据加载一系列的设置
       await dispatch('load')
       // 加载路由及菜单
