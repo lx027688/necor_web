@@ -90,7 +90,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res) {
+                if (!res.data) {
                   return callback(new Error('用户名已存在'))
                 }
                 callback()
@@ -108,7 +108,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res) {
+                if (!res.data) {
                   return callback(new Error('手机号已存在'))
                 }
                 callback()
@@ -126,7 +126,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res) {
+                if (!res.data) {
                   return callback(new Error('邮箱已存在'))
                 }
                 callback()
@@ -143,7 +143,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res) {
+                if (!res.data) {
                   return callback(new Error('身份证号码已存在'))
                 }
                 callback()

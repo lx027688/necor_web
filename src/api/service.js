@@ -39,8 +39,11 @@ function createService () {
           case 1000:
             // [ 示例 ] code === 0 代表没有错误
             return dataAxios
+          case -1000:
+          case 1001:
+          case 1002:
           case 10001:
-          case 10002:
+          case 20001:
             errorCreate(`${dataAxios.msg}`)
             break
           case 'xxx':
