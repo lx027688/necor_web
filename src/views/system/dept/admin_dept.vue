@@ -3,7 +3,7 @@
     <!-- 查询 -->
     <el-form :inline="true" :model="query" ref="form" @submit.native.prevent style="margin-bottom: -18px;">
       <el-form-item label="" prop="search">
-        <el-input v-model="query.search" placeholder="用户名或姓名" clearable @keyup.enter.native="search" style="width: 180px;"/>
+        <el-input v-model="query.name" placeholder="用户姓名" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search()"><d2-icon name="search"/>&nbsp;查询</el-button>
@@ -18,14 +18,7 @@
       <el-table-column header-align="center" align="center" label="管理员" width="80">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" content="请先选择部门" :disabled="isNotBlank(dept.id)" placement="top">
-            <el-checkbox :value="checkedPosition(scope.row.adminDept,'107000')" @change="handleSelect('107000',scope.row.id)" :disabled="isBlank(dept.id)"></el-checkbox>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column header-align="center" align="center" label="组员" width="80">
-        <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="请先选择部门" :disabled="isNotBlank(dept.id)" placement="top">
-            <el-checkbox :value="checkedPosition(scope.row.adminDept,'107001')" @change="handleSelect('107001',scope.row.id)" :disabled="isBlank(dept.id)"></el-checkbox>
+            <el-checkbox :value="checkedPosition(scope.row.depts)" @change="handleSelect(scope.row.id)" :disabled="isBlank(dept.id)"></el-checkbox>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -40,7 +33,7 @@
 </template>
 
 <script>
-import { list, save } from '@api/system/admin_dept'
+import { list, saveDept } from '@api/system/admin'
 import pagination from '@/components/pagination'
 
 export default {
@@ -53,7 +46,7 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 0,
-        search: '',
+        name: '',
         orderKey: '',
         orderVal: ''
       },
@@ -103,24 +96,17 @@ export default {
         name: name
       }
     },
-    checkedPosition (rels, position) {
+    checkedPosition (depts) {
       if (this.isBlank(this.dept.id)) {
         return false
       }
       const self = this
-      const flag = rels.some(function (value, index, array) {
-        return value.deptId === self.dept.id && value.position === position
+      const flag = depts.some(function (value, index, array) {
+        return value.id === self.dept.id
       })
       return flag
     },
-    handleSelect (position, adminId) {
-      if (this.isBlank(position)) {
-        this.$message({
-          message: '职位为空',
-          type: 'warning'
-        })
-        return
-      }
+    handleSelect (adminId) {
       if (this.isBlank(adminId)) {
         this.$message({
           message: '部门成员为空',
@@ -135,8 +121,10 @@ export default {
         })
         return
       }
-
-      save({ adminId: adminId, deptId: this.dept.id, position: position }).then(r => {
+      const params = new FormData()
+      params.append('adminId', adminId)
+      params.append('deptId', this.dept.id)
+      saveDept(params).then(r => {
         this.$message({
           message: '保存成功',
           type: 'success'

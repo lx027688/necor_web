@@ -56,6 +56,15 @@ export function saveRoles (data) {
   })
 }
 
+export function saveDept (data) {
+  return request({
+    url: '/admin/save_dept',
+    method: 'post',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    data
+  })
+}
+
 export function resetPassword (data) {
   return request({
     url: '/admin/reset_password',

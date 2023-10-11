@@ -35,15 +35,20 @@
       <el-table-column prop="username" header-align="center" align="center" label="用户名"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
       <el-table-column prop="nickName" header-align="center" align="center" label="昵称"></el-table-column>
-      <el-table-column prop="birthday" header-align="center" align="center" label="生日"></el-table-column>
+      <el-table-column prop="adminsRoles" header-align="center" align="center" label="角色" show-overflow-tooltip>
+        <template slot-scope="scope"> {{ scope.row.adminsRoles.map(e => { return e.name }).join('，') }}</template>
+      </el-table-column>
+      <el-table-column prop="depts" header-align="center" align="center" label="部门" show-overflow-tooltip>
+        <template slot-scope="scope"> {{ scope.row.depts.map(e => { return e.name }).join('，') }}</template>
+      </el-table-column>
       <el-table-column prop="age" header-align="center" align="center" label="年龄" width="80"></el-table-column>
       <el-table-column prop="gender" header-align="center" align="center" label="性别" width="80">
         <template slot-scope="scope">
           <necor-dict-convert :code="scope.row.gender"></necor-dict-convert>
         </template>
       </el-table-column>
-      <el-table-column prop="loginIp" header-align="center" align="center" label="登陆IP"></el-table-column>
-      <el-table-column prop="loginDate" header-align="center" align="center" label="登陆时间" sortable="custom"></el-table-column>
+      <!--      <el-table-column prop="loginIp" header-align="center" align="center" label="登陆IP"></el-table-column>-->
+      <!--      <el-table-column prop="loginDate" header-align="center" align="center" label="登陆时间" sortable="custom"></el-table-column>-->
       <el-table-column prop="isLocked" header-align="center" align="center" label="是否被锁" width="100">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isLocked==='100000' ? 'danger' : 'success'" disable-transitions>{{scope.row.isLocked==='100000'?'已锁定':'正常'}}</el-tag>
@@ -260,6 +265,18 @@ export default {
         document.body.appendChild(link)
         link.click()
       })
+    },
+    getDept (depts) {
+      const self = this
+      var map = {}
+      depts.forEach(e => {
+        if (map[e.name]) {
+          map[e.name] = map[e.name] + '，' + self.getDict(e.position).name
+        } else {
+          map[e.name] = self.getDict(e.position).name
+        }
+      })
+      return map
     }
   }
 }
