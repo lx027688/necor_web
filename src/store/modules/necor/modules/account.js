@@ -45,19 +45,23 @@ export default {
       const roles = isNotBlank(res.data) && isNotBlank(res.data.roles) ? res.data.roles : []
       const auths = isNotBlank(res.data) && isNotBlank(res.data.auths) ? res.data.auths : []
       const menus = isNotBlank(res.data) && isNotBlank(res.data.menus) ? res.data.menus : []
+      const depts = isNotBlank(res.data) && isNotBlank(res.data.depts) ? res.data.depts : []
 
       const rolePath = process.env.VUE_APP_TITLE + '-roles'
       const authPath = process.env.VUE_APP_TITLE + '-auths'
       const menuPath = process.env.VUE_APP_TITLE + '-menus'
+      const deptPath = process.env.VUE_APP_TITLE + '-depts'
 
       dbSet({ path: rolePath, value: roles, user: true })
       dbSet({ path: authPath, value: auths, user: true })
       dbSet({ path: menuPath, value: menus, user: true })
+      dbSet({ path: deptPath, value: depts, user: true })
 
       // 设置 vuex 用户信息
       await dispatch('necor/user/set', {
         id: res.data.id,
-        name: isNotBlank(res.data.name) ? res.data.name : res.data.username
+        name: isNotBlank(res.data.name) ? res.data.name : res.data.username,
+        username: res.data.username
       }, { root: true })
       // 用户登录后从持久化数据加载一系列的设置
       await dispatch('load')

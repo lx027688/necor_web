@@ -8,10 +8,12 @@ export function list (data) {
   })
 }
 
-export function listByAdmin () {
+// 不需要权限
+export function root (data) {
   return request({
-    url: '/dept/list_by_admin',
-    method: 'post'
+    url: '/dept/root',
+    method: 'post',
+    data
   })
 }
 
