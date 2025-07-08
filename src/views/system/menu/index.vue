@@ -110,6 +110,7 @@ export default {
       this.loading = true
       findMenuTree().then(res => {
         this.menuList = res.data
+        this.reset()
         this.loading = false
       }).catch(err => {
         this.loading = false
@@ -117,6 +118,7 @@ export default {
       })
     },
     selectMenu (data) {
+      this.reset()
       this.menuId = data.id
       this.menuName = data.title
       if (this.model === 'add') {

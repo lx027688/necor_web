@@ -33,7 +33,7 @@ export default {
     },
     /* 初始值 */
     value: {
-      type: String,
+      // type: String,
       default: () => { return null }
     },
     /* 可清空选项 */

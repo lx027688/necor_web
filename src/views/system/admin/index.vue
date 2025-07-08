@@ -63,7 +63,7 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="detailHandle(scope.row.id)" v-permission="['admin:detail']">查看</el-button>
           <el-button type="text" size="small" @click="resetAdminPassword(scope.row.id)">重置密码</el-button>
-          <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.operations.roleIds)">配置角色</el-button>
+          <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.adminsRoles.map(r=>r.id))">配置角色</el-button>
           <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['admin:save']">修改</el-button>
           <el-button type="text" size="small" @click="removeAdmin(scope.row.id)" v-permission="['admin:remove']">删除</el-button>
         </template>
@@ -224,10 +224,10 @@ export default {
         })
       })
     },
-    configRole (id, roles) {
+    configRole (id, roleIds) {
       this.roleLoading = true
       this.roles = []
-      this.selectRoles = roles
+      this.selectRoles = roleIds
       this.currentAdmin = id
       const that = this
       this.configRoleVisible = true
@@ -250,6 +250,7 @@ export default {
       params.append('adminId', this.currentAdmin)
       params.append('roleIds[]', this.selectRoles)
       saveRoles(params).then(res => {
+        this.getList()
       })
     },
     exportExcl () {
