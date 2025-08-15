@@ -5,18 +5,18 @@
         <el-input v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="值" prop="code">
-        <el-input v-model="form.code"></el-input>
+        <el-input v-model="form.code" :disabled="form.id!=null&&form.id!=''"></el-input>
       </el-form-item>
       <el-form-item label="描述" prop="remark">
         <el-input v-model="form.remark"></el-input>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <!--点击取消清空面板内容-->
-      <el-button @click="visible = false">取 消</el-button>
-      <!--点击确定添加内容-->
-      <el-button type="primary" @click="saveData()" >确 定</el-button>
-    </div>
+    <div slot="footer" class="dialog-footer"></div>
+    <!--点击取消清空面板内容-->
+    <el-button @click="visible = false">取 消</el-button>
+    <!--点击确定添加内容-->
+    <el-button type="primary" @click="saveData()" >确 定</el-button>
+
   </el-dialog>
 </template>
 
@@ -60,7 +60,7 @@ export default {
         if (id && type === 'updateDict') {
           detail(id).then(r => {
             this.form = r.data
-            this.form.parentId = r.data.parent.id
+            this.form.parentId = this.form.parent != null ? this.form.parent.id : null
             this.loading = false
           })
         } else {

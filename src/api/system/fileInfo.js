@@ -1,8 +1,8 @@
 import { request } from '@/api/service'
 
-export function list (data) {
+export function page (data) {
   return request({
-    url: '/file_info/list',
+    url: '/file_info/page',
     method: 'post',
     data
   })

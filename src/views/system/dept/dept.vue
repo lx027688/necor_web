@@ -12,11 +12,11 @@
     <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)" v-loading="loading" stripe border @current-change="addMembers"
               style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
-      <el-table-column prop="createDate" header-align="center" align="center" label="创建时间"></el-table-column>
+      <el-table-column prop="createdAt" header-align="center" align="center" label="创建时间"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="text" size="small" @click="openSaveDialog('','',scope.row.id)">添加下级部门</el-button>
-          <el-button type="text" size="small" @click="openSaveDialog(scope.row.id,scope.row.name,scope.row.parent.id)">修改</el-button>
+          <el-button type="text" size="small" @click="openSaveDialog(scope.row.id, scope.row.name, isNotBlank(scope.row.parent) ? scope.row.parent.id : '')">修改</el-button>
           <el-button type="text" size="small" @click="removeHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { list, save, remove } from '@/api/system/dept'
+import { getDeptTree, save, remove } from '@/api/system/dept'
 
 export default {
   name: 'dept-index',
@@ -72,7 +72,7 @@ export default {
     }
   },
   mounted () {
-    this.getList()
+    this.deptTree()
   },
   methods: {
     search () {
@@ -83,11 +83,11 @@ export default {
     },
     refresh () {
       this.keywords = ''
-      this.getList()
+      this.deptTree()
     },
-    getList () {
+    deptTree () {
       this.loading = true
-      list({ ...this.query }).then(res => {
+      getDeptTree({ ...this.query }).then(res => {
         this.data = res.data
         this.showData = this.data
         this.loading = false
@@ -111,7 +111,7 @@ export default {
         type: 'warning'
       }).then(() => {
         remove(id).then(r => {
-          this.getList()
+          this.deptTree()
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -144,7 +144,7 @@ export default {
               type: 'success'
             })
             this.saveVisible = false
-            this.getList()
+            this.deptTree()
           }).catch(err => {
             console.log('err', err)
           })

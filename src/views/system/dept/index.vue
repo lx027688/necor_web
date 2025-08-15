@@ -5,7 +5,7 @@
         <dept ref="dept" @addMembers="addMembers"></dept>
       </el-col>
       <el-col :span="12">
-        <admin-dept ref="adminDept"></admin-dept>
+        <user-dept ref="userDept"></user-dept>
       </el-col>
     </el-row>
   </d2-container>
@@ -13,14 +13,14 @@
 
 <script>
 import dept from './dept'
-import adminDept from './admin_dept.vue'
+import userDept from './user_dept.vue'
 
 export default {
   name: 'system-dept',
-  components: { dept, adminDept },
+  components: { dept, userDept },
   methods: {
     addMembers (id, name) {
-      this.$refs.adminDept.selectDept(id, name)
+      this.$refs.userDept.selectDept(id, name)
     }
   }
 }

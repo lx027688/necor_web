@@ -21,7 +21,8 @@
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label"><i class="fa fa-file-image-o"></i>&nbsp;头像</template>
-        <el-image style="width: 100px; height: 100px" :src="form.headPortrait" :preview-src-list="srcList"></el-image>
+        <el-image style="width: 100px; height: 100px" v-if="form.headPortrait" :src="form.headPortrait" :preview-src-list="srcList"></el-image>
+        <el-image style="width: 100px; height: 100px" v-else :src="default_avatar"></el-image>
       </el-descriptions-item>
     </el-descriptions>
   </el-dialog>
@@ -29,13 +30,14 @@
 
 <script>
 
-import { detail } from '@api/system/admin'
+import { detail } from '@api/system/user'
 
 export default {
   data () {
     return {
       visible: false,
       loading: false,
+      default_avatar: require('@/assets/img/default_avatar.png'),
       form: {
         id: '',
         username: '',

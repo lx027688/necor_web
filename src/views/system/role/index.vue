@@ -21,17 +21,17 @@
         <!-- 列表-->
         <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)"
                   v-loading="loading" stripe border highlight-current-row style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
-          <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
-          <el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
+          <el-table-column prop="createdAt" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
+          <el-table-column prop="updatedAt" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
           <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
           <el-table-column prop="mark" header-align="center" align="center" label="标识"></el-table-column>
-          <el-table-column prop="isEnable" header-align="center" align="center" label="是否启用">
-            <template slot-scope="scope">
-              <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateRoleEnable(scope.row.id,scope.row.isEnable)">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
+          <el-table-column prop="isAvailable" header-align="center" align="center" label="是否启用">
+            <template v-slot="scope">
+              <el-tag :type="scope.row.isAvailable==='AVAILABLE' ? 'success' : 'danger'" disable-transitions @click="updateRoleAvailable(scope.row.id,scope.row.isAvailable)">{{translateEnum('AVAILABLE', scope.row.isAvailable)}}</el-tag>
             </template>
           </el-table-column>
           <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
-            <template slot-scope="scope">
+            <template v-slot="scope">
               <el-button type="text" size="small" @click="getMenus(scope.row.id)">配置菜单</el-button>
               <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['role:save']">修改</el-button>
               <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['role:remove']">删除</el-button>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { all, remove, updateEnable, getMenusByRole, saveRoleMenu } from '@api/system/role'
+import { all, remove, updateAvailable, getMenusByRole, assignMenus } from '@api/system/role'
 import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
@@ -149,12 +149,12 @@ export default {
         })
       })
     },
-    updateRoleEnable (id, isEnable) {
+    updateRoleAvailable (id, isAvailable) {
       const params = new FormData()
       params.append('id', id)
-      isEnable = isEnable === '100000' ? '100001' : '100000'
-      params.append('isEnable', isEnable)
-      updateEnable(params).then(res => {
+      isAvailable = isAvailable === 'AVAILABLE' ? 'UNAVAILABLE' : 'AVAILABLE'
+      params.append('isAvailable', isAvailable)
+      updateAvailable(params).then(res => {
         this.getList()
         this.$message({
           message: '操作成功',
@@ -196,9 +196,11 @@ export default {
         this.$refs.tree.getCheckedNodes(false, true).map(function (v) {
           menuIds.push(v.id)
         })
+        console.log(menuIds.length)
+        console.log(menuIds[0])
         params.append('id', this.currentRow)
         params.append('menuIds', menuIds)
-        saveRoleMenu(params).then(res => {
+        assignMenus(params).then(res => {
         })
       }
     }

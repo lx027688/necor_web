@@ -45,22 +45,22 @@
             <el-form-item label="字段："  prop="fields">
               <el-table :data="form.fields" border style="width: 100%">
                 <el-table-column prop="fieldType" label="字段类型">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-input v-model="form.fields[scope.$index].fieldType" placeholder="字段类型"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column prop="fieldName" label="字段名称">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-input v-model="form.fields[scope.$index].fieldName" placeholder="字段名称"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column prop="fieldDesc" label="字段描述">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-input v-model="form.fields[scope.$index].fieldDesc" placeholder="字段描述"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column fixed="right" header-align="center" align="center" label="操作">
-                  <template slot-scope="scope">
+                  <template v-slot="scope">
                     <el-button type="text" size="small" @click="deleteNode(scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>

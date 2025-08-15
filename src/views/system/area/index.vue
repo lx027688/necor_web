@@ -17,16 +17,17 @@
     </el-form>
 
     <!-- 列表-->
-    <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
+    <el-table :data="showData.slice((page.currentPage-1)*page.pageSize,page.currentPage*page.pageSize)" v-loading="loading" :key="tableKey"
+              stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;"
               row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}" lazy :load="load">
       <el-table-column prop="name" header-align="left" align="left" label="区域名称"></el-table-column>
       <el-table-column prop="simpleName" header-align="center" align="center" label="区域简称"></el-table-column>
       <el-table-column prop="parentName" header-align="center" align="center" label="所属区域">
-        <template slot-scope="scope"><span v-if="scope.row.parent">{{scope.row.parent.name}}</span></template>
+        <template v-slot="scope"><span v-if="scope.row.parentName">{{scope.row.parentName}}</span></template>
       </el-table-column>
       <el-table-column prop="level" header-align="center" align="center" label="级别" sortable="custom">
-        <template slot-scope="scope">
-          <necor-dict-convert :code="scope.row.level"></necor-dict-convert>
+        <template v-slot="scope">
+          {{translateEnum('REGION_LEVEL', scope.row.level)}}
         </template>
       </el-table-column>
       <el-table-column prop="code" header-align="center" align="center" label="区域代码"></el-table-column>
@@ -34,7 +35,7 @@
       <el-table-column prop="lat" header-align="center" align="center" label="区域纬度"></el-table-column>
       <el-table-column prop="zipCode" header-align="center" align="center" label="区域邮编"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="120" label="操作">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['area:save']">修改</el-button>
           <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['area:remove']">删除</el-button>
         </template>
@@ -62,6 +63,7 @@ export default {
   data () {
     return {
       loading: false,
+      tableKey: 0,
       page: {
         currentPage: 1,
         pageSize: 10,
@@ -92,6 +94,7 @@ export default {
     },
     getList () {
       this.loading = true
+      this.tableKey += 1
       // 开始请求登录接口
       list().then(res => {
         this.data = res.data

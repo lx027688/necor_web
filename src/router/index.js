@@ -140,7 +140,7 @@ async function loadMenu () {
   const mainRoutes = []
   // 遍历菜单,处理动态路由
   for (let i = 0; i < systemMenus.length; i++) {
-    if (systemMenus[i].menuType === '103000') { //  判断菜单是否时按钮
+    if (systemMenus[i].menuType === 'MENU') { //  判断菜单是否时按钮
       let mainPath = ''
       // 设置菜单的path 属性 后端会将path为空的属性处理掉
       if (systemMenus[i].path !== null && systemMenus[i].path !== '' && typeof systemMenus[i].path !== 'undefined') {

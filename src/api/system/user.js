@@ -1,16 +1,16 @@
 import { request } from '@/api/service'
 
-export function list (data) {
+export function page (data) {
   return request({
-    url: '/admin/list',
+    url: '/user/page',
     method: 'post',
     data
   })
 }
 
-export function getAdminByDept (data) {
+export function getUserByDept (data) {
   return request({
-    url: '/admin/get_admin_by_dept',
+    url: '/user/get_user_by_dept',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function getAdminByDept (data) {
 
 export function save (data) {
   return request({
-    url: '/admin/save',
+    url: '/user/save',
     method: 'post',
     data
   })
@@ -26,30 +26,30 @@ export function save (data) {
 
 export function detail (id) {
   return request({
-    url: '/admin/detail/' + id,
+    url: '/user/detail/' + id,
     method: 'get'
   })
 }
 
 export function remove (id) {
   return request({
-    url: '/admin/remove/' + id,
+    url: '/user/remove/' + id,
     method: 'post'
   })
 }
 
-export function updateEnable (data) {
+export function updateStatus (data) {
   return request({
-    url: '/admin/update_enable',
+    url: '/user/update_status',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
   })
 }
 
-export function saveRoles (data) {
+export function assignRole (data) {
   return request({
-    url: '/admin/save_roles',
+    url: '/user/assign_role',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -58,7 +58,7 @@ export function saveRoles (data) {
 
 export function saveDept (data) {
   return request({
-    url: '/admin/save_dept',
+    url: '/user/save_dept',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -67,7 +67,7 @@ export function saveDept (data) {
 
 export function resetPassword (data) {
   return request({
-    url: '/admin/reset_password',
+    url: '/user/reset_password',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -76,16 +76,16 @@ export function resetPassword (data) {
 
 export function validateRepeat (data) {
   return request({
-    url: '/admin/validate_repeat',
+    url: '/user/validate_repeat',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
   })
 }
 
-export function exportAdmin (data) {
+export function exportUser (data) {
   return request({
-    url: '/admin/export',
+    url: '/user/export',
     method: 'post',
     responseType: 'blob',
     data

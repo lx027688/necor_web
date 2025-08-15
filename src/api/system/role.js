@@ -30,18 +30,18 @@ export function remove (id) {
   })
 }
 
-export function updateEnable (data) {
+export function updateAvailable (data) {
   return request({
-    url: '/role/update_enable',
+    url: '/role/update_available',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
   })
 }
 
-export function saveRoleMenu (data) {
+export function assignMenus (data) {
   return request({
-    url: '/role/save_role_menu',
+    url: '/role/assign_menus',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data

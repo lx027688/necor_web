@@ -24,7 +24,7 @@
       <el-form-item style="float: right">
         <el-button type="primary" @click="exportExcl()"><d2-icon name="share-square-o"/>&nbsp;导出</el-button>
       </el-form-item>
-      <el-form-item style="float: right" v-permission="['admin:save']">
+      <el-form-item style="float: right" v-permission="['user:save']">
         <el-button type="primary" @click="saveHandle()"><d2-icon name="plus"/>&nbsp;新增</el-button>
       </el-form-item>
     </el-form>
@@ -35,46 +35,37 @@
       <el-table-column prop="username" header-align="center" align="center" label="用户名"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
       <el-table-column prop="nickName" header-align="center" align="center" label="昵称"></el-table-column>
-      <el-table-column prop="adminsRoles" header-align="center" align="center" label="角色" show-overflow-tooltip>
-        <template slot-scope="scope"> {{ scope.row.adminsRoles.map(e => { return e.name }).join('，') }}</template>
+      <el-table-column prop="roles" header-align="center" align="center" label="角色" show-overflow-tooltip>
+        <template v-slot="scope"> {{ isNotBlank(scope.row.roles)?scope.row.roles.map(e => { return e.name }).join('，'):'-' }}</template>
       </el-table-column>
       <el-table-column prop="depts" header-align="center" align="center" label="部门" show-overflow-tooltip>
-        <template slot-scope="scope"> {{ scope.row.depts.map(e => { return e.name }).join('，') }}</template>
+        <template v-slot="scope"> {{ isNotBlank(scope.row.depts)?scope.row.depts.map(e => { return e.name }).join('，'):'-' }}</template>
       </el-table-column>
       <el-table-column prop="age" header-align="center" align="center" label="年龄" width="80"></el-table-column>
       <el-table-column prop="gender" header-align="center" align="center" label="性别" width="80">
-        <template slot-scope="scope">
-          <necor-dict-convert :code="scope.row.gender"></necor-dict-convert>
-        </template>
+        <template v-slot="scope">{{translateEnum('GENDER', scope.row.gender)}}</template>
       </el-table-column>
-      <!--      <el-table-column prop="loginIp" header-align="center" align="center" label="登陆IP"></el-table-column>-->
-      <!--      <el-table-column prop="loginDate" header-align="center" align="center" label="登陆时间" sortable="custom"></el-table-column>-->
-      <el-table-column prop="isLocked" header-align="center" align="center" label="是否被锁" width="100">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isLocked==='100000' ? 'danger' : 'success'" disable-transitions>{{scope.row.isLocked==='100000'?'已锁定':'正常'}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="isEnable" header-align="center" align="center" label="是否可用" width="100">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isEnable==='100000' ? 'success' : 'danger'" disable-transitions @click="updateAdminEnable(scope.row.id,scope.row.isEnable)" style="cursor:pointer;">{{scope.row.isEnable==='100000'?'可用':'不可用'}}</el-tag>
+      <el-table-column prop="status" header-align="center" align="center" label="用户状态" width="100">
+        <template v-slot="scope">
+          <el-tag :type="scope.row.status==='ACTIVE' ? 'success' : 'danger'" disable-transitions @click="updateUserStatus(scope.row.id,scope.row.status)" style="cursor:pointer;">{{translateEnum('USER_STATUS', scope.row.status)}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="detailHandle(scope.row.id)" v-permission="['admin:detail']">查看</el-button>
-          <el-button type="text" size="small" @click="resetAdminPassword(scope.row.id)">重置密码</el-button>
-          <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.adminsRoles.map(r=>r.id))">配置角色</el-button>
-          <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['admin:save']">修改</el-button>
-          <el-button type="text" size="small" @click="removeAdmin(scope.row.id)" v-permission="['admin:remove']">删除</el-button>
+        <template v-slot="scope">
+          <el-button type="text" size="small" @click="detailHandle(scope.row.id)" v-permission="['user:detail']">查看</el-button>
+          <el-button type="text" size="small" @click="resetUserPassword(scope.row.id)">重置密码</el-button>
+          <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.roles.map(r=>r.id))">配置角色</el-button>
+          <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['user:save']">修改</el-button>
+          <el-button type="text" size="small" @click="removeUser(scope.row.id)" v-permission="['user:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 列表尾部-->
-    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getPage"></pagination>
 
     <!-- 弹窗, 新增 / 修改 -->
-    <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
+    <save v-if="saveVisible" ref="save" @refreshList="getPage"></save>
     <!-- 弹窗, 详情 -->
     <detail v-if="detailVisible" ref="detail"></detail>
 
@@ -85,7 +76,7 @@
 </template>
 
 <script>
-import { list, remove, updateEnable, resetPassword, saveRoles, exportAdmin } from '@api/system/admin'
+import { page, remove, updateStatus, resetPassword, assignRole, exportUser } from '@api/system/user'
 import { all } from '@api/system/role'
 import pagination from '@/components/pagination'
 import permission from '@/directive/permission/index' // 权限判断指令
@@ -104,7 +95,7 @@ const originalData = {
 }
 
 export default {
-  name: 'system-admin',
+  name: 'system-user',
   components: { pagination, save, detail },
   directives: { permission },
   data () {
@@ -119,7 +110,7 @@ export default {
       },
       saveVisible: false,
       detailVisible: false,
-      currentAdmin: '',
+      currentUserId: '',
       configRoleVisible: false,
       roles: [],
       selectRoles: []
@@ -128,23 +119,23 @@ export default {
   beforeCreate () {
   },
   mounted () {
-    this.getList()
+    this.getPage()
   },
   methods: {
     search () {
       this.query.currentPage = 1
-      this.getList()
+      this.getPage()
     },
     refresh () {
       this.query = this.resetFormData('form', originalData)
       this.search()
     },
-    getList () {
+    getPage () {
       this.loading = true
-      list({ ...this.query }).then(r => {
+      page({ ...this.query }).then(r => {
         const res = r.data
         this.data = res.data
-        this.query.total = res.recordsFiltered
+        this.query.total = Number(res.recordsFiltered)
         this.userStatistics.total = res.recordsTotal
         // this.userStatistics.online = res.params.onlineUser
         this.loading = false
@@ -157,7 +148,7 @@ export default {
       this.query.orderKey = column.prop
       this.query.orderVal = column.order
       if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
-        this.getList()
+        this.getPage()
       }
     },
     selectionChangeHandle (val) {
@@ -177,14 +168,14 @@ export default {
         this.$refs.detail.init(id)
       })
     },
-    removeAdmin (id) {
+    removeUser (id) {
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         remove(id).then(r => {
-          this.getList()
+          this.getPage()
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -199,20 +190,20 @@ export default {
         })
       })
     },
-    updateAdminEnable (id, isEnable) {
+    updateUserStatus (id, status) {
       const params = new FormData()
       params.append('id', id)
-      isEnable = isEnable === '100000' ? '100001' : '100000'
-      params.append('isEnable', isEnable)
-      updateEnable(params).then(res => {
-        this.getList()
+      status = status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE'
+      params.append('status', status)
+      updateStatus(params).then(res => {
+        this.getPage()
         this.$message({
           message: '操作成功',
           type: 'success'
         })
       })
     },
-    resetAdminPassword (id) {
+    resetUserPassword (id) {
       this.loading = true
       const params = new FormData()
       params.append('id', id)
@@ -228,7 +219,7 @@ export default {
       this.roleLoading = true
       this.roles = []
       this.selectRoles = roleIds
-      this.currentAdmin = id
+      this.currentUserId = id
       const that = this
       this.configRoleVisible = true
       all().then(r => {
@@ -247,14 +238,14 @@ export default {
     },
     updateRole () {
       const params = new FormData()
-      params.append('adminId', this.currentAdmin)
-      params.append('roleIds[]', this.selectRoles)
-      saveRoles(params).then(res => {
-        this.getList()
+      params.append('userId', this.currentUserId)
+      params.append('roleIds', this.selectRoles)
+      assignRole(params).then(res => {
+        this.getPage()
       })
     },
     exportExcl () {
-      exportAdmin({ ...this.query }).then(res => {
+      exportUser({ ...this.query }).then(res => {
         if (!res) {
           return
         }

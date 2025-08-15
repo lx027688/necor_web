@@ -36,13 +36,13 @@
 
     <!-- 列表-->
     <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-      <el-table-column prop="code" header-align="left" align="left" label="值"></el-table-column>
+      <el-table-column prop="code" header-align="left" align="left" sortable="custom" label="值"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
-      <el-table-column prop="createDate" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
-      <el-table-column prop="updateDate" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
+      <el-table-column prop="createdAt" header-align="center" align="center" sortable="custom" label="创建时间"></el-table-column>
+      <el-table-column prop="updatedAt" header-align="center" align="center" label="修改时间"></el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="描述"></el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-button type="text" size="small" @click="saveHandle('addItem',scope.row.id)" v-permission="['dict:save']">添加字典项</el-button>
           <el-button type="text" size="small" @click="saveHandle('updateDict',scope.row.id)" v-permission="['dict:save']">修改</el-button>
           <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['dict:remove']">删除</el-button>
@@ -51,15 +51,15 @@
     </el-table>
 
     <!-- 列表尾部-->
-    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getPage"></pagination>
 
     <!-- 弹窗, 新增 / 修改 -->
-    <save v-if="saveVisible" ref="save" @refreshList="getList"></save>
+    <save v-if="saveVisible" ref="save" @refreshList="getPage"></save>
   </d2-container>
 </template>
 
 <script>
-import { list, remove } from '@api/system/dict'
+import { page, remove } from '@api/system/dict'
 import pagination from '@/components/pagination'
 import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
@@ -86,23 +86,23 @@ export default {
     }
   },
   mounted () {
-    this.getList()
+    this.getPage()
   },
   methods: {
     search () {
       this.query.currentPage = 1
-      this.getList()
+      this.getPage()
     },
     refresh () {
       this.query = this.resetFormData('form', originalData)
       this.search()
     },
-    getList () {
+    getPage () {
       this.loading = true
-      list({ ...this.query }).then(r => {
+      page({ ...this.query }).then(r => {
         const res = r.data
         this.data = res.data
-        this.query.total = res.recordsFiltered
+        this.query.total = Number(res.recordsFiltered)
         this.loading = false
       }).catch(err => {
         console.log('err', err)
@@ -113,7 +113,7 @@ export default {
       this.query.orderKey = column.prop
       this.query.orderVal = column.order
       if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
-        this.getList()
+        this.getPage()
       }
     },
     // 新增 / 修改
@@ -130,7 +130,7 @@ export default {
         type: 'warning'
       }).then(() => {
         remove(id).then(r => {
-          this.getList()
+          this.getPage()
           this.$message({
             message: '删除成功',
             type: 'success'

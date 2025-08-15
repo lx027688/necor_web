@@ -1,8 +1,8 @@
 import { request } from '@/api/service'
 
-export function list (data) {
+export function page (data) {
   return request({
-    url: '/dict/list',
+    url: '/dict/page',
     method: 'post',
     data
   })
@@ -35,13 +35,5 @@ export function dictRoot () {
   return request({
     url: '/dict/dict_root/',
     method: 'post'
-  })
-}
-
-export function dictChildsPage (data) {
-  return request({
-    url: '/dict/childs_page',
-    method: 'post',
-    params: data
   })
 }

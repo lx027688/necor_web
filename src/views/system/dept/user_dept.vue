@@ -16,7 +16,7 @@
     <!-- 列表-->
     <el-table :data="data" @sort-change="sortChange" v-loading="loading" stripe border style="width: 100%; margin-top:10px;margin-bottom: 20px;">
       <el-table-column header-align="center" align="center" label="管理员" width="80">
-        <template slot-scope="scope">
+        <template v-slot="scope">
           <el-tooltip class="item" effect="dark" content="请先选择部门" :disabled="isNotBlank(dept.id)" placement="top">
             <el-checkbox :value="checkedPosition(scope.row.depts)" @change="handleSelect(scope.row.id)" :disabled="isBlank(dept.id)"></el-checkbox>
           </el-tooltip>
@@ -27,17 +27,17 @@
     </el-table>
 
     <!-- 列表尾部-->
-    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getList"></pagination>
+    <pagination :cp.sync="query.currentPage" :ps.sync="query.pageSize" :total.sync="query.total" @pagination="getPage"></pagination>
 
   </div>
 </template>
 
 <script>
-import { list, saveDept } from '@api/system/admin'
+import { page, saveDept } from '@api/system/user'
 import pagination from '@/components/pagination'
 
 export default {
-  name: 'admin-dept-index',
+  name: 'user-dept-index',
   components: { pagination },
   data () {
     return {
@@ -64,19 +64,19 @@ export default {
     }
   },
   mounted () {
-    this.getList()
+    this.getPage()
   },
   methods: {
     search () {
       this.query.currentPage = 1
-      this.getList()
+      this.getPage()
     },
-    getList () {
+    getPage () {
       this.loading = true
-      list({ ...this.query }).then(r => {
+      page({ ...this.query }).then(r => {
         const res = r.data
         this.data = res.data
-        this.query.total = res.recordsFiltered
+        this.query.total = Number(res.recordsFiltered)
         this.loading = false
       }).catch(err => {
         console.log('err', err)
@@ -87,7 +87,7 @@ export default {
       this.query.orderKey = column.prop
       this.query.orderVal = column.order
       if (this.query.orderKey !== undefined && this.query.orderVal !== undefined) {
-        this.getList()
+        this.getPage()
       }
     },
     selectDept (id, name) {
@@ -97,13 +97,11 @@ export default {
       }
     },
     checkedPosition (depts) {
-      if (this.isBlank(this.dept.id)) {
+      if (this.isBlank(depts) || this.isBlank(this.dept.id)) {
         return false
       }
       const self = this
-      const flag = depts.some(function (value, index, array) {
-        return value.id === self.dept.id
-      })
+      const flag = depts.some(value => value.id === self.dept.id)
       return flag
     },
     handleSelect (adminId) {
@@ -122,14 +120,14 @@ export default {
         return
       }
       const params = new FormData()
-      params.append('adminId', adminId)
+      params.append('userId', adminId)
       params.append('deptId', this.dept.id)
       saveDept(params).then(r => {
         this.$message({
           message: '保存成功',
           type: 'success'
         })
-        this.getList()
+        this.getPage()
       }).catch(err => {
         console.log('err', err)
       })

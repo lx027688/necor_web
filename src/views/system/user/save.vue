@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
-    <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading" @keyup.enter.native="saveAdmin">
+    <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="80px" v-loading="loading" @keyup.enter.native="saveUser">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" :disabled="isNotBlank(form.id)"></el-input>
       </el-form-item>
@@ -21,25 +21,18 @@
       </el-form-item>
       <el-form-item label="头像" prop="headPortraitFile">
         <el-upload ref="upload" action="/" :auto-upload="false" :limit="1" :class="'headPortrait'"
-                   list-type="picture-card" :file-list="fileList" :on-preview="handlePreview"
-                   :on-change="(file, fileList) => handleChange(file, fileList, 'headPortrait')"
-                   :on-remove="(file, fileList) => handleRemove(file, fileList, 'headPortrait')">
+                   list-type="picture-card" :file-list="fileList" :on-preview="previewAvatar"
+                   :on-change="(file, fileList) => changeAvatar(file, fileList, 'headPortrait')"
+                   :on-remove="(file, fileList) => removeAvatar(file, fileList, 'headPortrait')">
           <i class="el-icon-plus"></i>
         </el-upload>
-        <!--        <el-upload ref="upload" action="" :auto-upload="false" :limit="1" :file-list="fileList" list-type="picture-card"
-                           :on-change="(file, fileList) => picChange1(file, fileList, 'blockRef1', 'backPic1', 'backPics')"
-                           :on-remove="(file, fileList) => picRemove1(file, fileList, 'backPic1', 'backPics')"
-                           :on-preview="(file) => picView(file)" :class="'picUpload backPic1'">
-                  <i class="el-icon-plus picIcon"></i>
-                  <span class="picSpan"></span>
-                </el-upload>-->
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <!--点击取消清空面板内容-->
       <el-button @click="visible = false">取 消</el-button>
       <!--点击确定添加内容-->
-      <el-button type="primary" @click="saveAdmin" >确 定</el-button>
+      <el-button type="primary" @click="saveUser" >确 定</el-button>
     </div>
 
     <el-dialog :visible.sync="dialogVisible" append-to-body>
@@ -50,7 +43,7 @@
 
 <script>
 
-import { save, detail, validateRepeat } from '@api/system/admin'
+import { save, detail, validateRepeat } from '@api/system/user'
 
 const originalData = {
   id: '',
@@ -74,7 +67,7 @@ export default {
       saveRule: {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur' },
-          { pattern: /[\u4e00-\u9fa5]/, message: '姓名必须是中文', trigger: 'blur' },
+          { pattern: /[\u4E00-\u9FFF]+$/, message: '姓名必须是中文', trigger: 'blur' },
           { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }
         ],
         nickName: [
@@ -90,7 +83,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res.data) {
+                if (res.data) {
                   return callback(new Error('用户名已存在'))
                 }
                 callback()
@@ -108,7 +101,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res.data) {
+                if (res.data) {
                   return callback(new Error('手机号已存在'))
                 }
                 callback()
@@ -126,7 +119,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res.data) {
+                if (res.data) {
                   return callback(new Error('邮箱已存在'))
                 }
                 callback()
@@ -143,7 +136,7 @@ export default {
               params.append('vParam', value)
               params.append('id', this.form.id)
               validateRepeat(params).then(res => {
-                if (!res.data) {
+                if (res.data) {
                   return callback(new Error('身份证号码已存在'))
                 }
                 callback()
@@ -165,11 +158,12 @@ export default {
       this.$nextTick(() => {
         this.form = this.resetFormData('saveForm', originalData)
         this.fileList = []
+        this.initAvatar('headPortrait')
         if (id) {
           detail(id).then(res => {
             const r = res.data
             this.form = r
-            if (r.headPortrait !== null && r.headPortrait !== '') {
+            if (this.isNotBlank(r.headPortrait)) {
               document.querySelector('.headPortrait > div').style.display = 'none'
               const file = {
                 name: r.headPortrait.split('.')[r.headPortrait.split('.').length - 1],
@@ -184,7 +178,7 @@ export default {
         }
       })
     },
-    saveAdmin () {
+    saveUser () {
       this.loading = true
       this.$refs.saveForm.validate((valid) => {
         if (valid) {
@@ -215,15 +209,18 @@ export default {
         }
       })
     },
-    handlePreview (file) {
+    initAvatar (className) {
+      document.querySelector('.' + className + ' > div').style.display = 'block'
+    },
+    previewAvatar (file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    handleChange (file, fileList, className) {
+    changeAvatar (file, fileList, className) {
       document.querySelector('.' + className + ' > div').style.display = 'none'
       this.form.headPortraitFile = file.raw
     },
-    handleRemove (file, fileList, className) {
+    removeAvatar (file, fileList, className) {
       document.querySelector('.' + className + ' > div').style.display = 'block'
       this.form.headPortrait = ''
       this.form.headPortraitFile = null

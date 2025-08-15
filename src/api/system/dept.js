@@ -1,8 +1,8 @@
 import { request } from '@/api/service'
 
-export function list (data) {
+export function getDeptTree (data) {
   return request({
-    url: '/dept/list',
+    url: '/dept/get_dept_tree',
     method: 'post',
     data
   })
@@ -11,7 +11,7 @@ export function list (data) {
 // 不需要权限
 export function root (data) {
   return request({
-    url: '/dept/root',
+    url: '/dept/get_dept_tree',
     method: 'post',
     data
   })

@@ -2,7 +2,7 @@
   <el-dialog :title="!form.id?'新增':'修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :rules="saveRule" :model="form" ref="saveForm" label-width="150px" v-loading="loading" @keyup.enter.native="saveData">
       <el-form-item label="所属地区" prop="parentId">
-        <necor-select-tree-lazy v-model="form.parentId" @load="loadArea" :label="form.parentName"></necor-select-tree-lazy>
+        <necor-select-tree-lazy v-model="form.parentId" @load="loadArea" :label="form.parentName" :key="treeKey"></necor-select-tree-lazy>
       </el-form-item>
       <el-form-item label="区域名称" prop="name">
         <el-input v-model="form.name"></el-input>
@@ -57,6 +57,7 @@ export default {
     return {
       visible: false,
       loading: false,
+      treeKey: 'treeKey',
       form: this.cloneDeep(originalData),
       saveRule: {
         name: [{ required: true, message: '请输入区域名称', trigger: 'blur' }, { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' }],
@@ -78,12 +79,15 @@ export default {
 
       this.$nextTick(() => {
         this.form = this.resetFormData('saveForm', originalData)
+        this.treeKey = Math.random()
         if (id) {
           detail(id).then(res => {
             const r = res.data
             this.form = r
-            this.form.parentId = r.parent.id
-            this.form.parentName = r.parent.name
+            if (r.parent) {
+              this.form.parentId = r.parent.id
+              this.form.parentName = r.parent.name
+            }
             this.loading = false
           })
         } else {
@@ -113,9 +117,14 @@ export default {
       })
     },
     loadArea (node, resolve) {
+      console.log(this.form)
       if (node.level === 0) {
         list().then(r => {
-          return resolve(r.data)
+          if (r.data) {
+            return resolve(r.data)
+          } else {
+            return resolve([])
+          }
         }).catch(err => {
           console.log('err', err)
         })
@@ -124,7 +133,11 @@ export default {
         const params = new URLSearchParams()
         params.append('parentId', node.data.id)
         list(params).then(r => {
-          return resolve(r.data)
+          if (r.data) {
+            return resolve(r.data)
+          } else {
+            return resolve([])
+          }
         }).catch(err => {
           console.log('err', err)
         })

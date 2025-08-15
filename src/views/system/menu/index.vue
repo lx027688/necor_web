@@ -26,7 +26,14 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="类型" prop="menuType">
-                  <necor-dict-select code="103" v-model="form.menuType" placeholder="请选择菜单类型"></necor-dict-select>
+                  <el-select v-model="form.menuType" placeholder="请选择菜单类型">
+                    <el-option
+                      v-for="option in this.selectOptions('MENU_TYPE')"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -38,7 +45,7 @@
             <el-form-item label="菜单名" prop="name">
               <el-input v-model="form.name" placeholder="请输入菜单名"></el-input>
             </el-form-item>
-            <el-form-item label="路径" prop="path" v-if="form.menuType==='103000'">
+            <el-form-item label="路径" prop="path" v-if="form.menuType==='MENU'">
               <el-input v-model="form.path" placeholder="请输入路径"></el-input>
             </el-form-item>
             <el-form-item label="接口地址" prop="url">
@@ -129,8 +136,10 @@ export default {
         menuDetail(this.menuId).then(res => {
           const r = res.data
           this.form = r
-          this.form.parentId = r.parent.id
-          this.parentName = r.parent.name
+          if (this.isNotBlank(r.parent)) {
+            this.form.parentId = r.parent.id
+            this.parentName = r.parent.name
+          }
           this.saveLoading = false
         })
       }
@@ -152,8 +161,10 @@ export default {
       if (this.menuId != null && this.menuId !== '') {
         menuDetail(this.menuId).then(r => {
           this.form = r
-          this.form.parentId = r.parent.id
-          this.parentName = r.parent.name
+          if (this.isNotBlank(r.parent)) {
+            this.form.parentId = r.parent.id
+            this.parentName = r.parent.name
+          }
         })
       }
     },
