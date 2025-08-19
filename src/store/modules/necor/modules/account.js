@@ -2,7 +2,7 @@ import { Message, MessageBox } from 'element-ui'
 import util from '@/libs/util.js'
 import { dbDel, dbGet, dbSet } from '@/libs/util.db'
 import router from '@/router'
-import { AccountLogin, AccountLogout } from '@/api/system/login'
+import { AccountLogin, AccountLogout } from '@/api/sys/login'
 import { isNotBlank } from '@/utils/common'
 
 export default {

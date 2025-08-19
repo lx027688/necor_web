@@ -19,7 +19,7 @@ const frameIn = [
         meta: {
           auth: true
         },
-        component: _import('system/index')
+        component: _import('sys/index')
       },
       // // 演示页面
       // {
@@ -57,21 +57,21 @@ const frameIn = [
           title: '前端日志',
           auth: true
         },
-        component: _import('system/log')
+        component: _import('sys/log')
       },
       // 刷新页面 必须保留
       {
         path: 'refresh',
         name: 'refresh',
         hidden: true,
-        component: _import('system/function/refresh')
+        component: _import('sys/function/refresh')
       },
       // 页面重定向 必须保留
       {
         path: 'redirect/:route*',
         name: 'redirect',
         hidden: true,
-        component: _import('system/function/redirect')
+        component: _import('sys/function/redirect')
       }
     ]
   }
@@ -85,12 +85,12 @@ const frameOut = [
   {
     path: '/login',
     name: 'login',
-    component: _import('system/login')
+    component: _import('sys/login')
   },
   {
     path: '/oauth2',
     name: 'oauth2',
-    component: _import('system/oauth2')
+    component: _import('sys/oauth2')
   }
 ]
 
@@ -101,7 +101,7 @@ const errorPage = [
   {
     path: '*',
     name: '404',
-    component: _import('system/error/404')
+    component: _import('sys/error/404')
   }
 ]
 

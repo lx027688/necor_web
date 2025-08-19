@@ -1,4 +1,4 @@
-import { dictRoot } from '@api/system/dict'
+import { dictRoot } from '@api/sys/dict'
 import { dbSet, dbGet } from '@/libs/util.db'
 import axios from 'axios'
 import { Base64 } from 'js-base64'
