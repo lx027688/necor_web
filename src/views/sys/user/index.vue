@@ -5,9 +5,6 @@
       <el-form-item label="" prop="username">
         <el-input v-model="query.username" placeholder="用户名" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
-      <el-form-item label="" prop="name">
-        <el-input v-model="query.name" placeholder="姓名" clearable @keyup.enter.native="search" style="width: 180px;"/>
-      </el-form-item>
       <el-form-item label="" prop="mobile">
         <el-input v-model="query.mobile" placeholder="手机号" clearable @keyup.enter.native="search" style="width: 180px;"/>
       </el-form-item>
@@ -32,29 +29,22 @@
     <!-- 列表 -->
     <el-table :data="data" @sort-change="sortChange" @selection-change="selectionChangeHandle" v-loading="loading" stripe border style="width: 100%;margin-top: 10px;margin-bottom: 20px;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="username" header-align="center" align="center" label="用户名"></el-table-column>
-      <el-table-column prop="name" header-align="center" align="center" label="姓名"></el-table-column>
-      <el-table-column prop="nickName" header-align="center" align="center" label="昵称"></el-table-column>
+      <el-table-column prop="username" header-align="center" align="center" label="用户名" width="200"></el-table-column>
+      <el-table-column prop="nickName" header-align="center" align="center" label="昵称" width="200"></el-table-column>
+      <el-table-column prop="mobile" header-align="center" align="center" label="手机号" width="200"></el-table-column>
       <el-table-column prop="roles" header-align="center" align="center" label="角色" show-overflow-tooltip>
         <template v-slot="scope"> {{ isNotBlank(scope.row.roles)?scope.row.roles.map(e => { return e.name }).join('，'):'-' }}</template>
       </el-table-column>
-      <el-table-column prop="depts" header-align="center" align="center" label="部门" show-overflow-tooltip>
-        <template v-slot="scope"> {{ isNotBlank(scope.row.depts)?scope.row.depts.map(e => { return e.name }).join('，'):'-' }}</template>
-      </el-table-column>
-      <el-table-column prop="age" header-align="center" align="center" label="年龄" width="80"></el-table-column>
-      <el-table-column prop="gender" header-align="center" align="center" label="性别" width="80">
-        <template v-slot="scope">{{translateEnum('GENDER', scope.row.gender)}}</template>
-      </el-table-column>
-      <el-table-column prop="status" header-align="center" align="center" label="用户状态" width="100">
+      <el-table-column prop="status" header-align="center" align="center" label="用户状态" width="150">
         <template v-slot="scope">
           <el-tag :type="scope.row.status==='ACTIVE' ? 'success' : 'danger'" disable-transitions @click="updateUserStatus(scope.row.id,scope.row.status)" style="cursor:pointer;">{{translateEnum('USER_STATUS', scope.row.status)}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" header-align="center" align="center" width="240" label="操作">
+      <el-table-column fixed="right" header-align="center" align="center" width="350" label="操作">
         <template v-slot="scope">
           <el-button type="text" size="small" @click="detailHandle(scope.row.id)" v-permission="['user:detail']">查看</el-button>
           <el-button type="text" size="small" @click="resetUserPassword(scope.row.id)">重置密码</el-button>
-          <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.roles.map(r=>r.id))">配置角色</el-button>
+          <el-button type="text" size="small" @click="configRole(scope.row.id, scope.row.roles!=null?scope.row.roles.map(r=>r.id):[])">配置角色</el-button>
           <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['user:save']">修改</el-button>
           <el-button type="text" size="small" @click="removeUser(scope.row.id)" v-permission="['user:remove']">删除</el-button>
         </template>
@@ -88,7 +78,6 @@ const originalData = {
   pageSize: 10,
   total: 0,
   username: '',
-  name: '',
   mobile: '',
   orderKey: '',
   orderVal: ''
@@ -257,18 +246,6 @@ export default {
         document.body.appendChild(link)
         link.click()
       })
-    },
-    getDept (depts) {
-      const self = this
-      var map = {}
-      depts.forEach(e => {
-        if (map[e.name]) {
-          map[e.name] = map[e.name] + '，' + self.getDict(e.position).name
-        } else {
-          map[e.name] = self.getDict(e.position).name
-        }
-      })
-      return map
     }
   }
 }

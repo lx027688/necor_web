@@ -4,17 +4,8 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" :disabled="isNotBlank(form.id)"></el-input>
       </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
       <el-form-item label="昵称" prop="nickName">
         <el-input v-model="form.nickName"></el-input>
-      </el-form-item>
-      <el-form-item label="身份证" prop="idCard">
-        <el-input v-model="form.idCard"></el-input>
-      </el-form-item>
-      <el-form-item label="email" prop="email">
-        <el-input v-model="form.email"></el-input>
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
         <el-input v-model="form.mobile"></el-input>
@@ -49,10 +40,7 @@ const originalData = {
   id: '',
   username: '',
   password: '',
-  name: '',
   nickName: '',
-  idCard: '',
-  email: '',
   mobile: '',
   headPortrait: '',
   headPortraitFile: null
@@ -65,11 +53,6 @@ export default {
       loading: false,
       form: this.cloneDeep(originalData),
       saveRule: {
-        name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { pattern: /[\u4E00-\u9FFF]+$/, message: '姓名必须是中文', trigger: 'blur' },
-          { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }
-        ],
         nickName: [
           { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' }
         ],
@@ -103,41 +86,6 @@ export default {
               validateRepeat(params).then(res => {
                 if (res.data) {
                   return callback(new Error('手机号已存在'))
-                }
-                callback()
-              })
-            }
-          }
-        ],
-        email: [
-          { type: 'email', message: '请输入正确的email', trigger: 'blur' },
-          { min: 0, max: 40, message: '长度不能超过40个字符', trigger: 'blur' },
-          {
-            validator: (rule, value, callback) => {
-              var params = new URLSearchParams()
-              params.append('vType', 'email')
-              params.append('vParam', value)
-              params.append('id', this.form.id)
-              validateRepeat(params).then(res => {
-                if (res.data) {
-                  return callback(new Error('邮箱已存在'))
-                }
-                callback()
-              })
-            }
-          }
-        ],
-        idCard: [
-          { pattern: /^([1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3})|([1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}(x|X)))$/, message: '身份证格式不正确', trigger: 'blur' },
-          {
-            validator: (rule, value, callback) => {
-              var params = new URLSearchParams()
-              params.append('vType', 'idCard')
-              params.append('vParam', value)
-              params.append('id', this.form.id)
-              validateRepeat(params).then(res => {
-                if (res.data) {
-                  return callback(new Error('身份证号码已存在'))
                 }
                 callback()
               })

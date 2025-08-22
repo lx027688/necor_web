@@ -5,19 +5,10 @@
         <template slot="label"><i class="el-icon-user"></i>&nbsp;用户名</template>{{form.username}}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label"><i class="fa fa-user-o"></i>&nbsp;姓名</template>{{form.name}}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label"><i class="fa fa-user-circle"></i>&nbsp;昵称</template>{{form.nickName}}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label"><i class="fa fa-id-card"></i>&nbsp;身份证</template>{{form.idCard}}
+        <template slot="label"><i class="fa fa-user-circle"></i>&nbsp;昵称</template>{{form.nickName || '-'}}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label"><i class="el-icon-mobile-phone"></i>&nbsp;手机号</template>{{form.mobile}}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label"><i class="fa fa-envelope-o"></i>&nbsp;邮箱</template>{{form.email}}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label"><i class="fa fa-file-image-o"></i>&nbsp;头像</template>
@@ -42,10 +33,7 @@ export default {
         id: '',
         username: '',
         password: '',
-        name: '',
         nickName: '',
-        idCard: '',
-        email: '',
         mobile: '',
         headPortrait: ''
       },
