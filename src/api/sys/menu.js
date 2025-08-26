@@ -2,14 +2,14 @@ import { request } from '@/api/service'
 
 export function findMenuTree () {
   return request({
-    url: '/menu/get_menu_tree',
+    url: '/sys/menu/get_menu_tree',
     method: 'post'
   })
 }
 
 export function getRoutes () {
   return request({
-    url: '/menu/get_route',
+    url: '/sys/menu/get_route',
     method: 'post'
   })
 }
@@ -17,7 +17,7 @@ export function getRoutes () {
 export function saveMenu (data) {
   return request({
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    url: '/menu/save',
+    url: '/sys/menu/save',
     method: 'post',
     data
   })
@@ -25,14 +25,14 @@ export function saveMenu (data) {
 
 export function removeMenu (id) {
   return request({
-    url: '/menu/remove/' + id,
+    url: '/sys/menu/remove/' + id,
     method: 'post'
   })
 }
 
 export function menuDetail (id) {
   return request({
-    url: '/menu/detail/' + id,
+    url: '/sys/menu/detail/' + id,
     method: 'get'
   })
 }

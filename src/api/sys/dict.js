@@ -2,7 +2,7 @@ import { request } from '@/api/service'
 
 export function page (data) {
   return request({
-    url: '/dict/page',
+    url: '/sys/dict/page',
     method: 'post',
     data
   })
@@ -11,7 +11,7 @@ export function page (data) {
 export function save (data) {
   return request({
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    url: '/dict/save',
+    url: '/sys/dict/save',
     method: 'post',
     data
   })
@@ -19,21 +19,21 @@ export function save (data) {
 
 export function detail (id) {
   return request({
-    url: '/dict/detail/' + id,
+    url: '/sys/dict/detail/' + id,
     method: 'get'
   })
 }
 
 export function remove (id) {
   return request({
-    url: '/dict/remove/' + id,
+    url: '/sys/dict/remove/' + id,
     method: 'post'
   })
 }
 
 export function dictRoot () {
   return request({
-    url: '/dict/dict_root/',
+    url: '/sys/dict/dict_root/',
     method: 'post'
   })
 }

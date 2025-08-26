@@ -2,7 +2,7 @@ import { request } from '@/api/service'
 
 export function all () {
   return request({
-    url: '/role/all',
+    url: '/sys/role/all',
     method: 'post'
   })
 }
@@ -10,7 +10,7 @@ export function all () {
 export function save (data) {
   return request({
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    url: '/role/save',
+    url: '/sys/role/save',
     method: 'post',
     data
   })
@@ -18,21 +18,21 @@ export function save (data) {
 
 export function detail (id) {
   return request({
-    url: '/role/detail/' + id,
+    url: '/sys/role/detail/' + id,
     method: 'get'
   })
 }
 
 export function remove (id) {
   return request({
-    url: '/role/remove/' + id,
+    url: '/sys/role/remove/' + id,
     method: 'post'
   })
 }
 
 export function updateAvailable (data) {
   return request({
-    url: '/role/update_available',
+    url: '/sys/role/update_available',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -41,7 +41,7 @@ export function updateAvailable (data) {
 
 export function assignMenus (data) {
   return request({
-    url: '/role/assign_menus',
+    url: '/sys/role/assign_menus',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -50,7 +50,7 @@ export function assignMenus (data) {
 
 export function getMenusByRole (data) {
   return request({
-    url: '/role/get_menus_by_role',
+    url: '/sys/role/get_menus_by_role',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data

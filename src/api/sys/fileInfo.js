@@ -2,7 +2,7 @@ import { request } from '@/api/service'
 
 export function page (data) {
   return request({
-    url: '/file_info/page',
+    url: '/sys/file_info/page',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function page (data) {
 
 // export function save (data) {
 //   return request({
-//     url: '/file_info/save',
+//     url: '/sys/file_info/save',
 //     method: 'post',
 //     data
 //   })
@@ -18,14 +18,14 @@ export function page (data) {
 //
 // export function detail (id) {
 //   return request({
-//     url: '/file_info/detail/' + id,
+//     url: '/sys/file_info/detail/' + id,
 //     method: 'get'
 //   })
 // }
 //
 // export function remove (id) {
 //   return request({
-//     url: '/file_info/remove/' + id,
+//     url: '/sys/file_info/remove/' + id,
 //     method: 'post'
 //   })
 // }

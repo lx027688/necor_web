@@ -2,14 +2,14 @@ import { request } from '@/api/service'
 
 export function AccountLogin (data) {
   return request({
-    url: '/login/login',
+    url: '/sys/login/login',
     method: 'post',
     params: data
   })
 }
 export function oauth2Login (data) {
   return request({
-    url: '/oauth2/github',
+    url: '/sys/oauth2/github',
     method: 'post',
     params: data
   })
@@ -17,14 +17,14 @@ export function oauth2Login (data) {
 
 export function AccountLogout () {
   return request({
-    url: '/login/logout',
+    url: '/sys/login/logout',
     method: 'post'
   })
 }
 
 export function getCaptcha (data) {
   return request({
-    url: '/captcha',
+    url: '/sys/captcha',
     responseType: 'blob',
     method: 'post',
     params: data
@@ -33,7 +33,7 @@ export function getCaptcha (data) {
 
 export function agreement () {
   return request({
-    url: '/login/agreement',
+    url: '/sys/login/agreement',
     responseType: 'blob',
     method: 'post'
   })

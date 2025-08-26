@@ -2,7 +2,7 @@ import { request } from '@/api/service'
 
 export function page (data) {
   return request({
-    url: '/user/page',
+    url: '/sys/user/page',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function page (data) {
 
 export function getUserByDept (data) {
   return request({
-    url: '/user/get_user_by_dept',
+    url: '/sys/user/get_user_by_dept',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function getUserByDept (data) {
 
 export function save (data) {
   return request({
-    url: '/user/save',
+    url: '/sys/user/save',
     method: 'post',
     data
   })
@@ -26,21 +26,21 @@ export function save (data) {
 
 export function detail (id) {
   return request({
-    url: '/user/detail/' + id,
+    url: '/sys/user/detail/' + id,
     method: 'get'
   })
 }
 
 export function remove (id) {
   return request({
-    url: '/user/remove/' + id,
+    url: '/sys/user/remove/' + id,
     method: 'post'
   })
 }
 
 export function updateStatus (data) {
   return request({
-    url: '/user/update_status',
+    url: '/sys/user/update_status',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -49,7 +49,7 @@ export function updateStatus (data) {
 
 export function assignRole (data) {
   return request({
-    url: '/user/assign_role',
+    url: '/sys/user/assign_role',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -58,7 +58,7 @@ export function assignRole (data) {
 
 export function saveDept (data) {
   return request({
-    url: '/user/save_dept',
+    url: '/sys/user/save_dept',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -67,7 +67,7 @@ export function saveDept (data) {
 
 export function resetPassword (data) {
   return request({
-    url: '/user/reset_password',
+    url: '/sys/user/reset_password',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -76,7 +76,7 @@ export function resetPassword (data) {
 
 export function validateRepeat (data) {
   return request({
-    url: '/user/validate_repeat',
+    url: '/sys/user/validate_repeat',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
@@ -85,7 +85,7 @@ export function validateRepeat (data) {
 
 export function exportUser (data) {
   return request({
-    url: '/user/export',
+    url: '/sys/user/export',
     method: 'post',
     responseType: 'blob',
     data

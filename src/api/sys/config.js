@@ -2,7 +2,7 @@ import { request } from '@/api/service'
 
 export function getConfig (data) {
   return request({
-    url: '/config/get_config',
+    url: '/sys/config/get_config',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function getConfig (data) {
 
 export function updateValue (data) {
   return request({
-    url: '/config/update_value',
+    url: '/sys/config/update_value',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data
