@@ -117,7 +117,6 @@ export default {
       })
     },
     loadArea (node, resolve) {
-      console.log(this.form)
       if (node.level === 0) {
         list().then(r => {
           if (r.data) {
