@@ -13,7 +13,7 @@ import router from './router'
 // import { frameInRoutes } from '@/router/routes'
 import { cloneDeep } from 'lodash'
 import { loadDict, getDict, isBlank, isNotBlank, abbr, contains, union, getFileByBase64, resetFormData } from '@/utils/common.js'
-import { translateEnum, selectOptions } from '@/utils/enumTranslator.js'
+import { translateEnum, selectOptions } from '@/utils/enum/enum.js'
 
 Vue.prototype.selectOptions = selectOptions
 Vue.prototype.translateEnum = translateEnum
