@@ -30,9 +30,9 @@ export function remove (id) {
   })
 }
 
-export function updateAvailable (data) {
+export function updateEnableStatus (data) {
   return request({
-    url: '/sys/role/update_available',
+    url: '/sys/role/update_status',
     method: 'post',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     data

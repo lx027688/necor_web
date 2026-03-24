@@ -25,15 +25,15 @@
           <el-table-column prop="updatedAt" header-align="center" align="center" sortable="custom" label="修改时间"></el-table-column>
           <el-table-column prop="name" header-align="center" align="center" label="名称"></el-table-column>
           <el-table-column prop="mark" header-align="center" align="center" label="标识"></el-table-column>
-          <el-table-column prop="isAvailable" header-align="center" align="center" label="是否启用">
+          <el-table-column prop="status" header-align="center" align="center" label="是否启用">
             <template v-slot="scope">
-              <el-tag :type="scope.row.isAvailable==='AVAILABLE' ? 'success' : 'danger'" disable-transitions @click="updateRoleAvailable(scope.row.id,scope.row.isAvailable)">{{translateEnum('AVAILABLE', scope.row.isAvailable)}}</el-tag>
+              <el-tag :type="scope.row.status==='ENABLED' ? 'success' : 'danger'" disable-transitions @click="updateRoleEnableStatus(scope.row.id,scope.row.status)">{{translateEnum('ENABLE_STATUS', scope.row.status)}}</el-tag>
             </template>
           </el-table-column>
           <el-table-column fixed="right" header-align="center" align="center" width="180" label="操作">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="getMenus(scope.row.id)">配置菜单</el-button>
-              <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['role:save']">修改</el-button>
+              <el-button type="text" size="small" @click="saveHandle(scope.row.id)" v-permission="['role:Tree']">修改</el-button>
               <el-button type="text" size="small" @click="removeHandle(scope.row.id)" v-permission="['role:remove']">删除</el-button>
             </template>
           </el-table-column>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { all, remove, updateAvailable, getMenusByRole, assignMenus } from '@api/sys/role'
+import { all, remove, updateEnableStatus, getMenusByRole, assignMenus } from '@/api/sys/role'
 import permission from '@/directive/permission/index' // 权限判断指令
 import save from './save'
 
@@ -149,12 +149,12 @@ export default {
         })
       })
     },
-    updateRoleAvailable (id, isAvailable) {
+    updateRoleEnableStatus (id, status) {
       const params = new FormData()
       params.append('id', id)
-      isAvailable = isAvailable === 'AVAILABLE' ? 'UNAVAILABLE' : 'AVAILABLE'
-      params.append('isAvailable', isAvailable)
-      updateAvailable(params).then(res => {
+      status = status === 'ENABLED' ? 'DISABLED' : 'ENABLED'
+      params.append('status', status)
+      updateEnableStatus(params).then(res => {
         this.getList()
         this.$message({
           message: '操作成功',
